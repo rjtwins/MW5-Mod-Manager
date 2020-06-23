@@ -39,6 +39,7 @@ namespace MW5_Mod_Manager
 
     public class MainLogic
     {
+        public float Version = 0f;
         public ProgramData ProgramData = new ProgramData();
         public string Vendor = "";
         public bool CreatedModlist = false;
@@ -113,6 +114,11 @@ namespace MW5_Mod_Manager
                 string json = File.ReadAllText(complete + @"\ProgramData.json");
                 this.ProgramData = JsonConvert.DeserializeObject<ProgramData>(json);
 
+                Console.WriteLine("Finshed loading ProgramData.json:" 
+                    + " Vendor: " + this.ProgramData.vendor 
+                    + " Version: " + this.ProgramData.version 
+                    + " Installdir: " + this.ProgramData.installdir);
+
                 if (this.ProgramData.installdir != null && this.ProgramData.installdir != "")
                 {
                     this.BasePath = this.ProgramData.installdir;
@@ -121,10 +127,16 @@ namespace MW5_Mod_Manager
                 {
                     this.Vendor = this.ProgramData.vendor;
                 }
+                if(this.ProgramData.version > 0)
+                {
+                    this.Version = ProgramData.version;
+                }
             }
             catch (Exception e)
             {
-
+                Console.WriteLine("ERROR: Something went wrong while loading ProgramData.json");
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
 
             if (this.BasePath != null && this.BasePath != "")
@@ -142,6 +154,8 @@ namespace MW5_Mod_Manager
                 System.IO.File.WriteAllText(complete + @"\ProgramData.json", " ");
             }catch(Exception Ex)
             {
+                Console.WriteLine(Ex.Message);
+                Console.WriteLine(Ex.StackTrace);
                 return;
             }
         }

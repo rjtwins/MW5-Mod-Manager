@@ -36,6 +36,8 @@ namespace MW5_Mod_Manager
                 this.textBox1.Text = logic.BasePath;
                 LoadAndFill(false);
             }
+            this.SetVersionAndVender();
+
             this.rotatingLabel1.Text = "";             // which can be changed by NewText property
             this.rotatingLabel1.AutoSize = false;      // adjust according to your text
             this.rotatingLabel1.NewText = "<- Low Priority --- High Priority ->";     // whatever you want to display
@@ -109,12 +111,15 @@ namespace MW5_Mod_Manager
             logic.ClearAll();
         }
 
-        //Load mod data and fill in the list box..
-        private void LoadAndFill(bool FromClipboard)
+        private void SetVersionAndVender()
         {
-            if(this.logic.Vendor != "")
+            if (this.logic.Version > 0f)
             {
-                if(this.logic.Vendor == "EPIC")
+                this.label1.Text = @"~RJ v." + this.logic.Version.ToString();
+            }
+            if (this.logic.Vendor != "")
+            {
+                if (this.logic.Vendor == "EPIC")
                 {
                     this.toolStripLabel1.Text = "Game Vendor : Epic Store";
                     this.selectToolStripMenuItem.Enabled = true;
@@ -123,7 +128,7 @@ namespace MW5_Mod_Manager
                     this.epicStoreToolStripMenuItem.Enabled = false;
                     this.button4.Enabled = true;
                 }
-                else if(this.logic.Vendor == "WINDOWS")
+                else if (this.logic.Vendor == "WINDOWS")
                 {
                     this.toolStripLabel1.Text = "Game Vendor : Windows Store";
                     this.selectToolStripMenuItem.Enabled = false;
@@ -133,6 +138,11 @@ namespace MW5_Mod_Manager
                     this.button4.Enabled = false;
                 }
             }
+        }
+
+        //Load mod data and fill in the list box..
+        private void LoadAndFill(bool FromClipboard)
+        {
             try 
             {
                 if (FromClipboard)

@@ -53,6 +53,7 @@
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.listView1 = new System.Windows.Forms.ListView();
             this.enabled = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.display = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -61,6 +62,7 @@
             this.version = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button4 = new System.Windows.Forms.Button();
             this.rotatingLabel1 = new MW5_Mod_Manager.RotatingLabel();
+            this.label1 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -144,7 +146,8 @@
             this.toolStripSeparator3,
             this.toolStripLabel1,
             this.toolStripSeparator2,
-            this.toolStripButton1});
+            this.toolStripButton1,
+            this.toolStripSeparator4});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(841, 25);
@@ -257,6 +260,11 @@
             this.toolStripButton1.Text = "Open Mods Folder";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+            // 
             // listView1
             // 
             this.listView1.CheckBoxes = true;
@@ -329,11 +337,21 @@
             this.rotatingLabel1.TabIndex = 12;
             this.rotatingLabel1.Text = "X";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(778, 500);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "label1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(841, 520);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.rotatingLabel1);
             this.Controls.Add(this.listView1);
@@ -393,6 +411,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private RotatingLabel rotatingLabel1;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.Label label1;
     }
 }
 

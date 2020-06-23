@@ -203,12 +203,7 @@ namespace MW5_Mod_Manager
             }
             else if (e.Cancelled)
             {
-                // Next, handle the case where the user canceled 
-                // the operation.
-                // Note that due to a race condition in 
-                // the DoWork event handler, the Cancelled
-                // flag may not have been set, even though
-                // CancelAsync was called.
+                //we just wanna do nothing and return here
             }
             else
             {

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MW5 Mod Manager", "MW5 Mod Manager.csproj", "{C04195F2-EC6B-4280-A0AA-8699C513DD5C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C04195F2-EC6B-4280-A0AA-8699C513DD5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C04195F2-EC6B-4280-A0AA-8699C513DD5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C04195F2-EC6B-4280-A0AA-8699C513DD5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C04195F2-EC6B-4280-A0AA-8699C513DD5C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A803BC15-8422-4ABD-97F0-BEAE4CEFDE0A}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,44 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:      
+    - uses: actions/checkout@v2
+
+    - name: Print Commit Message
+      run: echo ${{ github.event.head_commit.message }}
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.0
+           
+    - name: MSBuild
+      run: msbuild -p:Configuration=Release
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.event.head_commit.message }}
+        release_name: MW5 Load Order Manager
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./bin/Release/app.publish/MW5 Mod Manager.exe
+        asset_name: MW5 Mod Manager.exe
+        asset_content_type: application/zip

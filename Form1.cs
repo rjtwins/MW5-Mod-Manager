@@ -109,7 +109,7 @@ namespace MW5_Mod_Manager
             logic.ClearAll();
         }
 
-        //Load mod data and fill in the list box.
+        //Load mod data and fill in the list box..
         private void LoadAndFill(bool FromClipboard)
         {
             if(this.logic.Vendor != "")

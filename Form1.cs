@@ -203,7 +203,7 @@ namespace MW5_Mod_Manager
             }
             else if (e.Cancelled)
             {
-                //we just wanna do nothing and return here
+                //we just wanna do nothing and return here.
             }
             else
             {

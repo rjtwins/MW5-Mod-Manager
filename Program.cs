@@ -15,7 +15,6 @@ namespace MW5_Mod_Manager
     {
         /// <summary>
         /// The main entry point for the application.
-        /// 
         /// </summary>
         [STAThread]
         static void Main()
@@ -40,17 +39,20 @@ namespace MW5_Mod_Manager
     public class MainLogic
     {
         public float Version = 0f;
-        public ProgramData ProgramData = new ProgramData();
         public string Vendor = "";
-        public bool CreatedModlist = false;
-        public JObject parent;
-        public string CurrentFolderInsearch;
-        public bool InterruptSearch = false;
         public string BasePath = "";
+        public ProgramData ProgramData = new ProgramData();
+
+        public JObject parent;
         public string[] Directories;
-        public Dictionary<string, bool> ModList = new Dictionary<string, bool>();
 
         public Dictionary<string, ModObject> ModDetails = new Dictionary<string, ModObject>();
+        public Dictionary<string, bool> ModList = new Dictionary<string, bool>();
+        public bool CreatedModlist = false;
+
+        public string CurrentFolderInsearch;
+        public bool InterruptSearch = false;
+
         public string rawJson;
 
         public void Loadstuff()
@@ -98,8 +100,8 @@ namespace MW5_Mod_Manager
             return true;
         }
 
-        //Try and load install dir path from stored data files.
-        public bool TryLoadInstallDir()
+        //Try and load data from previous sessions
+        public bool TryLoadProgramData()
         {
             //Load install dir from previous session:
             string systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
@@ -168,6 +170,21 @@ namespace MW5_Mod_Manager
                 string directory = this.Directories[i];
                 string[] temp = directory.Split('\\');
                 Directories[i] = temp[temp.Length - 1];
+            }
+        }
+
+        public void SaveProgramData()
+        {
+            this.ProgramData.installdir = this.BasePath;
+            this.ProgramData.vendor = this.Vendor;
+
+            string complete = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\MW5LoadOrderManager";
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.Formatting = Formatting.Indented;
+            using (StreamWriter sw = new StreamWriter(complete + @"\ProgramData.json"))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, this.ProgramData);
             }
         }
 

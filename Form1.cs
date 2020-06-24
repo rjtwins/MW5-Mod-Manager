@@ -31,7 +31,7 @@ namespace MW5_Mod_Manager
         private void Form1_Load(object sender, EventArgs e)
         {
             this.logic = new MainLogic();
-            if (logic.TryLoadInstallDir())
+            if (logic.TryLoadProgramData())
             {
                 this.textBox1.Text = logic.BasePath;
                 LoadAndFill(false);
@@ -143,6 +143,7 @@ namespace MW5_Mod_Manager
         //Load mod data and fill in the list box..
         private void LoadAndFill(bool FromClipboard)
         {
+            KeyValuePair<string, bool> currentEntry = new KeyValuePair<string, bool>();
             try 
             {
                 if (FromClipboard)
@@ -151,6 +152,7 @@ namespace MW5_Mod_Manager
                     logic.Loadstuff();
                 foreach (KeyValuePair<string, bool> entry in logic.ModList)
                 {
+                    currentEntry = entry;
                     string modName = entry.Key;
                     ListViewItem item1 = new ListViewItem("", 0);
                     item1.Checked = entry.Value;
@@ -161,23 +163,12 @@ namespace MW5_Mod_Manager
                     listView1.Items.Add(item1);
                 }
 
-                this.logic.ProgramData.installdir = logic.BasePath;
-                this.logic.ProgramData.vendor = logic.Vendor;
-
-                string systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                string complete = Path.Combine(systemPath, @"MW5LoadOrderManager");
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Formatting = Formatting.Indented;
-                using (StreamWriter sw = new StreamWriter(complete + @"\ProgramData.json"))
-                using (JsonWriter writer = new JsonTextWriter(sw))
-                {
-                    serializer.Serialize(writer, logic.ProgramData);
-                }
+                logic.SaveProgramData();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
-                string message = "While loading and parsing mod.json files some unknown error has occurred, please contact the developer with a screen shot of the editor, the error message and your mod folder.";
+                string message = "While loading " + currentEntry.Key.ToString() + "something went wrong.";
                 string caption = "Error Loading";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
                 MessageBox.Show(message, caption, buttons);
@@ -269,7 +260,7 @@ namespace MW5_Mod_Manager
         private void button6_Click(object sender, EventArgs e)
         {
             ClearAll();
-            if (logic.TryLoadInstallDir())
+            if (logic.TryLoadProgramData())
             {
                 LoadAndFill(false);
             }

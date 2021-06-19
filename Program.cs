@@ -536,12 +536,16 @@ namespace MW5_Mod_Manager
     {
         public string displayName { set; get; }
         public string version { set; get; }
+        public int buildNumber { set; get; }
         public string description { set; get; }
         public string author { set; get; }
         public string authorURL { set; get; }
         public float defaultLoadOrder { set; get; }
         public string gameVersion { set; get; }
         public List<string> manifest { get; set; }
+        public long steamPublishedFileId { set; get; }
+        public long steamLastSubmittedBuildNumber { set; get; }
+        public string steamModVisibility { set; get; }
     }
 
     public class ProgramData

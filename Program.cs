@@ -356,8 +356,7 @@ namespace MW5_Mod_Manager
         {
             foreach (KeyValuePair<string, ModObject> entry in this.ModDetails)
             {
-                string modJsonPath = "";
-                modJsonPath = BasePath + @"\" + entry.Key + @"\mod.json";
+                string modJsonPath = BasePath + @"\" + entry.Key + @"\mod.json";
                 if (this.WorkshopDirectories.Contains(entry.Key))
                     modJsonPath = WorkshopPath + @"\" + entry.Key + @"\mod.json";
 

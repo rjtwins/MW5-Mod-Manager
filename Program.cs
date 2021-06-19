@@ -21,7 +21,7 @@ namespace MW5_Mod_Manager
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            //AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             Application.Run(new Form1());
         }
 
@@ -167,6 +167,7 @@ namespace MW5_Mod_Manager
         public void ParseDirectories()
         {
             this.Directories = Directory.GetDirectories(BasePath);
+            this.WorkshopDirectories = null;
             for (int i = 0; i < Directories.Length; i++)
             {
                 string directory = this.Directories[i];
@@ -185,6 +186,8 @@ namespace MW5_Mod_Manager
                     Console.WriteLine($"full workshop path is {workshopPath}");
                     WorkshopPath = workshopPath;
                 }
+                if (!Directory.Exists(WorkshopPath))
+                    return;
                 this.WorkshopDirectories = Directory.GetDirectories(WorkshopPath);
                 for (int i = 0; i < WorkshopDirectories.Length; i++)
                 {
@@ -246,6 +249,7 @@ namespace MW5_Mod_Manager
             this.ModList = new Dictionary<string, bool>();
             this.ProgramData = new ProgramData();
             this.BasePath = "";
+            this.WorkshopPath = "";
         }
 
         //Check if the mod dir is already present in data loaded from modlist.json, if not add it.
@@ -353,12 +357,9 @@ namespace MW5_Mod_Manager
             foreach (KeyValuePair<string, ModObject> entry in this.ModDetails)
             {
                 string modJsonPath = "";
-                if (this.Directories.Contains(entry.Key))
-                    modJsonPath = BasePath + @"\" + entry.Key + @"\mod.json";
-                else if (this.WorkshopDirectories.Contains(entry.Key))
+                modJsonPath = BasePath + @"\" + entry.Key + @"\mod.json";
+                if (this.WorkshopDirectories.Contains(entry.Key))
                     modJsonPath = WorkshopPath + @"\" + entry.Key + @"\mod.json";
-                else
-                    return;
 
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Formatting = Formatting.Indented;

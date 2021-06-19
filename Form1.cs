@@ -317,6 +317,22 @@ namespace MW5_Mod_Manager
             this.LoadAndFill(true);
         }
 
+        private void steamToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearAll();
+            logic.WhipeInstallDirMemory();
+            this.logic.Vendor = "STEAM";
+            this.toolStripLabel1.Text = "Game Vendor : Steam";
+            this.selectToolStripMenuItem.Enabled = true;
+            this.searcgToolStripMenuItem.Enabled = true;
+            this.button5.Enabled = true;
+            this.button4.Enabled = true;
+            this.windowsStoreToolStripMenuItem.Enabled = true;
+            this.epicStoreToolStripMenuItem.Enabled = false;
+            this.textBox1.Text = logic.BasePath;
+            LoadAndFill(false);
+        }
+
         private void windowsStoreToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ClearAll();

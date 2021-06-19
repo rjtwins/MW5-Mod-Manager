@@ -41,10 +41,12 @@ namespace MW5_Mod_Manager
         public float Version = 0f;
         public string Vendor = "";
         public string BasePath = "";
+        public string WorkshopPath = "";
         public ProgramData ProgramData = new ProgramData();
 
         public JObject parent;
         public string[] Directories;
+        public string[] WorkshopDirectories;
 
         public Dictionary<string, ModObject> ModDetails = new Dictionary<string, ModObject>();
         public Dictionary<string, bool> ModList = new Dictionary<string, bool>();
@@ -171,6 +173,26 @@ namespace MW5_Mod_Manager
                 string[] temp = directory.Split('\\');
                 Directories[i] = temp[temp.Length - 1];
             }
+            if (this.Vendor == "STEAM")
+            {
+                if (WorkshopPath == "")
+                {
+                    Console.WriteLine("Found Steam version");
+                    string workshopPath = BasePath;
+                    workshopPath = workshopPath.Remove(workshopPath.Length - 46, 46);
+                    Console.WriteLine($"trimmed path is {workshopPath}");
+                    workshopPath += ("workshop\\content\\784080");
+                    Console.WriteLine($"full workshop path is {workshopPath}");
+                    WorkshopPath = workshopPath;
+                }
+                this.WorkshopDirectories = Directory.GetDirectories(WorkshopPath);
+                for (int i = 0; i < WorkshopDirectories.Length; i++)
+                {
+                    string directory = this.WorkshopDirectories[i];
+                    string[] temp = directory.Split('\\');
+                    WorkshopDirectories[i] = temp[temp.Length - 1];
+                }
+            }
         }
 
         public void SaveProgramData()
@@ -236,15 +258,24 @@ namespace MW5_Mod_Manager
 
                 ModList.Add(modDir, false);
             }
+            if (this.WorkshopDirectories != null)
+                foreach (string modDir in this.WorkshopDirectories)
+                {
+                    if (this.ModList.ContainsKey(modDir))
+                        continue;
+
+                    ModList.Add(modDir, false);
+                }
 
             //Turns out there are sometimes "ghost" entries in the modlist.json for witch there are no directories left, lets remove those.
             List<string> toRemove = new List<string>();
             foreach (KeyValuePair<string, bool> entry in this.ModList)
             {
                 if (this.Directories.Contains<string>(entry.Key))
-                {
                     continue;
-                }
+                else if (this.WorkshopDirectories != null)
+                    if (this.WorkshopDirectories.Contains<string>(entry.Key))
+                        continue;
                 toRemove.Add(entry.Key);
             }
             foreach (string key in toRemove)
@@ -286,8 +317,35 @@ namespace MW5_Mod_Manager
                         ModDetails.Remove(modDir);
                     }
                 }
-
             }
+            if (this.WorkshopDirectories != null)
+                foreach (string modDir in this.WorkshopDirectories)
+                {
+                    try
+                    {
+                        string modJson = File.ReadAllText(WorkshopPath + @"\" + modDir + @"\mod.json");
+                        ModObject mod = JsonConvert.DeserializeObject<ModObject>(modJson);
+                        this.ModDetails.Add(modDir, mod);
+                    }
+                    catch (Exception e)
+                    {
+                        string message = "ERROR loading mod.json in : " + modDir +
+                            " folder will be skipped. " +
+                            " If this is not a mod folder you can ignore ths message.";
+                        string caption = "ERROR Loading";
+                        MessageBoxButtons buttons = MessageBoxButtons.OK;
+                        MessageBox.Show(message, caption, buttons);
+
+                        if (ModList.ContainsKey(modDir))
+                        {
+                            ModList.Remove(modDir);
+                        }
+                        if (ModDetails.ContainsKey(modDir))
+                        {
+                            ModDetails.Remove(modDir);
+                        }
+                    }
+                }         
         }
 
         public void SaveModDetails()

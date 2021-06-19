@@ -21,7 +21,7 @@ namespace MW5_Mod_Manager
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            //AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             Application.Run(new Form1());
         }
 
@@ -352,7 +352,14 @@ namespace MW5_Mod_Manager
         {
             foreach (KeyValuePair<string, ModObject> entry in this.ModDetails)
             {
-                string modJsonPath = BasePath + @"\" + entry.Key + @"\mod.json";
+                string modJsonPath = "";
+                if (this.Directories.Contains(entry.Key))
+                    modJsonPath = BasePath + @"\" + entry.Key + @"\mod.json";
+                else if (this.WorkshopDirectories.Contains(entry.Key))
+                    modJsonPath = WorkshopPath + @"\" + entry.Key + @"\mod.json";
+                else
+                    return;
+
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Formatting = Formatting.Indented;
                 using (StreamWriter sw = new StreamWriter(modJsonPath))

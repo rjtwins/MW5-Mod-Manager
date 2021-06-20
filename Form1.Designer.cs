@@ -46,6 +46,7 @@
             this.changeVendorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowsStoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.steamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.epicStoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exportLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -197,6 +198,7 @@
             // 
             this.changeVendorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.steamToolStripMenuItem,
+            this.gogToolStripMenuItem,
             this.windowsStoreToolStripMenuItem,
             this.epicStoreToolStripMenuItem});
             this.changeVendorToolStripMenuItem.Name = "changeVendorToolStripMenuItem";
@@ -209,6 +211,13 @@
             this.steamToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.steamToolStripMenuItem.Text = "Steam";
             this.steamToolStripMenuItem.Click += new System.EventHandler(this.steamToolStripMenuItem_Click);
+            // 
+            // gogToolStripMenuItem
+            // 
+            this.gogToolStripMenuItem.Name = "gogToolStripMenuItem";
+            this.gogToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.gogToolStripMenuItem.Text = "GOG";
+            this.gogToolStripMenuItem.Click += new System.EventHandler(this.gogToolStripMenuItem_Click);
             // 
             // windowsStoreToolStripMenuItem
             // 
@@ -410,6 +419,7 @@
         private System.Windows.Forms.ToolStripMenuItem changeVendorToolStripMenuItem;
         public System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripMenuItem steamToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gogToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem windowsStoreToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem epicStoreToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem installDirectoryToolStripMenuItem;

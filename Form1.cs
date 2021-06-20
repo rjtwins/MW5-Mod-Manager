@@ -43,6 +43,7 @@ namespace MW5_Mod_Manager
             this.rotatingLabel1.NewText = "<- Low Priority --- High Priority ->";     // whatever you want to display
             this.rotatingLabel1.ForeColor = Color.Black; // color to display
             this.rotatingLabel1.RotateAngle = -90;     // angle to rotate
+            this.button5.Enabled = false; //set Stop Search Button to disabled so the user won't be confused if a search isn't on-going
         }
 
         //Up button
@@ -124,6 +125,8 @@ namespace MW5_Mod_Manager
                     this.toolStripLabel1.Text = "Game Vendor : Epic Store";
                     this.selectToolStripMenuItem.Enabled = true;
                     this.searcgToolStripMenuItem.Enabled = true;
+                    this.steamToolStripMenuItem.Enabled = true;
+                    this.gogToolStripMenuItem.Enabled = true;
                     this.windowsStoreToolStripMenuItem.Enabled = true;
                     this.epicStoreToolStripMenuItem.Enabled = false;
                     this.button4.Enabled = true;
@@ -133,9 +136,33 @@ namespace MW5_Mod_Manager
                     this.toolStripLabel1.Text = "Game Vendor : Windows Store";
                     this.selectToolStripMenuItem.Enabled = false;
                     this.searcgToolStripMenuItem.Enabled = false;
+                    this.steamToolStripMenuItem.Enabled = true;
+                    this.gogToolStripMenuItem.Enabled = true;
                     this.windowsStoreToolStripMenuItem.Enabled = false;
                     this.epicStoreToolStripMenuItem.Enabled = true;
                     this.button4.Enabled = false;
+                }
+                else if (this.logic.Vendor == "STEAM")
+                {
+                    this.toolStripLabel1.Text = "Game Vendor : Steam";
+                    this.selectToolStripMenuItem.Enabled = true;
+                    this.searcgToolStripMenuItem.Enabled = true;
+                    this.steamToolStripMenuItem.Enabled = false;
+                    this.gogToolStripMenuItem.Enabled = true;
+                    this.windowsStoreToolStripMenuItem.Enabled = true;
+                    this.epicStoreToolStripMenuItem.Enabled = true;
+                    this.button4.Enabled = true;
+                }
+                else if (this.logic.Vendor == "GOG")
+                {
+                    this.toolStripLabel1.Text = "Game Vendor : GOG";
+                    this.selectToolStripMenuItem.Enabled = true;
+                    this.searcgToolStripMenuItem.Enabled = true;
+                    this.steamToolStripMenuItem.Enabled = true;
+                    this.gogToolStripMenuItem.Enabled = false;
+                    this.windowsStoreToolStripMenuItem.Enabled = true;
+                    this.epicStoreToolStripMenuItem.Enabled = true;
+                    this.button4.Enabled = true;
                 }
             }
         }
@@ -253,6 +280,7 @@ namespace MW5_Mod_Manager
         //Stop Search Button
         private void button5_Click(object sender, EventArgs e)
         {
+            this.button5.Enabled = false; //disable button since we are stopping the search
             backgroundWorker1.CancelAsync();
         }
 
@@ -325,10 +353,26 @@ namespace MW5_Mod_Manager
             this.toolStripLabel1.Text = "Game Vendor : Steam";
             this.selectToolStripMenuItem.Enabled = true;
             this.searcgToolStripMenuItem.Enabled = true;
-            this.button5.Enabled = true;
             this.button4.Enabled = true;
+            this.steamToolStripMenuItem.Enabled = false;
             this.windowsStoreToolStripMenuItem.Enabled = true;
-            this.epicStoreToolStripMenuItem.Enabled = false;
+            this.epicStoreToolStripMenuItem.Enabled = true;
+            this.textBox1.Text = logic.BasePath;
+            LoadAndFill(false);
+        }
+        private void gogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearAll();
+            logic.WhipeInstallDirMemory();
+            this.logic.Vendor = "GOG";
+            this.toolStripLabel1.Text = "Game Vendor : GOG";
+            this.selectToolStripMenuItem.Enabled = true;
+            this.searcgToolStripMenuItem.Enabled = true;
+            this.button4.Enabled = true;
+            this.steamToolStripMenuItem.Enabled = true;
+            this.gogToolStripMenuItem.Enabled = false;
+            this.windowsStoreToolStripMenuItem.Enabled = true;
+            this.epicStoreToolStripMenuItem.Enabled = true;
             this.textBox1.Text = logic.BasePath;
             LoadAndFill(false);
         }
@@ -343,6 +387,8 @@ namespace MW5_Mod_Manager
             this.searcgToolStripMenuItem.Enabled = false;
             this.button5.Enabled = false;
             this.button4.Enabled = false;
+            this.steamToolStripMenuItem.Enabled = true;
+            this.gogToolStripMenuItem.Enabled = true;
             this.windowsStoreToolStripMenuItem.Enabled = false;
             this.epicStoreToolStripMenuItem.Enabled = true;
 
@@ -359,8 +405,9 @@ namespace MW5_Mod_Manager
             this.toolStripLabel1.Text = "Game Vendor : Epic Store";
             this.selectToolStripMenuItem.Enabled = true;
             this.searcgToolStripMenuItem.Enabled = true;
-            this.button5.Enabled = true;
             this.button4.Enabled = true;
+            this.steamToolStripMenuItem.Enabled = true;
+            this.gogToolStripMenuItem.Enabled = true;
             this.windowsStoreToolStripMenuItem.Enabled = true;
             this.epicStoreToolStripMenuItem.Enabled = false;
             this.textBox1.Text = logic.BasePath;
@@ -374,6 +421,7 @@ namespace MW5_Mod_Manager
         private void searcgToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ClearAll();
+            this.button5.Enabled = true; //enable the Stop Search button here so it's only enabled while we are searching
             backgroundWorker1.RunWorkerAsync();
         }
 
@@ -396,7 +444,7 @@ namespace MW5_Mod_Manager
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if(this.logic.Vendor == "EPIC")
+            if (this.logic.Vendor == "EPIC")
             {
                 try
                 {
@@ -406,12 +454,48 @@ namespace MW5_Mod_Manager
                 {
                     Console.WriteLine(Ex.Message);
                     Console.WriteLine(Ex.StackTrace);
-                    string message = "There was an error while trying to make EPIC Games Launcher laumch Mechwarrior 5.";
+                    string message = "There was an error while trying to make EPIC Games Launcher launch Mechwarrior 5.";
                     string caption = "Error Launching";
                     MessageBoxButtons buttons = MessageBoxButtons.OK;
                     MessageBox.Show(message, caption, buttons);
                 }
-            }else if (this.logic.Vendor == "WINDOWS")
+            }
+            else if (this.logic.Vendor == "STEAM")
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start(@"steam://rungameid/784080");
+                }
+                catch (Exception Ex)
+                {
+                    Console.WriteLine(Ex.Message);
+                    Console.WriteLine(Ex.StackTrace);
+                    string message = "There was an error while trying to make Steam launch Mechwarrior 5.";
+                    string caption = "Error Launching";
+                    MessageBoxButtons buttons = MessageBoxButtons.OK;
+                    MessageBox.Show(message, caption, buttons);
+                }
+            }
+            else if (this.logic.Vendor == "GOG")
+            {
+                string Gamepath = this.logic.BasePath;
+                Gamepath = Gamepath.Remove(Gamepath.Length - 13, 13);
+                Gamepath += "MechWarrior.exe";
+                try
+                {
+                    Process.Start(Gamepath);
+                }
+                catch (Exception Ex)
+                {
+                    Console.WriteLine(Ex.Message);
+                    Console.WriteLine(Ex.StackTrace);
+                    string message = "There was an error while trying to launch Mechwarrior 5.";
+                    string caption = "Error Launching";
+                    MessageBoxButtons buttons = MessageBoxButtons.OK;
+                    MessageBox.Show(message, caption, buttons);
+                }
+            }
+            else if (this.logic.Vendor == "WINDOWS")
             {
                 //Dunno how this works at all.. 
                 string message = "This feature is not available in this version.";

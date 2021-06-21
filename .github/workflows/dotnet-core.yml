@@ -11,10 +11,8 @@ jobs:
     runs-on: windows-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     steps:
-    - name: Set the value
-      id: set env for add usage
-      run: |
-        echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+    - name: set-env
+      run: echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
     
     - uses: actions/checkout@v2
 

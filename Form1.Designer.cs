@@ -67,6 +67,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.filterBox = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.button5 = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -124,7 +125,7 @@
             // button8
             // 
             this.button8.Image = ((System.Drawing.Image)(resources.GetObject("button8.Image")));
-            this.button8.Location = new System.Drawing.Point(12, 380);
+            this.button8.Location = new System.Drawing.Point(13, 424);
             this.button8.Margin = new System.Windows.Forms.Padding(0);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(128, 128);
@@ -282,7 +283,7 @@
             this.listView1.Location = new System.Drawing.Point(189, 90);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(640, 407);
+            this.listView1.Size = new System.Drawing.Size(640, 446);
             this.listView1.TabIndex = 11;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -319,7 +320,7 @@
             // button4
             // 
             this.button4.Image = ((System.Drawing.Image)(resources.GetObject("button4.Image")));
-            this.button4.Location = new System.Drawing.Point(31, 279);
+            this.button4.Location = new System.Drawing.Point(32, 334);
             this.button4.Margin = new System.Windows.Forms.Padding(0);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(90, 90);
@@ -330,7 +331,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(778, 500);
+            this.label1.Location = new System.Drawing.Point(750, 539);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(16, 13);
             this.label1.TabIndex = 14;
@@ -385,11 +386,22 @@
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(13, 272);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(128, 38);
+            this.button5.TabIndex = 19;
+            this.button5.Text = "Mark for Removal";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(841, 520);
+            this.ClientSize = new System.Drawing.Size(841, 561);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.filterBox);
             this.Controls.Add(this.label3);
@@ -407,8 +419,8 @@
             this.Controls.Add(this.button1);
             this.HelpButton = true;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(857, 559);
-            this.MinimumSize = new System.Drawing.Size(857, 559);
+            this.MaximumSize = new System.Drawing.Size(857, 600);
+            this.MinimumSize = new System.Drawing.Size(857, 600);
             this.Name = "Form1";
             this.ShowIcon = false;
             this.Text = "MW5 LoadOrderManager";
@@ -459,6 +471,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox filterBox;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button5;
     }
 }
 

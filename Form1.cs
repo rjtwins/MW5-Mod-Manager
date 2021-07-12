@@ -5,8 +5,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using System.Windows.Forms;
 using Application = System.Windows.Forms.Application;
 
@@ -18,11 +18,17 @@ namespace MW5_Mod_Manager
         public MainLogic logic;
         private List<ListViewItem> backupListView;
         bool filtered = false;
+        private List<ListViewItem> markedForRemoval;
         public Form1()
         {
             InitializeComponent();
             this.MainForm = this;
             this.backupListView = new List<ListViewItem>();
+            this.markedForRemoval = new List<ListViewItem>();
+
+            this.AllowDrop = true;
+            this.DragEnter += new DragEventHandler(Form1_DragEnter);
+            this.DragDrop += new DragEventHandler(Form1_DragDrop);
 
             backgroundWorker1.RunWorkerCompleted += backgroundWorker1_RunWorkerCompleted;
             backgroundWorker1.ProgressChanged += backgroundWorker1_ProgressChanged;
@@ -47,6 +53,95 @@ namespace MW5_Mod_Manager
             this.rotatingLabel1.ForeColor = Color.Black; // color to display
             this.rotatingLabel1.RotateAngle = -90;     // angle to rotate
             //this.button5.Enabled = false; //set Stop Search Button to disabled so the user won't be confused if a search isn't on-going
+        }
+
+        //When we hover over the manager with a file or folder
+        void Form1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
+
+        //When we drop a file or folder on the manager
+        void Form1_DragDrop(object sender, DragEventArgs e)
+        {
+            //We only support single file drops!
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (files.Length != 1)
+                return;
+            string file = files[0];
+
+            //Lets see what we got here
+            // get the file attributes for file or directory
+            FileAttributes attr = File.GetAttributes(file);
+            if (attr.HasFlag(FileAttributes.Directory))
+            {
+                //Directory
+                //Check if we have a mod.json
+                bool foundMod = false;
+                foreach(string f in Directory.GetFiles(file))
+                {
+                    if (f.Contains("mod.json"))
+                    {
+                        foundMod = true;
+                        break;
+                    }
+                }
+                if (!foundMod)
+                {
+                    //No mods found
+                    return;
+                }
+                //we've got a mod people!
+                if(string.IsNullOrEmpty(logic.BasePath) || string.IsNullOrWhiteSpace(logic.BasePath) || logic.Vendor == "STEAM")
+                {
+                    //we may have found a mod but we have nowhere to put it :(
+                    return;
+                }
+                string[] splitString = file.Split('\\');
+                string modName = splitString[splitString.Length - 1];
+                Console.WriteLine(logic.BasePath + "\\" + modName);
+                Utils.DirectoryCopy(file, logic.BasePath + "\\" + modName, true);
+                button6_Click(null, null);
+            }
+            else
+            {
+                //Its a file!
+                if (file.Contains(".zip"))
+                {
+                    //we have a zip!
+                    using (ZipArchive archive = ZipFile.OpenRead(file))
+                    {
+                        bool modFound = false;
+                        foreach (ZipArchiveEntry entry in archive.Entries)
+                        {
+                            Console.WriteLine(entry.FullName);
+                            if (entry.Name.Contains("mod.json"))
+                            {
+                                //we have found a mod!
+                                Console.WriteLine("MOD FOUND IN ZIP!: " + entry.FullName);
+                                modFound = true;
+                                break;
+                            }
+                        }
+                        if (!modFound)
+                        {
+                            return;
+                        }
+                        //Extract mod to mods dir
+                        ZipFile.ExtractToDirectory(file, logic.BasePath);
+                        button6_Click(null, null);
+                    }
+                }
+                else
+                {
+                    string message = "Only .zip files are supported. " +
+                        "Please extract first and drag the folder into the application.";
+                    string caption = "Unsuported File Type";
+                    MessageBoxButtons buttons = MessageBoxButtons.OK;
+                    DialogResult Result = MessageBox.Show(message, caption, buttons);
+                    return;
+                }
+            }
         }
 
         //Up button
@@ -80,10 +175,42 @@ namespace MW5_Mod_Manager
         //Apply button
         private void button3_Click(object sender, EventArgs e)
         {
-            
-            this.logic.ModList = new Dictionary<string, bool>();
+            //Stuff for removing mods:
+            if(this.markedForRemoval.Count > 0)
+            {
+                List<string> modNames = new List<string>();
+                foreach (ListViewItem item in this.markedForRemoval)
+                {
+                    modNames.Add(item.SubItems[1].Text);
+                }
 
-            Console.WriteLine(this.logic.ModList.ToString());
+                string m = "The following mods will be permenetly removed from your mods folder: " + string.Join(",", modNames) + ". ARE YOU SURE?";
+                string c = "Are you sure?";
+                MessageBoxButtons b = MessageBoxButtons.YesNo;
+                DialogResult r = MessageBox.Show(m, c, b);
+
+                if (r == DialogResult.Yes)
+                {
+                    foreach (ListViewItem item in markedForRemoval)
+                    {
+                        listView1.Items.Remove(item);
+                        logic.DeleteMod(item.SubItems[2].Text);
+                        this.logic.ModDetails.Remove(item.SubItems[2].Text);
+                    }
+                    markedForRemoval.Clear();
+                }
+                else if (r == DialogResult.No)
+                {
+                    foreach (ListViewItem item in markedForRemoval)
+                    {
+                        item.ForeColor = Color.Black;
+                    }
+                    return;
+                }
+            }
+
+            //Stuff for applying mods activation and load order:
+            this.logic.ModList = new Dictionary<string, bool>();
             int length = listView1.Items.Count;
             for (int i = 0; i < length; i++)
             {
@@ -133,6 +260,7 @@ namespace MW5_Mod_Manager
                     this.windowsStoreToolStripMenuItem.Enabled = true;
                     this.epicStoreToolStripMenuItem.Enabled = false;
                     this.button4.Enabled = true;
+                    this.MainForm.button5.Enabled = true;
                 }
                 else if (this.logic.Vendor == "WINDOWS")
                 {
@@ -144,6 +272,8 @@ namespace MW5_Mod_Manager
                     this.windowsStoreToolStripMenuItem.Enabled = false;
                     this.epicStoreToolStripMenuItem.Enabled = true;
                     this.button4.Enabled = false;
+                    this.MainForm.button5.Enabled = true;
+
                 }
                 else if (this.logic.Vendor == "STEAM")
                 {
@@ -154,7 +284,9 @@ namespace MW5_Mod_Manager
                     this.gogToolStripMenuItem.Enabled = true;
                     this.windowsStoreToolStripMenuItem.Enabled = true;
                     this.epicStoreToolStripMenuItem.Enabled = true;
+                    this.MainForm.button5.Enabled = false;
                     this.button4.Enabled = true;
+
                 }
                 else if (this.logic.Vendor == "GOG")
                 {
@@ -166,6 +298,7 @@ namespace MW5_Mod_Manager
                     this.windowsStoreToolStripMenuItem.Enabled = true;
                     this.epicStoreToolStripMenuItem.Enabled = true;
                     this.button4.Enabled = true;
+                    this.MainForm.button5.Enabled = true;
                 }
             }
         }
@@ -369,6 +502,7 @@ namespace MW5_Mod_Manager
             this.steamToolStripMenuItem.Enabled = false;
             this.windowsStoreToolStripMenuItem.Enabled = true;
             this.epicStoreToolStripMenuItem.Enabled = true;
+            this.MainForm.button5.Enabled = false;
             this.textBox1.Text = logic.BasePath;
             LoadAndFill(false);
         }
@@ -386,6 +520,7 @@ namespace MW5_Mod_Manager
             this.windowsStoreToolStripMenuItem.Enabled = true;
             this.epicStoreToolStripMenuItem.Enabled = true;
             this.textBox1.Text = logic.BasePath;
+            this.MainForm.button5.Enabled = true;
             LoadAndFill(false);
         }
 
@@ -403,9 +538,9 @@ namespace MW5_Mod_Manager
             this.gogToolStripMenuItem.Enabled = true;
             this.windowsStoreToolStripMenuItem.Enabled = false;
             this.epicStoreToolStripMenuItem.Enabled = true;
-
             this.logic.BasePath = Application.LocalUserAppDataPath.Replace(@"\MW5_Mod_Manager\MW5 Mod Manager\1.0.0.0", "") + @"\MW5Mercs\Saved\Mods";
             this.textBox1.Text = logic.BasePath;
+            this.MainForm.button5.Enabled = true;
             LoadAndFill(false);
         }
 
@@ -423,6 +558,7 @@ namespace MW5_Mod_Manager
             this.windowsStoreToolStripMenuItem.Enabled = true;
             this.epicStoreToolStripMenuItem.Enabled = false;
             this.textBox1.Text = logic.BasePath;
+            this.MainForm.button5.Enabled = true;
         }
 
         private void selectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -598,6 +734,26 @@ namespace MW5_Mod_Manager
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             this.filterBox_TextChanged(null, null);
+        }
+
+        //Mark currently selected mod for removal upon apply
+        private void button5_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in this.MainForm.listView1.SelectedItems)
+            {
+                if (this.markedForRemoval.Contains(item))
+                {
+                    markedForRemoval.Remove(item);
+                    item.ForeColor = Color.Black;
+                    item.Selected = false;
+                }
+                else
+                {
+                    this.markedForRemoval.Add(item);
+                    item.ForeColor = Color.Red;
+                    item.Selected = false;
+                }
+            }
         }
     }
 

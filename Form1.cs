@@ -161,7 +161,6 @@ namespace MW5_Mod_Manager
         //Get item info, remove item, insert below, set new item as selected.
         private void button2_Click(object sender, EventArgs e)
         {
-
             int i = SelectedItemIndex();
             if (i > listView1.Items.Count - 2)
                 return;

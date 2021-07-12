@@ -311,7 +311,7 @@ namespace MW5_Mod_Manager
             Form3 exportDialog = new Form3();
 
             // Show testDialog as a modal dialog and determine if DialogResult = OK.
-            exportDialog.textBox1.Text = logic.Scramble(json);
+            exportDialog.textBox1.Text = json; //logic.Scramble(json);
             exportDialog.ShowDialog(this);
             exportDialog.Dispose();
         }
@@ -334,7 +334,10 @@ namespace MW5_Mod_Manager
             Dictionary<string, bool> temp;
             try
             {
-                temp = JsonConvert.DeserializeObject<Dictionary<string, bool>>(logic.UnScramble(txtResult));
+                temp = JsonConvert.DeserializeObject<Dictionary<string, bool>>(txtResult);//logic.UnScramble(txtResult));
+                Console.WriteLine("OUTPUT HERE!");
+                Console.WriteLine(JsonConvert.SerializeObject(temp, Formatting.Indented));
+
             }
             catch (Exception Ex)
             {
@@ -344,9 +347,14 @@ namespace MW5_Mod_Manager
                 MessageBox.Show(message, caption, buttons);
                 return;
             }
-            this.ClearAll();
+            //this.ClearAll();
+
+            this.listView1.Items.Clear();
+            this.logic.ModDetails = new Dictionary<string, ModObject>();
+            this.logic.ModList = new Dictionary<string, bool>();
             this.logic.ModList = temp;
             this.LoadAndFill(true);
+            this.filterBox_TextChanged(null, null);
         }
 
         private void steamToolStripMenuItem_Click(object sender, EventArgs e)

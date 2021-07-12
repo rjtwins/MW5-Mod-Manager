@@ -32,7 +32,7 @@ namespace MW5_Mod_Manager
                 byte[] assemblyData = new byte[stream.Length];
                 stream.Read(assemblyData, 0, assemblyData.Length);
                 return Assembly.Load(assemblyData);
-            }
+            } 
         }
     }
 

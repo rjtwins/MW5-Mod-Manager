@@ -289,7 +289,7 @@ namespace MW5_Mod_Manager
             if (this.CreatedModlist)
             {
                 UpdateJObject();
-                SaveModListJson();
+                SaveModListJson(); 
             }
         }
 

@@ -16,10 +16,13 @@ namespace MW5_Mod_Manager
     {
         public Form1 MainForm;
         public MainLogic logic;
+        private List<ListViewItem> backupListView;
+        bool filtered = false;
         public Form1()
         {
             InitializeComponent();
             this.MainForm = this;
+            this.backupListView = new List<ListViewItem>();
 
             backgroundWorker1.RunWorkerCompleted += backgroundWorker1_RunWorkerCompleted;
             backgroundWorker1.ProgressChanged += backgroundWorker1_ProgressChanged;
@@ -40,10 +43,10 @@ namespace MW5_Mod_Manager
 
             this.rotatingLabel1.Text = "";             // which can be changed by NewText property
             this.rotatingLabel1.AutoSize = false;      // adjust according to your text
-            this.rotatingLabel1.NewText = "<- Low Priority --- High Priority ->";     // whatever you want to display
+            this.rotatingLabel1.NewText = "<- Low Priority/Loaded First --- High Priority/Loaded Last ->";     // whatever you want to display
             this.rotatingLabel1.ForeColor = Color.Black; // color to display
             this.rotatingLabel1.RotateAngle = -90;     // angle to rotate
-            this.button5.Enabled = false; //set Stop Search Button to disabled so the user won't be confused if a search isn't on-going
+            //this.button5.Enabled = false; //set Stop Search Button to disabled so the user won't be confused if a search isn't on-going
         }
 
         //Up button
@@ -124,7 +127,7 @@ namespace MW5_Mod_Manager
                 {
                     this.toolStripLabel1.Text = "Game Vendor : Epic Store";
                     this.selectToolStripMenuItem.Enabled = true;
-                    this.searcgToolStripMenuItem.Enabled = true;
+                    //this.searcgToolStripMenuItem.Enabled = true;
                     this.steamToolStripMenuItem.Enabled = true;
                     this.gogToolStripMenuItem.Enabled = true;
                     this.windowsStoreToolStripMenuItem.Enabled = true;
@@ -135,7 +138,7 @@ namespace MW5_Mod_Manager
                 {
                     this.toolStripLabel1.Text = "Game Vendor : Windows Store";
                     this.selectToolStripMenuItem.Enabled = false;
-                    this.searcgToolStripMenuItem.Enabled = false;
+                    //this.searcgToolStripMenuItem.Enabled = false;
                     this.steamToolStripMenuItem.Enabled = true;
                     this.gogToolStripMenuItem.Enabled = true;
                     this.windowsStoreToolStripMenuItem.Enabled = false;
@@ -146,7 +149,7 @@ namespace MW5_Mod_Manager
                 {
                     this.toolStripLabel1.Text = "Game Vendor : Steam";
                     this.selectToolStripMenuItem.Enabled = true;
-                    this.searcgToolStripMenuItem.Enabled = true;
+                    //this.searcgToolStripMenuItem.Enabled = true;
                     this.steamToolStripMenuItem.Enabled = false;
                     this.gogToolStripMenuItem.Enabled = true;
                     this.windowsStoreToolStripMenuItem.Enabled = true;
@@ -157,7 +160,7 @@ namespace MW5_Mod_Manager
                 {
                     this.toolStripLabel1.Text = "Game Vendor : GOG";
                     this.selectToolStripMenuItem.Enabled = true;
-                    this.searcgToolStripMenuItem.Enabled = true;
+                    //this.searcgToolStripMenuItem.Enabled = true;
                     this.steamToolStripMenuItem.Enabled = true;
                     this.gogToolStripMenuItem.Enabled = false;
                     this.windowsStoreToolStripMenuItem.Enabled = true;
@@ -277,12 +280,12 @@ namespace MW5_Mod_Manager
             }
         }
 
-        //Stop Search Button
-        private void button5_Click(object sender, EventArgs e)
-        {
-            this.button5.Enabled = false; //disable button since we are stopping the search
-            backgroundWorker1.CancelAsync();
-        }
+        ////Stop Search Button
+        //private void button5_Click(object sender, EventArgs e)
+        //{
+        //    this.button5.Enabled = false; //disable button since we are stopping the search
+        //    backgroundWorker1.CancelAsync();
+        //}
 
         //Refresh listedcheckbox
         private void button6_Click(object sender, EventArgs e)
@@ -291,6 +294,7 @@ namespace MW5_Mod_Manager
             if (logic.TryLoadProgramData())
             {
                 LoadAndFill(false);
+                filterBox_TextChanged(null, null);
             }
         }
 
@@ -352,7 +356,7 @@ namespace MW5_Mod_Manager
             this.logic.Vendor = "STEAM";
             this.toolStripLabel1.Text = "Game Vendor : Steam";
             this.selectToolStripMenuItem.Enabled = true;
-            this.searcgToolStripMenuItem.Enabled = true;
+            //this.searcgToolStripMenuItem.Enabled = true;
             this.button4.Enabled = true;
             this.steamToolStripMenuItem.Enabled = false;
             this.windowsStoreToolStripMenuItem.Enabled = true;
@@ -367,7 +371,7 @@ namespace MW5_Mod_Manager
             this.logic.Vendor = "GOG";
             this.toolStripLabel1.Text = "Game Vendor : GOG";
             this.selectToolStripMenuItem.Enabled = true;
-            this.searcgToolStripMenuItem.Enabled = true;
+            //this.searcgToolStripMenuItem.Enabled = true;
             this.button4.Enabled = true;
             this.steamToolStripMenuItem.Enabled = true;
             this.gogToolStripMenuItem.Enabled = false;
@@ -384,8 +388,8 @@ namespace MW5_Mod_Manager
             this.logic.Vendor = "WINDOWS";
             this.toolStripLabel1.Text = "Game Vendor : Windows Store";
             this.selectToolStripMenuItem.Enabled = false;
-            this.searcgToolStripMenuItem.Enabled = false;
-            this.button5.Enabled = false;
+            //this.searcgToolStripMenuItem.Enabled = false;
+            //this.button5.Enabled = false;
             this.button4.Enabled = false;
             this.steamToolStripMenuItem.Enabled = true;
             this.gogToolStripMenuItem.Enabled = true;
@@ -404,7 +408,7 @@ namespace MW5_Mod_Manager
             this.logic.Vendor = "EPIC";
             this.toolStripLabel1.Text = "Game Vendor : Epic Store";
             this.selectToolStripMenuItem.Enabled = true;
-            this.searcgToolStripMenuItem.Enabled = true;
+            //this.searcgToolStripMenuItem.Enabled = true;
             this.button4.Enabled = true;
             this.steamToolStripMenuItem.Enabled = true;
             this.gogToolStripMenuItem.Enabled = true;
@@ -418,12 +422,12 @@ namespace MW5_Mod_Manager
             SelectInstallDirectory();
         }
 
-        private void searcgToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ClearAll();
-            this.button5.Enabled = true; //enable the Stop Search button here so it's only enabled while we are searching
-            backgroundWorker1.RunWorkerAsync();
-        }
+        //private void searcgToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    ClearAll();
+        //    this.button5.Enabled = true; //enable the Stop Search button here so it's only enabled while we are searching
+        //    backgroundWorker1.RunWorkerAsync();
+        //}
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
@@ -504,6 +508,88 @@ namespace MW5_Mod_Manager
                 MessageBox.Show(message, caption, buttons);
             }
 
+        }
+
+        //Crude filter because to lazy to add a proper list as backup for the items.
+        private void filterBox_TextChanged(object sender, EventArgs e)
+        {
+            Console.WriteLine("There are " + this.backupListView.Count() + " items in the backup");
+            string filtertext = MainForm.filterBox.Text.ToLower();
+            if(MainForm.filterBox.Text == "" || string.IsNullOrWhiteSpace(MainForm.filterBox.Text))
+            {
+                Console.WriteLine("No filter text");
+                if (this.filtered) //we are returning from filtering
+                {
+                    MainForm.listView1.Items.Clear();
+                    foreach (ListViewItem item in this.backupListView)
+                    {
+                        item.BackColor = Color.White;
+                        MainForm.listView1.Items.Add(item);
+                    }
+                }
+                else //We are not returning from a filter
+                {
+                    // do nothing
+                }
+                MainForm.button1.Enabled = true;
+                MainForm.button2.Enabled = true;
+                this.filtered = false;
+            }
+            else
+            {
+                Console.WriteLine("Filter Text!");
+                Console.WriteLine(filtertext);
+                if (!this.filtered && !string.IsNullOrWhiteSpace(filtertext) && !string.IsNullOrEmpty(filtertext)) // we are staring a filter now!
+                {
+                    //make a backup
+                    this.backupListView.Clear();
+                    foreach(ListViewItem item in MainForm.listView1.Items)
+                    {
+                        this.backupListView.Add(item);
+                    }
+                }
+
+                MainForm.listView1.Items.Clear();
+                foreach (ListViewItem x in this.backupListView)
+                {
+                    x.BackColor = Color.White;
+                }
+                //Check if the items modname, foltername or author stars with or contains the filter text
+                foreach (ListViewItem item in this.backupListView)
+                {
+                    if (
+                        item.SubItems[1].Text.ToLower().StartsWith(filtertext) ||
+                        item.SubItems[2].Text.ToLower().StartsWith(filtertext) ||
+                        item.SubItems[3].Text.ToLower().StartsWith(filtertext) ||
+                        item.SubItems[1].Text.ToLower().Contains(filtertext) ||
+                        item.SubItems[2].Text.ToLower().Contains(filtertext) ||
+                        item.SubItems[3].Text.ToLower().Contains(filtertext)
+                        )
+                    {
+                        if(!MainForm.checkBox1.Checked)
+                            MainForm.listView1.Items.Add(item);
+                        else
+                        {
+                            item.BackColor = Color.Yellow;
+                        }
+                    }
+                }
+                if (MainForm.checkBox1.Checked)
+                {
+                    foreach (ListViewItem item in this.backupListView)
+                    {
+                        MainForm.listView1.Items.Add(item);
+                    }
+                }
+                MainForm.button1.Enabled = false;
+                MainForm.button2.Enabled = false;
+                this.filtered = true;
+            }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            this.filterBox_TextChanged(null, null);
         }
     }
 

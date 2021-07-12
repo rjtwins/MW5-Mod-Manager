@@ -35,18 +35,16 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.installDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.searcgToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeVendorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.windowsStoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.steamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.windowsStoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.epicStoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exportLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,8 +61,12 @@
             this.author = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.version = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button4 = new System.Windows.Forms.Button();
-            this.rotatingLabel1 = new MW5_Mod_Manager.RotatingLabel();
             this.label1 = new System.Windows.Forms.Label();
+            this.rotatingLabel1 = new MW5_Mod_Manager.RotatingLabel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.filterBox = new System.Windows.Forms.TextBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -104,20 +106,10 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(189, 56);
+            this.textBox1.Location = new System.Drawing.Point(260, 26);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(506, 20);
             this.textBox1.TabIndex = 5;
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(701, 46);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(128, 38);
-            this.button5.TabIndex = 6;
-            this.button5.Text = "Stop Search";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // button6
             // 
@@ -174,8 +166,7 @@
             // installDirectoryToolStripMenuItem
             // 
             this.installDirectoryToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.selectToolStripMenuItem,
-            this.searcgToolStripMenuItem});
+            this.selectToolStripMenuItem});
             this.installDirectoryToolStripMenuItem.Name = "installDirectoryToolStripMenuItem";
             this.installDirectoryToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
             this.installDirectoryToolStripMenuItem.Text = "Install Directory";
@@ -183,16 +174,9 @@
             // selectToolStripMenuItem
             // 
             this.selectToolStripMenuItem.Name = "selectToolStripMenuItem";
-            this.selectToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.selectToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
             this.selectToolStripMenuItem.Text = "Select";
             this.selectToolStripMenuItem.Click += new System.EventHandler(this.selectToolStripMenuItem_Click);
-            // 
-            // searcgToolStripMenuItem
-            // 
-            this.searcgToolStripMenuItem.Name = "searcgToolStripMenuItem";
-            this.searcgToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
-            this.searcgToolStripMenuItem.Text = "Search";
-            this.searcgToolStripMenuItem.Click += new System.EventHandler(this.searcgToolStripMenuItem_Click);
             // 
             // changeVendorToolStripMenuItem
             // 
@@ -343,18 +327,6 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
-            // rotatingLabel1
-            // 
-            this.rotatingLabel1.AutoSize = true;
-            this.rotatingLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rotatingLabel1.Location = new System.Drawing.Point(161, 174);
-            this.rotatingLabel1.Name = "rotatingLabel1";
-            this.rotatingLabel1.NewText = "";
-            this.rotatingLabel1.RotateAngle = 0;
-            this.rotatingLabel1.Size = new System.Drawing.Size(18, 17);
-            this.rotatingLabel1.TabIndex = 12;
-            this.rotatingLabel1.Text = "X";
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -364,11 +336,64 @@
             this.label1.TabIndex = 14;
             this.label1.Text = "v.";
             // 
+            // rotatingLabel1
+            // 
+            this.rotatingLabel1.AutoSize = true;
+            this.rotatingLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rotatingLabel1.Location = new System.Drawing.Point(161, 103);
+            this.rotatingLabel1.Name = "rotatingLabel1";
+            this.rotatingLabel1.NewText = "";
+            this.rotatingLabel1.RotateAngle = 0;
+            this.rotatingLabel1.Size = new System.Drawing.Size(18, 17);
+            this.rotatingLabel1.TabIndex = 12;
+            this.rotatingLabel1.Text = "X";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(189, 29);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(65, 13);
+            this.label2.TabIndex = 15;
+            this.label2.Text = "Mods Folder";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(189, 59);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(58, 13);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "Filter Mods";
+            // 
+            // filterBox
+            // 
+            this.filterBox.Location = new System.Drawing.Point(333, 56);
+            this.filterBox.Name = "filterBox";
+            this.filterBox.Size = new System.Drawing.Size(433, 20);
+            this.filterBox.TabIndex = 17;
+            this.filterBox.TextChanged += new System.EventHandler(this.filterBox_TextChanged);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(260, 58);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(67, 17);
+            this.checkBox1.TabIndex = 18;
+            this.checkBox1.Text = "Highlight";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(841, 520);
+            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.filterBox);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.rotatingLabel1);
@@ -376,7 +401,6 @@
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button6);
-            this.Controls.Add(this.button5);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -403,7 +427,6 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.ToolStrip toolStrip1;
@@ -424,7 +447,6 @@
         private System.Windows.Forms.ToolStripMenuItem epicStoreToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem installDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem searcgToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
@@ -433,6 +455,10 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox filterBox;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

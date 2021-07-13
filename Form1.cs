@@ -7,7 +7,9 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 using Application = System.Windows.Forms.Application;
 
 namespace MW5_Mod_Manager
@@ -30,10 +32,39 @@ namespace MW5_Mod_Manager
             this.DragEnter += new DragEventHandler(Form1_DragEnter);
             this.DragDrop += new DragEventHandler(Form1_DragDrop);
 
+            this.BringToFront();
+            this.Focus();
+            this.KeyPreview = true;
+
+            this.KeyDown += new KeyEventHandler(form1_KeyDown);
+            this.KeyUp += new KeyEventHandler(form1_KeyUp);
+
             backgroundWorker1.RunWorkerCompleted += backgroundWorker1_RunWorkerCompleted;
             backgroundWorker1.ProgressChanged += backgroundWorker1_ProgressChanged;
             backgroundWorker1.WorkerReportsProgress = true;
             backgroundWorker1.WorkerSupportsCancellation = true;
+        }
+
+        //handling key presses for hotkeys.
+        private async void form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            Console.WriteLine("KEY Released: " + e.KeyCode);
+            if(e.KeyCode == Keys.ShiftKey)
+            {
+                await Task.Delay(50);
+                this.button1.Text = "UP";
+                this.button2.Text = "DOWN";
+            }
+        }
+
+        private void form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            Console.WriteLine("KEY Pressed: " + e.KeyCode);
+            if (e.Shift)
+            {
+                this.button1.Text = "MOVE TO TOP";
+                this.button2.Text = "MOVE TO BOTTOM";
+            }
         }
 
         //called upon loading the form
@@ -148,13 +179,26 @@ namespace MW5_Mod_Manager
         //Get item info, remove item, insert above, set new item as selected.
         private void button1_Click(object sender, EventArgs e)
         {
+
             int i = SelectedItemIndex();
             if (i < 1)
                 return;
             ListViewItem item = listView1.Items[i];
             listView1.Items.RemoveAt(i);
-            listView1.Items.Insert(i - 1, item);
+
+            
+            if (Control.ModifierKeys == Keys.Shift)
+            {
+                //Move to top
+                listView1.Items.Insert(0, item);
+            }
+            else
+            {
+                //move one up
+                listView1.Items.Insert(i - 1, item);
+            }
             item.Selected = true;
+
         }
 
         //Down button
@@ -162,12 +206,25 @@ namespace MW5_Mod_Manager
         private void button2_Click(object sender, EventArgs e)
         {
             int i = SelectedItemIndex();
-            if (i > listView1.Items.Count - 2)
+            if (i > listView1.Items.Count - 2 || i < 0)
                 return;
 
             ListViewItem item = listView1.Items[i];
             listView1.Items.RemoveAt(i);
-            listView1.Items.Insert(i + 1, item);
+
+            if (Control.ModifierKeys == Keys.Shift)
+            {
+                //Move to buttom
+                listView1.Items.Insert(listView1.Items.Count, item);
+            }
+            else
+            {
+                //move one down
+                listView1.Items.Insert(i + 1, item);
+            }
+            item.Selected = true;
+
+
             item.Selected = true;
         }
            

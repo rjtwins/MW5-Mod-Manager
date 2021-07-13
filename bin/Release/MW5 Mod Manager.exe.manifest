@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MW5 Mod Manager.exe" size="1175040">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MW5 Mod Manager.exe" size="1176064">
       <assemblyIdentity name="MW5 Mod Manager" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>EeyxcO5v/CVrDseWX6/JEpy8bsk4cMfk2Z2H6I+vfFE=</dsig:DigestValue>
+        <dsig:DigestValue>28eXZj13Ibq5LZdhXX+ttXRi6XqSYkLWqJjbpcI81Yw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

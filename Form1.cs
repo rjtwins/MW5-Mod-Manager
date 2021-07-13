@@ -9,7 +9,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Input;
 using Application = System.Windows.Forms.Application;
 
 namespace MW5_Mod_Manager

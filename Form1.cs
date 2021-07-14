@@ -44,11 +44,14 @@ namespace MW5_Mod_Manager
             backgroundWorker1.WorkerSupportsCancellation = true;
         }
 
+
+
+
         //handling key presses for hotkeys.
         private async void form1_KeyUp(object sender, KeyEventArgs e)
         {
             Console.WriteLine("KEY Released: " + e.KeyCode);
-            if(e.KeyCode == Keys.ShiftKey)
+            if (e.KeyCode == Keys.ShiftKey)
             {
                 await Task.Delay(50);
                 this.button1.Text = "UP";
@@ -108,7 +111,7 @@ namespace MW5_Mod_Manager
                 //Directory
                 //Check if we have a mod.json
                 bool foundMod = false;
-                foreach(string f in Directory.GetFiles(file))
+                foreach (string f in Directory.GetFiles(file))
                 {
                     if (f.Contains("mod.json"))
                     {
@@ -122,7 +125,7 @@ namespace MW5_Mod_Manager
                     return;
                 }
                 //we've got a mod people!
-                if(string.IsNullOrEmpty(logic.BasePath) || string.IsNullOrWhiteSpace(logic.BasePath) || logic.Vendor == "STEAM")
+                if (string.IsNullOrEmpty(logic.BasePath) || string.IsNullOrWhiteSpace(logic.BasePath) || logic.Vendor == "STEAM")
                 {
                     //we may have found a mod but we have nowhere to put it :(
                     return;
@@ -185,7 +188,7 @@ namespace MW5_Mod_Manager
             ListViewItem item = listView1.Items[i];
             listView1.Items.RemoveAt(i);
 
-            
+
             if (Control.ModifierKeys == Keys.Shift)
             {
                 //Move to top
@@ -226,12 +229,12 @@ namespace MW5_Mod_Manager
 
             item.Selected = true;
         }
-           
+
         //Apply button
         private void button3_Click(object sender, EventArgs e)
         {
             //Stuff for removing mods:
-            if(this.markedForRemoval.Count > 0)
+            if (this.markedForRemoval.Count > 0)
             {
                 List<string> modNames = new List<string>();
                 foreach (ListViewItem item in this.markedForRemoval)
@@ -278,25 +281,27 @@ namespace MW5_Mod_Manager
                     this.logic.ModList[modName] = modEnabled;
                     this.logic.ModDetails[modName].defaultLoadOrder = priority;
                 }
-                catch(Exception Ex)
+                catch (Exception Ex)
                 {
-                    string message = "ERROR Mismatch between list key and details key : " + modName 
+                    string message = "ERROR Mismatch between list key and details key : " + modName
                         + ". Details keys available: " + string.Join(",", this.logic.ModDetails.Keys.ToList()) + ". This mod will be skipped and the operation continued.";
                     string caption = "ERROR Key Mismatch";
                     MessageBoxButtons buttons = MessageBoxButtons.OK;
                     DialogResult Result = MessageBox.Show(message, caption, buttons);
                     continue;
-                }                   
+                }
             }
             this.logic.SaveToFiles();
         }
 
+        //For clearing the entire applications data
         private void ClearAll()
         {
             this.listView1.Items.Clear();
             logic.ClearAll();
         }
 
+        //For processing internals and updating ui after setting a vendor
         private void SetVersionAndVender()
         {
             if (this.logic.Version > 0f)
@@ -362,7 +367,7 @@ namespace MW5_Mod_Manager
         private void LoadAndFill(bool FromClipboard)
         {
             KeyValuePair<string, bool> currentEntry = new KeyValuePair<string, bool>();
-            try 
+            try
             {
                 if (FromClipboard)
                     logic.LoadStuff2();
@@ -406,6 +411,7 @@ namespace MW5_Mod_Manager
             return -1;
         }
 
+        //Background worker stuff for search, no longer used.
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             // Get the BackgroundWorker that raised this event.
@@ -413,6 +419,7 @@ namespace MW5_Mod_Manager
             e.Result = this.logic.FindInstallDir(worker, e);
         }
 
+        //Background worker stuff for search, no longer 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             // First, handle the case where an exception was thrown.
@@ -468,12 +475,13 @@ namespace MW5_Mod_Manager
             }
         }
 
-        ////Stop Search Button
+        /*Stop Search Button
         //private void button5_Click(object sender, EventArgs e)
         //{
         //    this.button5.Enabled = false; //disable button since we are stopping the search
         //    backgroundWorker1.CancelAsync();
         //}
+        */
 
         //Refresh listedcheckbox
         private void button6_Click(object sender, EventArgs e)
@@ -545,6 +553,7 @@ namespace MW5_Mod_Manager
             this.filterBox_TextChanged(null, null);
         }
 
+        //Tool strip for selecting steam as a vendor
         private void steamToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ClearAll();
@@ -561,6 +570,8 @@ namespace MW5_Mod_Manager
             this.textBox1.Text = logic.BasePath;
             LoadAndFill(false);
         }
+
+        //Tool strip for selecting gog as a vendor
         private void gogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ClearAll();
@@ -579,6 +590,7 @@ namespace MW5_Mod_Manager
             LoadAndFill(false);
         }
 
+        //Tool strip for selecting windows store as a vendor
         private void windowsStoreToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ClearAll();
@@ -599,6 +611,7 @@ namespace MW5_Mod_Manager
             LoadAndFill(false);
         }
 
+        //Tool strip for selecting epic store as a vendor
         private void epicStoreToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ClearAll();
@@ -616,6 +629,7 @@ namespace MW5_Mod_Manager
             this.MainForm.button5.Enabled = true;
         }
 
+        //Tool strip for selecting a instal folder
         private void selectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SelectInstallDirectory();
@@ -628,8 +642,14 @@ namespace MW5_Mod_Manager
         //    backgroundWorker1.RunWorkerAsync();
         //}
 
+        //Open mods folder
+        //Only open if there is any folder in the base path.
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(this.logic.BasePath) || string.IsNullOrWhiteSpace(this.logic.BasePath))
+            {
+                return;
+            }
             try
             {
                 Process.Start(this.logic.BasePath);
@@ -645,6 +665,7 @@ namespace MW5_Mod_Manager
             }
         }
 
+        //Epic vendor selection button
         private void button4_Click(object sender, EventArgs e)
         {
             if (this.logic.Vendor == "EPIC")
@@ -786,6 +807,7 @@ namespace MW5_Mod_Manager
             }
         }
 
+        //Filter or Highlight checkbox on tick action
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             this.filterBox_TextChanged(null, null);
@@ -812,6 +834,7 @@ namespace MW5_Mod_Manager
         }
     }
 
+    //The rotating label for priority indication.
     public class RotatingLabel : System.Windows.Forms.Label
     {
         private int m_RotateAngle = 0;

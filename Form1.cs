@@ -44,9 +44,6 @@ namespace MW5_Mod_Manager
             backgroundWorker1.WorkerSupportsCancellation = true;
         }
 
-
-
-
         //handling key presses for hotkeys.
         private async void form1_KeyUp(object sender, KeyEventArgs e)
         {

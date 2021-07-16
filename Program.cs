@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Reflection;
 using Application = System.Windows.Forms.Application;
+using System.Drawing;
 
 namespace MW5_Mod_Manager
 {
@@ -77,6 +78,8 @@ namespace MW5_Mod_Manager
 
     public class MainLogic
     {
+        public Form1 MainForm;
+
         public float Version = 0f;
         public string Vendor = "";
         public string BasePath = "";
@@ -582,14 +585,27 @@ namespace MW5_Mod_Manager
 
         //Return a dict of all overriden mods with a list of overriden files as values.
         //else returns an empty string.
-        public void GetOverridingData()
+        public void GetOverridingData(ListView.ListViewItemCollection items)
         {
-            foreach (string modA in this.ModList.Keys)
+            //Console.WriteLine("Starting Overriding data check");
+            this.OverrridingData.Clear();
+            foreach (ListViewItem item in items)
             {
+
+                string modA = item.SubItems[2].Text;
+                int priorityA = items.Count - item.Index;
                 OverridingData A = new OverridingData();
                 A.mod = modA;
-                foreach (string modB in this.ModList.Keys)
+                A.overrides = new Dictionary<string, List<string>>();
+                A.overriddenBy = new Dictionary<string, List<string>>();
+
+                Console.WriteLine("Checking: " + modA + " : " + priorityA.ToString());
+
+                foreach (ListViewItem itemb in items)
                 {
+                    string modB = itemb.SubItems[2].Text;
+                    int priorityB = items.Count - itemb.Index;
+
                     //we dont need to know of a mod overrides itself..
                     if (modB == modA)
                         continue;
@@ -608,12 +624,27 @@ namespace MW5_Mod_Manager
                     if (intersect.Count() == 0)
                         continue;
 
+                    Console.WriteLine("---Intersection: " + modB + " : " + priorityB.ToString());
+
                     //If we are loaded after the mod we are looking at we are overriding it.
-                    if (this.ModDetails[modA].defaultLoadOrder < this.ModDetails[modB].defaultLoadOrder)
+                    if (priorityA < priorityB)
                     {
+                        A.isOverriding = true;
                         A.overrides[modB] = intersect;
                     }
+                    else
+                    {
+                        A.isOverriden = true;
+                        A.overriddenBy[modB] = intersect;
+                    }
                 }
+                this.OverrridingData[modA] = A;
+                if (A.isOverriden)
+                    item.ForeColor = Color.Green;
+                if (A.isOverriding)
+                    item.ForeColor = Color.OrangeRed;
+                if (A.isOverriding && A.isOverriden)
+                    item.ForeColor = Color.Orange;
             }
         }
     }
@@ -644,6 +675,8 @@ namespace MW5_Mod_Manager
     public class OverridingData
     {
         public string mod { set; get; }
+        public bool isOverriden { set; get; }
+        public bool isOverriding { set; get; }
         public Dictionary<string, List<string>> overrides { set; get; }
         public Dictionary<string, List<string>> overriddenBy { set; get; }
     }

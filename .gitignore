@@ -334,3 +334,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+*.exe
+bin/Release/MW5 Mod Manager.application
+*.exe
+bin/Release/MW5 Mod Manager.exe.manifest

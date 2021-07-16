@@ -75,6 +75,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.button7 = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -294,6 +295,7 @@
             this.listView1.TabIndex = 11;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // enabled
             // 
@@ -437,6 +439,7 @@
             this.listBox3.Name = "listBox3";
             this.listBox3.Size = new System.Drawing.Size(160, 147);
             this.listBox3.TabIndex = 23;
+            this.listBox3.SelectedIndexChanged += new System.EventHandler(this.listBox3_SelectedIndexChanged);
             // 
             // label5
             // 
@@ -465,11 +468,22 @@
             this.label7.TabIndex = 26;
             this.label7.Text = "Manifest Entries";
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(852, 26);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(129, 39);
+            this.button7.TabIndex = 27;
+            this.button7.Text = "Check Mod Overrides";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 561);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -521,7 +535,7 @@
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
         private System.Windows.Forms.ToolStripMenuItem exportLoadOrderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importLoadOrderToolStripMenuItem;
-        private System.Windows.Forms.ListView listView1;
+        public System.Windows.Forms.ListView listView1;
         public System.Windows.Forms.ColumnHeader display;
         public System.Windows.Forms.ColumnHeader folder;
         public System.Windows.Forms.ColumnHeader author;
@@ -555,6 +569,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button button7;
     }
 }
 

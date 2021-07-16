@@ -16,7 +16,7 @@ namespace MW5_Mod_Manager
     public partial class Form1 : Form
     {
         public Form1 MainForm;
-        public MainLogic logic;
+        public MainLogic logic = new MainLogic();
         private List<ListViewItem> backupListView;
         bool filtered = false;
         private List<ListViewItem> markedForRemoval;
@@ -24,6 +24,7 @@ namespace MW5_Mod_Manager
         {
             InitializeComponent();
             this.MainForm = this;
+            this.logic.MainForm = this;
             this.backupListView = new List<ListViewItem>();
             this.markedForRemoval = new List<ListViewItem>();
 
@@ -220,9 +221,6 @@ namespace MW5_Mod_Manager
                 //move one down
                 listView1.Items.Insert(i + 1, item);
             }
-            item.Selected = true;
-
-
             item.Selected = true;
         }
 
@@ -830,16 +828,58 @@ namespace MW5_Mod_Manager
             }
         }
 
-        //Selected index of overriding mod has changed.
         private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
 
-        //Selected indox of overriden mod had changed.
+        //Selected index of mods overriding the currently selected mod has changed.
+        private void listBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            listBox1.Items.Clear();
+
+            string selectedMod = listBox3.SelectedItem.ToString();
+            string superMod = listView1.SelectedItems[0].SubItems[2].Text;
+            OverridingData modData = logic.OverrridingData[superMod];
+
+            foreach(string entry in modData.overriddenBy[selectedMod])
+            {
+                listBox1.Items.Add(entry);
+            }
+        }
+
+        //Selected indox of mods that are beeing overriden by the currently selected mod had changed.
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (logic.OverrridingData.Count == 0)
+                return;
+
+            if (listView1.SelectedItems.Count == 0)
+                return;
+
+            this.listBox1.Items.Clear();
+            this.listBox3.Items.Clear();
+
+            string SelectedMod = listView1.SelectedItems[0].SubItems[2].Text;
+            OverridingData modData = logic.OverrridingData[SelectedMod];
+            foreach(string orverriding in modData.overriddenBy.Keys)
+            {
+                this.listBox1.Items.Add(orverriding);
+            }
+            foreach (string overrides in modData.overrides.Keys)
+            {
+                this.listBox3.Items.Add(overrides);
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            this.logic.GetOverridingData(listView1.Items);
         }
     }
 

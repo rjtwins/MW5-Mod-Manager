@@ -197,7 +197,6 @@ namespace MW5_Mod_Manager
                 listView1.Items.Insert(i - 1, item);
             }
             item.Selected = true;
-
         }
 
         //Down button
@@ -270,13 +269,13 @@ namespace MW5_Mod_Manager
             for (int i = 0; i < length; i++)
             {
                 string modName = listView1.Items[i].SubItems[2].Text;
-                Console.WriteLine(modName.ToString());
                 try
                 {
                     bool modEnabled = listView1.Items[i].Checked;
                     int priority = listView1.Items.Count - i;
                     this.logic.ModList[modName] = modEnabled;
                     this.logic.ModDetails[modName].defaultLoadOrder = priority;
+                    Console.WriteLine(modName + " : " + priority.ToString());
                 }
                 catch (Exception Ex)
                 {
@@ -287,6 +286,7 @@ namespace MW5_Mod_Manager
                     DialogResult Result = MessageBox.Show(message, caption, buttons);
                     continue;
                 }
+
             }
             this.logic.SaveToFiles();
         }
@@ -828,6 +828,18 @@ namespace MW5_Mod_Manager
                     item.Selected = false;
                 }
             }
+        }
+
+        //Selected index of overriding mod has changed.
+        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        //Selected indox of overriden mod had changed.
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 

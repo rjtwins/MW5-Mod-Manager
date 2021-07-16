@@ -71,7 +71,7 @@ namespace MW5_Mod_Manager
                 byte[] assemblyData = new byte[stream.Length];
                 stream.Read(assemblyData, 0, assemblyData.Length);
                 return Assembly.Load(assemblyData);
-            } 
+            }
         }
     }
 
@@ -89,6 +89,8 @@ namespace MW5_Mod_Manager
 
         public Dictionary<string, ModObject> ModDetails = new Dictionary<string, ModObject>();
         public Dictionary<string, bool> ModList = new Dictionary<string, bool>();
+        public Dictionary<string, OverridingData> OverrridingData = new Dictionary<string, OverridingData>();
+
         public bool CreatedModlist = false;
 
         public string CurrentFolderInsearch;
@@ -577,6 +579,43 @@ namespace MW5_Mod_Manager
             @"Epic Games\",
             @"Epic_Games\"
         };
+
+        //Return a dict of all overriden mods with a list of overriden files as values.
+        //else returns an empty string.
+        public void GetOverridingData()
+        {
+            foreach (string modA in this.ModList.Keys)
+            {
+                OverridingData A = new OverridingData();
+                A.mod = modA;
+                foreach (string modB in this.ModList.Keys)
+                {
+                    //we dont need to know of a mod overrides itself..
+                    if (modB == modA)
+                        continue;
+
+                    //if not active we don't care if its beeing overriden.
+                    if (!this.ModList[modB])
+                        continue;
+
+                    //Now we have a mod that is not the mod we are looking at is enbabled.
+                    //Lets compare the manifest!
+                    List<string> manifestA = this.ModDetails[modA].manifest;
+                    List<string> manifestB = this.ModDetails[modB].manifest;
+                    List<string> intersect = manifestA.Intersect(manifestB).ToList();
+
+                    //If the intersects elemetns are greater then zero we have shared parts of the manifest
+                    if (intersect.Count() == 0)
+                        continue;
+
+                    //If we are loaded after the mod we are looking at we are overriding it.
+                    if (this.ModDetails[modA].defaultLoadOrder < this.ModDetails[modB].defaultLoadOrder)
+                    {
+                        A.overrides[modB] = intersect;
+                    }
+                }
+            }
+        }
     }
 
     public class ModObject
@@ -600,5 +639,12 @@ namespace MW5_Mod_Manager
         public string vendor { set; get; }
         public float version { set; get; }
         public string installdir { set; get; }
+    }
+
+    public class OverridingData
+    {
+        public string mod { set; get; }
+        public Dictionary<string, List<string>> overrides { set; get; }
+        public Dictionary<string, List<string>> overriddenBy { set; get; }
     }
 }

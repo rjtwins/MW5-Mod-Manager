@@ -627,7 +627,7 @@ namespace MW5_Mod_Manager
                     Console.WriteLine("---Intersection: " + modB + " : " + priorityB.ToString());
 
                     //If we are loaded after the mod we are looking at we are overriding it.
-                    if (priorityA < priorityB)
+                    if (priorityA > priorityB)
                     {
                         A.isOverriding = true;
                         A.overrides[modB] = intersect;
@@ -640,11 +640,24 @@ namespace MW5_Mod_Manager
                 }
                 this.OverrridingData[modA] = A;
                 if (A.isOverriden)
-                    item.ForeColor = Color.Green;
-                if (A.isOverriding)
                     item.ForeColor = Color.OrangeRed;
+                if (A.isOverriding)
+                    item.ForeColor = Color.Green;
                 if (A.isOverriding && A.isOverriden)
                     item.ForeColor = Color.Orange;
+
+                Console.WriteLine("Dict dump: ");
+                foreach (string key in A.overriddenBy.Keys)
+                {
+                    Console.WriteLine(key);
+                }
+
+                Console.WriteLine("-------------------------------------------------");
+                foreach (string key in A.overrides.Keys)
+                {
+                    Console.WriteLine(key);
+                }
+                Console.WriteLine("\n \n");
             }
         }
     }

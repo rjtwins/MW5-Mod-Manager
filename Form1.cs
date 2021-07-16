@@ -15,6 +15,10 @@ namespace MW5_Mod_Manager
 {
     public partial class Form1 : Form
     {
+
+
+
+
         public Form1 MainForm;
         public MainLogic logic = new MainLogic();
         private List<ListViewItem> backupListView;
@@ -836,22 +840,60 @@ namespace MW5_Mod_Manager
         //Selected index of mods overriding the currently selected mod has changed.
         private void listBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
-            listBox1.Items.Clear();
+            listBox2.Items.Clear();
+            listBox1.ClearSelected();
+            if (listBox3.Items.Count == 0 || listView1.Items.Count == 0)
+                return;
+
+            if (listBox3.SelectedItem == null)
+                return;
 
             string selectedMod = listBox3.SelectedItem.ToString();
+            if (string.IsNullOrEmpty(selectedMod) || string.IsNullOrWhiteSpace(selectedMod))
+                return;
+
             string superMod = listView1.SelectedItems[0].SubItems[2].Text;
+
+            if (!logic.OverrridingData.ContainsKey(superMod))
+                return;
+
             OverridingData modData = logic.OverrridingData[superMod];
+
+            if (!modData.overriddenBy.ContainsKey(selectedMod))
+                return;
 
             foreach(string entry in modData.overriddenBy[selectedMod])
             {
-                listBox1.Items.Add(entry);
+                listBox2.Items.Add(entry);
             }
         }
 
         //Selected indox of mods that are beeing overriden by the currently selected mod had changed.
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            listBox2.Items.Clear();
+            listBox3.ClearSelected();
+            if (listBox1.Items.Count == 0 || listView1.Items.Count == 0)
+                return;
 
+            if (listBox1.SelectedItem == null)
+                return;
+            string selectedMod = listBox1.SelectedItem.ToString();
+
+            if (string.IsNullOrEmpty(selectedMod) || string.IsNullOrWhiteSpace(selectedMod))
+                return;
+
+            string superMod = listView1.SelectedItems[0].SubItems[2].Text;
+
+            if (!logic.OverrridingData.ContainsKey(superMod))
+                return;
+
+            OverridingData modData = logic.OverrridingData[superMod];
+
+            foreach (string entry in modData.overrides[selectedMod])
+            {
+                listBox2.Items.Add(entry);
+            }
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -863,17 +905,18 @@ namespace MW5_Mod_Manager
                 return;
 
             this.listBox1.Items.Clear();
+            this.listBox2.Items.Clear();
             this.listBox3.Items.Clear();
 
             string SelectedMod = listView1.SelectedItems[0].SubItems[2].Text;
             OverridingData modData = logic.OverrridingData[SelectedMod];
             foreach(string orverriding in modData.overriddenBy.Keys)
             {
-                this.listBox1.Items.Add(orverriding);
+                this.listBox3.Items.Add(orverriding);
             }
             foreach (string overrides in modData.overrides.Keys)
             {
-                this.listBox3.Items.Add(overrides);
+                this.listBox1.Items.Add(overrides);
             }
         }
 

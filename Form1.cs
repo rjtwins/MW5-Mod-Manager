@@ -202,6 +202,9 @@ namespace MW5_Mod_Manager
                 listView1.Items.Insert(i - 1, item);
             }
             item.Selected = true;
+
+            if (checkBox2.Checked)
+                this.logic.GetOverridingData(this.listView1.Items);
         }
 
         //Down button
@@ -226,6 +229,9 @@ namespace MW5_Mod_Manager
                 listView1.Items.Insert(i + 1, item);
             }
             item.Selected = true;
+
+            if (checkBox2.Checked)
+                this.logic.GetOverridingData(this.listView1.Items);
         }
 
         //Apply button
@@ -240,7 +246,7 @@ namespace MW5_Mod_Manager
                     modNames.Add(item.SubItems[1].Text);
                 }
 
-                string m = "The following mods will be permenetly removed from your mods folder: " + string.Join(",", modNames) + ". ARE YOU SURE?";
+                string m = "The following mods will be permanently removed from your mods folder: " + string.Join(",", modNames) + ". ARE YOU SURE?";
                 string c = "Are you sure?";
                 MessageBoxButtons b = MessageBoxButtons.YesNo;
                 DialogResult r = MessageBox.Show(m, c, b);
@@ -628,7 +634,7 @@ namespace MW5_Mod_Manager
             this.MainForm.button5.Enabled = true;
         }
 
-        //Tool strip for selecting a instal folder
+        //Tool strip for selecting a install folder
         private void selectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SelectInstallDirectory();
@@ -752,6 +758,11 @@ namespace MW5_Mod_Manager
                 }
                 MainForm.button1.Enabled = true;
                 MainForm.button2.Enabled = true;
+                MainForm.checkBox2.Enabled = true;
+                MainForm.checkBox2_CheckedChanged(null, null);
+                MainForm.listBox1.Items.Clear();
+                MainForm.listBox2.Items.Clear();
+                MainForm.listBox3.Items.Clear();
                 this.filtered = false;
             }
             else
@@ -802,6 +813,12 @@ namespace MW5_Mod_Manager
                 }
                 MainForm.button1.Enabled = false;
                 MainForm.button2.Enabled = false;
+                MainForm.checkBox2.Enabled = false;
+                MainForm.checkBox2.Checked = false;
+                MainForm.checkBox2_CheckedChanged(null, null);
+                MainForm.listBox1.Items.Clear();
+                MainForm.listBox2.Items.Clear();
+                MainForm.listBox3.Items.Clear();
                 this.filtered = true;
             }
         }
@@ -898,6 +915,7 @@ namespace MW5_Mod_Manager
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            this.label4.Text = "";
             if (logic.OverrridingData.Count == 0)
                 return;
 
@@ -909,6 +927,8 @@ namespace MW5_Mod_Manager
             this.listBox3.Items.Clear();
 
             string SelectedMod = listView1.SelectedItems[0].SubItems[2].Text;
+            this.label4.Text = SelectedMod;
+
             OverridingData modData = logic.OverrridingData[SelectedMod];
             foreach(string orverriding in modData.overriddenBy.Keys)
             {
@@ -920,9 +940,25 @@ namespace MW5_Mod_Manager
             }
         }
 
+
+
         private void button7_Click(object sender, EventArgs e)
         {
             this.logic.GetOverridingData(listView1.Items);
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox2.Checked)
+                this.logic.GetOverridingData(listView1.Items);
+            else
+            {
+                foreach(ListViewItem item in listView1.Items)
+                {
+                    item.ForeColor = Color.Black;
+                    logic.OverrridingData.Clear();
+                }
+            }
         }
     }
 

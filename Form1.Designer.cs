@@ -75,7 +75,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.button7 = new System.Windows.Forms.Button();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -410,9 +410,8 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(849, 90);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(35, 13);
+            this.label4.Size = new System.Drawing.Size(0, 13);
             this.label4.TabIndex = 20;
-            this.label4.Text = "label4";
             // 
             // listBox1
             // 
@@ -468,22 +467,23 @@
             this.label7.TabIndex = 26;
             this.label7.Text = "Manifest Entries";
             // 
-            // button7
+            // checkBox2
             // 
-            this.button7.Location = new System.Drawing.Point(852, 26);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(129, 39);
-            this.button7.TabIndex = 27;
-            this.button7.Text = "Check Mod Overrides";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(852, 29);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(159, 17);
+            this.checkBox2.TabIndex = 28;
+            this.checkBox2.Text = "Toggle Check for Overriding";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 561);
-            this.Controls.Add(this.button7);
+            this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -569,7 +569,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.CheckBox checkBox2;
     }
 }
 

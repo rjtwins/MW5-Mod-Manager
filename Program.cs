@@ -611,7 +611,7 @@ namespace MW5_Mod_Manager
                         continue;
 
                     //if not active we don't care if its beeing overriden.
-                    if (!this.ModList[modB])
+                    if (!item.Checked)
                         continue;
 
                     //Now we have a mod that is not the mod we are looking at is enbabled.
@@ -620,7 +620,7 @@ namespace MW5_Mod_Manager
                     List<string> manifestB = this.ModDetails[modB].manifest;
                     List<string> intersect = manifestA.Intersect(manifestB).ToList();
 
-                    //If the intersects elemetns are greater then zero we have shared parts of the manifest
+                    //If the intersects elements are greater then zero we have shared parts of the manifest
                     if (intersect.Count() == 0)
                         continue;
 
@@ -645,19 +645,6 @@ namespace MW5_Mod_Manager
                     item.ForeColor = Color.Green;
                 if (A.isOverriding && A.isOverriden)
                     item.ForeColor = Color.Orange;
-
-                Console.WriteLine("Dict dump: ");
-                foreach (string key in A.overriddenBy.Keys)
-                {
-                    Console.WriteLine(key);
-                }
-
-                Console.WriteLine("-------------------------------------------------");
-                foreach (string key in A.overrides.Keys)
-                {
-                    Console.WriteLine(key);
-                }
-                Console.WriteLine("\n \n");
             }
         }
     }
@@ -676,6 +663,7 @@ namespace MW5_Mod_Manager
         public long steamPublishedFileId { set; get; }
         public long steamLastSubmittedBuildNumber { set; get; }
         public string steamModVisibility { set; get; }
+        public 
     }
 
     public class ProgramData

@@ -204,7 +204,13 @@ namespace MW5_Mod_Manager
             item.Selected = true;
 
             if (checkBox2.Checked)
+            {
                 this.logic.GetOverridingData(this.listView1.Items);
+                listView1_SelectedIndexChanged(null, null);
+            }
+
+            if (checkBox3.Checked)
+                this.logic.CheckRequires(listView1.Items);
         }
 
         //Down button
@@ -231,12 +237,21 @@ namespace MW5_Mod_Manager
             item.Selected = true;
 
             if (checkBox2.Checked)
+            {
                 this.logic.GetOverridingData(this.listView1.Items);
+                listView1_SelectedIndexChanged(null, null);
+            }
+
+            if (checkBox3.Checked)
+                this.logic.CheckRequires(listView1.Items);
+
         }
 
         //Apply button
         private void button3_Click(object sender, EventArgs e)
         {
+            #region mod removal
+
             //Stuff for removing mods:
             if (this.markedForRemoval.Count > 0)
             {
@@ -270,6 +285,36 @@ namespace MW5_Mod_Manager
                     return;
                 }
             }
+            #endregion
+
+            #region mod dependencies/requirments
+            //Checking requirements:
+            Dictionary<string, List<string>> CheckResult = logic.CheckRequires(listView1.Items);
+
+            //Super ugly as we are undoing stuff we just did here but i'm lazy.
+            foreach (ListViewItem item in this.listView1.Items)
+            {
+                item.SubItems[5].BackColor = Color.White;
+            }
+
+            string wText = "";
+            foreach (string key in CheckResult.Keys)
+            {
+                wText += (key + "\n");
+                foreach (string value in CheckResult[key])
+                {
+                    wText += ("--" + value + "\n");
+                }
+            }
+
+            string m2 = "Mods are missing or loaded after required dependencies: \n\n" + wText + "\nDo you want to apply anyway?";
+            string c2 = "Mods Missing Dependencies";
+            MessageBoxButtons b2 = MessageBoxButtons.YesNo;
+            DialogResult r2 = MessageBox.Show(m2, c2, b2);
+            if (r2 == DialogResult.No)
+                return;
+
+            #endregion
 
             //Stuff for applying mods activation and load order:
             this.logic.ModList = new Dictionary<string, bool>();
@@ -383,11 +428,13 @@ namespace MW5_Mod_Manager
                     currentEntry = entry;
                     string modName = entry.Key;
                     ListViewItem item1 = new ListViewItem("", 0);
+                    item1.UseItemStyleForSubItems = false;
                     item1.Checked = entry.Value;
                     item1.SubItems.Add(logic.ModDetails[entry.Key].displayName);
                     item1.SubItems.Add(modName);
                     item1.SubItems.Add(logic.ModDetails[entry.Key].author);
                     item1.SubItems.Add(logic.ModDetails[entry.Key].version);
+                    item1.SubItems.Add(" ");
                     listView1.Items.Add(item1);
                 }
 
@@ -496,6 +543,10 @@ namespace MW5_Mod_Manager
             {
                 LoadAndFill(false);
                 filterBox_TextChanged(null, null);
+                if (checkBox2.Checked)
+                    logic.GetOverridingData(listView1.Items);
+                if (checkBox3.Checked)
+                    logic.CheckRequires(listView1.Items);
             }
         }
 
@@ -740,7 +791,7 @@ namespace MW5_Mod_Manager
         {
             Console.WriteLine("There are " + this.backupListView.Count() + " items in the backup");
             string filtertext = MainForm.filterBox.Text.ToLower();
-            if(MainForm.filterBox.Text == "" || string.IsNullOrWhiteSpace(MainForm.filterBox.Text))
+            if (MainForm.filterBox.Text == "" || string.IsNullOrWhiteSpace(MainForm.filterBox.Text))
             {
                 Console.WriteLine("No filter text");
                 if (this.filtered) //we are returning from filtering
@@ -750,6 +801,7 @@ namespace MW5_Mod_Manager
                     {
                         item.BackColor = Color.White;
                         MainForm.listView1.Items.Add(item);
+                        item.UseItemStyleForSubItems = false;
                     }
                 }
                 else //We are not returning from a filter
@@ -760,6 +812,8 @@ namespace MW5_Mod_Manager
                 MainForm.button2.Enabled = true;
                 MainForm.checkBox2.Enabled = true;
                 MainForm.checkBox2_CheckedChanged(null, null);
+                MainForm.checkBox3.Enabled = true;
+                MainForm.checkBox3_CheckedChanged(null, null);
                 MainForm.listBox1.Items.Clear();
                 MainForm.listBox2.Items.Clear();
                 MainForm.listBox3.Items.Clear();
@@ -773,7 +827,7 @@ namespace MW5_Mod_Manager
                 {
                     //make a backup
                     this.backupListView.Clear();
-                    foreach(ListViewItem item in MainForm.listView1.Items)
+                    foreach (ListViewItem item in MainForm.listView1.Items)
                     {
                         this.backupListView.Add(item);
                     }
@@ -782,6 +836,7 @@ namespace MW5_Mod_Manager
                 MainForm.listView1.Items.Clear();
                 foreach (ListViewItem x in this.backupListView)
                 {
+                    x.UseItemStyleForSubItems = true;
                     x.BackColor = Color.White;
                 }
                 //Check if the items modname, foltername or author stars with or contains the filter text
@@ -796,7 +851,7 @@ namespace MW5_Mod_Manager
                         item.SubItems[3].Text.ToLower().Contains(filtertext)
                         )
                     {
-                        if(!MainForm.checkBox1.Checked)
+                        if (!MainForm.checkBox1.Checked)
                             MainForm.listView1.Items.Add(item);
                         else
                         {
@@ -816,6 +871,9 @@ namespace MW5_Mod_Manager
                 MainForm.checkBox2.Enabled = false;
                 MainForm.checkBox2.Checked = false;
                 MainForm.checkBox2_CheckedChanged(null, null);
+                MainForm.checkBox3.Enabled = false;
+                MainForm.checkBox3.Checked = false;
+                MainForm.checkBox3_CheckedChanged(null, null);
                 MainForm.listBox1.Items.Clear();
                 MainForm.listBox2.Items.Clear();
                 MainForm.listBox3.Items.Clear();
@@ -837,13 +895,13 @@ namespace MW5_Mod_Manager
                 if (this.markedForRemoval.Contains(item))
                 {
                     markedForRemoval.Remove(item);
-                    item.ForeColor = Color.Black;
+                    item.SubItems[1].ForeColor = Color.Black;
                     item.Selected = false;
                 }
                 else
                 {
                     this.markedForRemoval.Add(item);
-                    item.ForeColor = Color.Red;
+                    item.SubItems[1].ForeColor = Color.Red;
                     item.Selected = false;
                 }
             }
@@ -879,7 +937,7 @@ namespace MW5_Mod_Manager
             if (!modData.overriddenBy.ContainsKey(selectedMod))
                 return;
 
-            foreach(string entry in modData.overriddenBy[selectedMod])
+            foreach (string entry in modData.overriddenBy[selectedMod])
             {
                 listBox2.Items.Add(entry);
             }
@@ -913,24 +971,56 @@ namespace MW5_Mod_Manager
             }
         }
 
+        //Selected item in the list view has cahnged
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.label4.Text = "";
-            if (logic.OverrridingData.Count == 0)
-                return;
 
             if (listView1.SelectedItems.Count == 0)
+                return;
+
+            string SelectedMod = listView1.SelectedItems[0].SubItems[2].Text;
+            string SelectedModDisplayName = listView1.SelectedItems[0].SubItems[1].Text;
+            bool ItemChecked = listView1.SelectedItems[0].Checked;
+
+            if (string.IsNullOrEmpty(SelectedMod) ||
+                string.IsNullOrWhiteSpace(SelectedMod) ||
+                string.IsNullOrEmpty(SelectedModDisplayName) ||
+                string.IsNullOrWhiteSpace(SelectedModDisplayName)
+                )
+                return;
+
+            //For overriding
+            if (checkBox2.Checked)
+            {
+                HandleOverrding(SelectedMod);
+            }
+
+            //For dependencies
+            if (checkBox3.Checked)
+            {
+                HandleDependencies(SelectedMod, SelectedModDisplayName);
+            }
+        }
+
+        //Handles the showing of overrding data on select
+        private void HandleOverrding(string SelectedMod)
+        {
+            if (logic.OverrridingData.Count == 0)
                 return;
 
             this.listBox1.Items.Clear();
             this.listBox2.Items.Clear();
             this.listBox3.Items.Clear();
 
-            string SelectedMod = listView1.SelectedItems[0].SubItems[2].Text;
             this.label4.Text = SelectedMod;
 
+            //If we select a mod that is not ticked its data is never gotten so will get an error if we don't do this.
+            if (!logic.OverrridingData.ContainsKey(SelectedMod))
+                return;
+
             OverridingData modData = logic.OverrridingData[SelectedMod];
-            foreach(string orverriding in modData.overriddenBy.Keys)
+            foreach (string orverriding in modData.overriddenBy.Keys)
             {
                 this.listBox3.Items.Add(orverriding);
             }
@@ -940,13 +1030,57 @@ namespace MW5_Mod_Manager
             }
         }
 
+        private void HandleDependencies(string SelectedMod, string SelectedModDisplayName)
+        {
+            this.MainForm.label8.Text = SelectedModDisplayName;
+            List<string> Dependencies = logic.GetModDependencies(SelectedMod);
+            this.listView2.Items.Clear();
 
+            List<string> MissingDependencies = new List<string>();
+            if (logic.MissingModsDependenciesDict.ContainsKey(SelectedModDisplayName))
+            {
+                MissingDependencies = logic.MissingModsDependenciesDict[SelectedModDisplayName];
+            }
 
+            if(Dependencies == null)
+            {
+                ListViewItem item = new ListViewItem();
+                item.Text = "No Dependencies";
+                return;
+            }
+
+            foreach (string mod in Dependencies)
+            {
+                ListViewItem item = new ListViewItem();
+                item.Text = mod;
+                if (MissingDependencies.Contains(mod))
+                {
+                    item.ForeColor = Color.Red;
+                }
+                listView2.Items.Add(item);
+            }
+        }
+
+        //Fires when an item is checked or unchecked.
+        private void listView1_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            if (checkBox2.Checked)
+            {
+                logic.GetOverridingData(listView1.Items);
+            }
+            if (checkBox3.Checked)
+            {
+                logic.CheckRequires(listView1.Items);
+            }
+        }
+
+        //unused button
         private void button7_Click(object sender, EventArgs e)
         {
             this.logic.GetOverridingData(listView1.Items);
         }
 
+        //Check for mod overrding data
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox2.Checked)
@@ -955,11 +1089,35 @@ namespace MW5_Mod_Manager
             {
                 foreach(ListViewItem item in listView1.Items)
                 {
-                    item.ForeColor = Color.Black;
+                    item.SubItems[1].ForeColor = Color.Black;
                     logic.OverrridingData.Clear();
                 }
             }
         }
+
+        //Check for mod requirements/dependencies
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox3.Checked)
+            {
+                this.logic.CheckRequires(listView1.Items);
+            }
+            else
+            {
+                foreach (ListViewItem item in listView1.Items)
+                {
+                    item.SubItems[5].BackColor = Color.White;
+                }
+                listView2.Items.Clear();
+            }
+        }
+
+        //On tap click?
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
+        }
+
     }
 
     //The rotating label for priority indication.

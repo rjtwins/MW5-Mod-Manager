@@ -1,4 +1,7 @@
-﻿namespace MW5_Mod_Manager
+﻿using System;
+using System.Windows.Forms;
+
+namespace MW5_Mod_Manager
 {
     partial class Form1
     {
@@ -60,9 +63,9 @@
             this.folder = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.author = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.version = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.dependencies = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button4 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.rotatingLabel1 = new MW5_Mod_Manager.RotatingLabel();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.filterBox = new System.Windows.Forms.TextBox();
@@ -76,7 +79,17 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.listView2 = new System.Windows.Forms.ListView();
+            this.label8 = new System.Windows.Forms.Label();
+            this.rotatingLabel1 = new MW5_Mod_Manager.RotatingLabel();
             this.toolStrip1.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -284,17 +297,19 @@
             this.display,
             this.folder,
             this.author,
-            this.version});
+            this.version,
+            this.dependencies});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(189, 90);
+            this.listView1.Location = new System.Drawing.Point(192, 90);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(640, 446);
             this.listView1.TabIndex = 11;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listView1_ItemChecked);
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // enabled
@@ -319,12 +334,19 @@
             // 
             this.author.Tag = "author";
             this.author.Text = "Author";
-            this.author.Width = 100;
+            this.author.Width = 73;
             // 
             // version
             // 
             this.version.Tag = "version";
             this.version.Text = "Version";
+            this.version.Width = 49;
+            // 
+            // dependencies
+            // 
+            this.dependencies.Tag = "dependencies";
+            this.dependencies.Text = "Dependencies";
+            this.dependencies.Width = 84;
             // 
             // button4
             // 
@@ -345,18 +367,6 @@
             this.label1.Size = new System.Drawing.Size(16, 13);
             this.label1.TabIndex = 14;
             this.label1.Text = "v.";
-            // 
-            // rotatingLabel1
-            // 
-            this.rotatingLabel1.AutoSize = true;
-            this.rotatingLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rotatingLabel1.Location = new System.Drawing.Point(161, 103);
-            this.rotatingLabel1.Name = "rotatingLabel1";
-            this.rotatingLabel1.NewText = "";
-            this.rotatingLabel1.RotateAngle = 0;
-            this.rotatingLabel1.Size = new System.Drawing.Size(18, 17);
-            this.rotatingLabel1.TabIndex = 12;
-            this.rotatingLabel1.Text = "X";
             // 
             // label2
             // 
@@ -408,15 +418,16 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(849, 90);
+            this.label4.Location = new System.Drawing.Point(3, 35);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(0, 13);
+            this.label4.Size = new System.Drawing.Size(16, 13);
             this.label4.TabIndex = 20;
+            this.label4.Text = "---";
             // 
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(852, 125);
+            this.listBox1.Location = new System.Drawing.Point(6, 70);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(160, 147);
             this.listBox1.TabIndex = 21;
@@ -425,16 +436,16 @@
             // listBox2
             // 
             this.listBox2.FormattingEnabled = true;
-            this.listBox2.Location = new System.Drawing.Point(852, 311);
+            this.listBox2.Location = new System.Drawing.Point(6, 256);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(320, 225);
+            this.listBox2.Size = new System.Drawing.Size(329, 225);
             this.listBox2.TabIndex = 22;
             this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
             // 
             // listBox3
             // 
             this.listBox3.FormattingEnabled = true;
-            this.listBox3.Location = new System.Drawing.Point(1012, 125);
+            this.listBox3.Location = new System.Drawing.Point(175, 70);
             this.listBox3.Name = "listBox3";
             this.listBox3.Size = new System.Drawing.Size(160, 147);
             this.listBox3.TabIndex = 23;
@@ -443,7 +454,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(1009, 109);
+            this.label5.Location = new System.Drawing.Point(172, 54);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(74, 13);
             this.label5.TabIndex = 24;
@@ -452,7 +463,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(849, 109);
+            this.label6.Location = new System.Drawing.Point(3, 54);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(55, 13);
             this.label6.TabIndex = 25;
@@ -461,7 +472,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(849, 295);
+            this.label7.Location = new System.Drawing.Point(3, 240);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(82, 13);
             this.label7.TabIndex = 26;
@@ -470,27 +481,104 @@
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(852, 29);
+            this.checkBox2.Location = new System.Drawing.Point(6, 6);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(159, 17);
+            this.checkBox2.Size = new System.Drawing.Size(123, 17);
             this.checkBox2.TabIndex = 28;
-            this.checkBox2.Text = "Toggle Check for Overriding";
+            this.checkBox2.Text = "Check for Overriding";
             this.checkBox2.UseVisualStyleBackColor = true;
             this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(6, 6);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(144, 17);
+            this.checkBox3.TabIndex = 29;
+            this.checkBox3.Text = "Check for Dependencies";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(838, 26);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(346, 510);
+            this.tabControl1.TabIndex = 30;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.label6);
+            this.tabPage1.Controls.Add(this.label4);
+            this.tabPage1.Controls.Add(this.checkBox2);
+            this.tabPage1.Controls.Add(this.listBox1);
+            this.tabPage1.Controls.Add(this.label7);
+            this.tabPage1.Controls.Add(this.listBox2);
+            this.tabPage1.Controls.Add(this.listBox3);
+            this.tabPage1.Controls.Add(this.label5);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(338, 484);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Overrding Data";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.listView2);
+            this.tabPage2.Controls.Add(this.label8);
+            this.tabPage2.Controls.Add(this.checkBox3);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(338, 484);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Dependencies";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // listView2
+            // 
+            this.listView2.HideSelection = false;
+            this.listView2.Location = new System.Drawing.Point(6, 69);
+            this.listView2.Name = "listView2";
+            this.listView2.Size = new System.Drawing.Size(329, 409);
+            this.listView2.TabIndex = 32;
+            this.listView2.UseCompatibleStateImageBehavior = false;
+            this.listView2.View = System.Windows.Forms.View.List;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(3, 35);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(16, 13);
+            this.label8.TabIndex = 31;
+            this.label8.Text = "---";
+            // 
+            // rotatingLabel1
+            // 
+            this.rotatingLabel1.AutoSize = true;
+            this.rotatingLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rotatingLabel1.Location = new System.Drawing.Point(161, 103);
+            this.rotatingLabel1.Name = "rotatingLabel1";
+            this.rotatingLabel1.NewText = "";
+            this.rotatingLabel1.RotateAngle = 0;
+            this.rotatingLabel1.Size = new System.Drawing.Size(18, 17);
+            this.rotatingLabel1.TabIndex = 12;
+            this.rotatingLabel1.Text = "X";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 561);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.listBox3);
-            this.Controls.Add(this.listBox2);
-            this.Controls.Add(this.listBox1);
-            this.Controls.Add(this.label4);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.filterBox);
@@ -517,11 +605,15 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
-
         #endregion
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
@@ -570,6 +662,13 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.ColumnHeader dependencies;
+        private System.Windows.Forms.CheckBox checkBox3;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private Label label8;
+        private ListView listView2;
     }
 }
 

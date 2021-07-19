@@ -93,6 +93,7 @@ namespace MW5_Mod_Manager
         public Dictionary<string, ModObject> ModDetails = new Dictionary<string, ModObject>();
         public Dictionary<string, bool> ModList = new Dictionary<string, bool>();
         public Dictionary<string, OverridingData> OverrridingData = new Dictionary<string, OverridingData>();
+        public Dictionary<string, List<string>> MissingModsDependenciesDict = new Dictionary<string, List<string>>();
 
         public bool CreatedModlist = false;
 
@@ -532,6 +533,7 @@ namespace MW5_Mod_Manager
             return "";
         }
 
+        /* unused
         public string Scramble(string input)
         {
             input = input.Replace(" ", "");
@@ -570,6 +572,7 @@ namespace MW5_Mod_Manager
             Console.WriteLine(unscrambled);
             return unscrambled;
         }
+        */
 
         //Searched first when looking for file names
         public List<string> CommonFolders = new List<string>()
@@ -591,6 +594,9 @@ namespace MW5_Mod_Manager
             this.OverrridingData.Clear();
             foreach (ListViewItem item in items)
             {
+                //We only wanna check this for items actually enabled.
+                if (!item.Checked)
+                    continue;
 
                 string modA = item.SubItems[2].Text;
                 int priorityA = items.Count - item.Index;
@@ -640,12 +646,74 @@ namespace MW5_Mod_Manager
                 }
                 this.OverrridingData[modA] = A;
                 if (A.isOverriden)
-                    item.ForeColor = Color.OrangeRed;
+                    item.SubItems[1].ForeColor = Color.OrangeRed;
                 if (A.isOverriding)
-                    item.ForeColor = Color.Green;
+                    item.SubItems[1].ForeColor = Color.Green;
                 if (A.isOverriding && A.isOverriden)
-                    item.ForeColor = Color.Orange;
+                    item.SubItems[1].ForeColor = Color.Orange;
             }
+        }
+
+        //Check for all active mods in list provided if the mods in the required section are also active.
+        public Dictionary<string, List<string>> CheckRequires (ListView.ListViewItemCollection items)
+        {
+            Console.WriteLine("Checking mods Requires");
+            this.MissingModsDependenciesDict = new Dictionary<string, List<string>>();
+
+            //For each mod check if their requires list is a sub list of the active mods list... aka see if the required mods are active.
+            foreach(ListViewItem item in items)
+            {
+                if (!item.Checked)
+                    continue;
+
+                string modDisplayName = item.SubItems[1].Text;
+                string modFolderName = item.SubItems[2].Text;
+
+                if (ModDetails[modFolderName].Requires == null)
+                {
+                    item.SubItems[5].BackColor = Color.Green;
+                    continue;
+                }
+
+                Console.WriteLine(item.SubItems[1].Text);
+                Console.WriteLine("List of Requires");
+                foreach (string mod in ModDetails[modFolderName].Requires)
+                {
+                    Console.WriteLine("--" + mod);
+                }
+
+                List<string> Requires = ModDetails[modFolderName].Requires;
+                List<string> activeMods = new List<string>();
+
+                foreach (ListViewItem itemB in items)
+                {
+                    if (!itemB.Checked)
+                        continue;
+                    if (!(itemB.Index > item.Index))
+                        continue;
+                    //Console.WriteLine(itemB.SubItems[1].Text);
+                    activeMods.Add(itemB.SubItems[1].Text);
+                }
+                
+                //Make a list of all mods we need but are not in the active mods.
+                List<string> missingMods = Requires.Except(activeMods).ToList<string>();
+
+                if (missingMods.Count == 0)
+                {
+                    Console.WriteLine("All subset items found!");
+                    item.SubItems[5].BackColor = Color.Green;
+                    continue;
+                }
+                Console.WriteLine("Not all subset items found!");
+                item.SubItems[5].BackColor = Color.Red;
+                MissingModsDependenciesDict[modDisplayName] = missingMods;
+            }
+            return MissingModsDependenciesDict;
+        }
+
+        public List<string> GetModDependencies(string selectedMod)
+        {
+            return ModDetails[selectedMod].Requires;
         }
     }
 
@@ -663,7 +731,7 @@ namespace MW5_Mod_Manager
         public long steamPublishedFileId { set; get; }
         public long steamLastSubmittedBuildNumber { set; get; }
         public string steamModVisibility { set; get; }
-        public 
+        public List<string> Requires { set; get; }
     }
 
     public class ProgramData

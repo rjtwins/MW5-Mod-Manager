@@ -87,11 +87,13 @@ namespace MW5_Mod_Manager
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.button9 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.rotatingLabel1 = new MW5_Mod_Manager.RotatingLabel();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -148,8 +150,9 @@ namespace MW5_Mod_Manager
             // 
             // button8
             // 
+            this.button8.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.button8.Image = ((System.Drawing.Image)(resources.GetObject("button8.Image")));
-            this.button8.Location = new System.Drawing.Point(13, 424);
+            this.button8.Location = new System.Drawing.Point(18, 120);
             this.button8.Margin = new System.Windows.Forms.Padding(0);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(128, 128);
@@ -363,7 +366,7 @@ namespace MW5_Mod_Manager
             // button4
             // 
             this.button4.Image = ((System.Drawing.Image)(resources.GetObject("button4.Image")));
-            this.button4.Location = new System.Drawing.Point(32, 334);
+            this.button4.Location = new System.Drawing.Point(38, 21);
             this.button4.Margin = new System.Windows.Forms.Padding(0);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(90, 90);
@@ -580,6 +583,15 @@ namespace MW5_Mod_Manager
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.button8);
+            this.panel1.Controls.Add(this.button4);
+            this.panel1.Location = new System.Drawing.Point(13, 304);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(173, 248);
+            this.panel1.TabIndex = 33;
+            // 
             // rotatingLabel1
             // 
             this.rotatingLabel1.AutoSize = true;
@@ -597,6 +609,8 @@ namespace MW5_Mod_Manager
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 561);
+            this.Controls.Add(this.rotatingLabel1);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.tabControl1);
@@ -606,11 +620,8 @@ namespace MW5_Mod_Manager
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.rotatingLabel1);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.button8);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button3);
@@ -631,6 +642,7 @@ namespace MW5_Mod_Manager
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -692,6 +704,7 @@ namespace MW5_Mod_Manager
         public System.ComponentModel.BackgroundWorker backgroundWorker2;
         private Button button9;
         private Button button10;
+        private Panel panel1;
     }
 }
 

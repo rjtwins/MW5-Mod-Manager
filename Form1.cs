@@ -965,7 +965,7 @@ namespace MW5_Mod_Manager
             if (!filtered)
             {
                 HandleOverrding(SelectedMod);
-                HandleDependencies(SelectedMod, SelectedModDisplayName);
+                HandleDependencies(listView1.SelectedItems[0], SelectedModDisplayName);
             }
         }
 
@@ -996,11 +996,18 @@ namespace MW5_Mod_Manager
             }
         }
 
-        private void HandleDependencies(string SelectedMod, string SelectedModDisplayName)
+        private void HandleDependencies(ListViewItem Item, string SelectedModDisplayName)
         {
+            string SelectedMod = Item.SubItems[2].Text;
             this.MainForm.label8.Text = SelectedModDisplayName;
             List<string> Dependencies = logic.GetModDependencies(SelectedMod);
             this.listView2.Items.Clear();
+
+            if (!Item.Checked)
+            {
+                Item.SubItems[5].BackColor = Color.White;
+                Item.SubItems[5].Text = "---";
+            }
 
             List<string> MissingDependencies = new List<string>();
             if (logic.MissingModsDependenciesDict.ContainsKey(SelectedModDisplayName))
@@ -1039,7 +1046,7 @@ namespace MW5_Mod_Manager
             logic.UpdateNewModOverrideData(listView1.Items, e.Item);
             logic.CheckRequires(listView1.Items);
             HandleOverrding(e.Item.SubItems[2].Text);
-            HandleDependencies(e.Item.SubItems[2].Text, e.Item.SubItems[1].Text);
+            HandleDependencies(e.Item, e.Item.SubItems[1].Text);
         }
 
         //Check for mod overrding data

@@ -57,8 +57,8 @@ namespace MW5_Mod_Manager
             if (e.KeyCode == Keys.ShiftKey)
             {
                 await Task.Delay(50);
-                this.button1.Text = "UP";
-                this.button2.Text = "DOWN";
+                this.button1.Text = "&UP";
+                this.button2.Text = "&DOWN";
             }
         }
 

@@ -531,6 +531,7 @@ namespace MW5_Mod_Manager
 
         }
 
+        #region pack mods to zip
         public void ThreadProc()
         {
             //Get parent dir
@@ -569,6 +570,7 @@ namespace MW5_Mod_Manager
             e.Result = "DONE";
             Process.Start(parent);
         }
+        #endregion
 
         /* unused
         public string Scramble(string input)
@@ -623,71 +625,337 @@ namespace MW5_Mod_Manager
             @"Epic_Games\"
         };
 
+        //Reset the orriding data between two mods and check if after mods are still overriding/beeing overrriden
+        public void ResetOverrdingBetweenMods(ListViewItem itemA, ListViewItem itemB)
+        {
+            string modA = itemA.SubItems[2].Text;
+            string modB = itemB.SubItems[2].Text;
+
+            if (this.OverrridingData.ContainsKey(modA))
+            {
+                if (this.OverrridingData[modA].overriddenBy.ContainsKey(modB))
+                    this.OverrridingData[modA].overriddenBy.Remove(modB);
+                if (this.OverrridingData[modA].overrides.ContainsKey(modB))
+                    this.OverrridingData[modA].overrides.Remove(modB);
+                if (this.OverrridingData[modA].overrides.Count == 0)
+                    this.OverrridingData[modA].isOverriding = false;
+                if (this.OverrridingData[modA].overriddenBy.Count == 0)
+                    this.OverrridingData[modA].isOverriden = false;
+            }
+            if (this.OverrridingData.ContainsKey(modA))
+            {
+                if (this.OverrridingData[modB].overriddenBy.ContainsKey(modA))
+                    this.OverrridingData[modB].overriddenBy.Remove(modA);
+                if (this.OverrridingData[modB].overrides.ContainsKey(modA))
+                    this.OverrridingData[modB].overrides.Remove(modA);
+                if (this.OverrridingData[modB].overrides.Count == 0)
+                    this.OverrridingData[modB].isOverriding = false;
+                if (this.OverrridingData[modB].overriddenBy.Count == 0)
+                    this.OverrridingData[modB].isOverriden = false;
+            }
+            Console.WriteLine("ResetOverrdingBetweenMods modA: " + modA + " " + this.OverrridingData[modA].isOverriding + " " + this.OverrridingData[modA].isOverriden);
+            Console.WriteLine("ResetOverrdingBetweenMods modB: " + modB + " " + this.OverrridingData[modB].isOverriding + " " + this.OverrridingData[modB].isOverriden);
+
+        }
+
+        //Used to update the override data when a new item is added or removed to/from the mod list instead of checking all items agains each other again.
+        public void UpdateNewModOverrideData(ListView.ListViewItemCollection items, ListViewItem newItem)
+        {
+            string modA = newItem.SubItems[2].Text;
+            Console.WriteLine("UpdateNewModOverrideData");
+            //Console.WriteLine("Mod checked or unchecked: " + modA);
+
+            if (!newItem.Checked)
+            {
+                //Console.WriteLine("--Unchecked");
+                if (this.OverrridingData.ContainsKey(modA))
+                    this.OverrridingData.Remove(modA);
+
+                foreach (string key in this.OverrridingData.Keys)
+                {
+                    if (OverrridingData[key].overriddenBy.ContainsKey(modA))
+                        OverrridingData[key].overriddenBy.Remove(modA);
+
+                    if (OverrridingData[key].overrides.ContainsKey(modA))
+                        OverrridingData[key].overrides.Remove(modA);
+
+                    if (OverrridingData[key].overrides.Count == 0)
+                        OverrridingData[key].isOverriding = false;
+
+                    if (OverrridingData[key].overriddenBy.Count == 0)
+                        OverrridingData[key].isOverriden = false;
+                }
+            }
+            else
+            {
+                //Console.WriteLine("--Unchecked");
+                if (!this.OverrridingData.ContainsKey(modA))
+                {
+                    this.OverrridingData[modA] = new OverridingData
+                    {
+                        mod = modA,
+                        overrides = new Dictionary<string, List<string>>(),
+                        overriddenBy = new Dictionary<string, List<string>>()
+                    };
+                }
+
+                //check each mod for changes
+                foreach (ListViewItem item in items)
+                {
+                    string modB = item.SubItems[2].Text;
+
+                    //Again dont compare mods to themselves.
+                    if (modA == modB)
+                        continue;
+
+                    if (!this.OverrridingData.ContainsKey(modB))
+                    {
+                        this.OverrridingData[modB] = new OverridingData
+                        {
+                            mod = modB,
+                            overrides = new Dictionary<string, List<string>>(),
+                            overriddenBy = new Dictionary<string, List<string>>()
+                        };
+                    }
+                    GetModOverridingData(newItem, item, items.Count, this.OverrridingData[modA], this.OverrridingData[modB]);
+                }
+            }
+
+            ColorItemsOnOverridingData(items);
+        }
+
+        //used to update the overriding data when a mod is moved ONE up or ONE down.
+        public void UpdateModOverridingdata(ListView.ListViewItemCollection items, ListViewItem movedMod, bool movedUp)
+        {
+            string modA = movedMod.SubItems[2].Text;
+
+            Console.WriteLine("UpdateModOverridingdata");
+            Console.WriteLine("--" + modA);
+
+            int indexToCheck = 0;
+            if (movedUp)
+                indexToCheck = movedMod.Index + 1;
+            else
+                indexToCheck = movedMod.Index - 1;
+
+            ListViewItem itemB = items[indexToCheck];
+            string modB = itemB.SubItems[2].Text;
+            Console.WriteLine("++" + modB);
+
+            if (!this.OverrridingData.ContainsKey(modA))
+            {
+                this.OverrridingData[modA] = new OverridingData
+                {
+                    mod = modA,
+                    overrides = new Dictionary<string, List<string>>(),
+                    overriddenBy = new Dictionary<string, List<string>>()
+                };
+            }
+            if (!this.OverrridingData.ContainsKey(modB))
+            {
+                this.OverrridingData[modB] = new OverridingData
+                {
+                    mod = modB,
+                    overrides = new Dictionary<string, List<string>>(),
+                    overriddenBy = new Dictionary<string, List<string>>()
+                };
+            }
+
+            ResetOverrdingBetweenMods(movedMod, itemB);
+
+            GetModOverridingData(movedMod, items[indexToCheck], items.Count, OverrridingData[modA], OverrridingData[modA]);
+
+            OverridingData A = OverrridingData[modA];
+            OverridingData B = OverrridingData[modB];
+
+            ColorItemsOnOverridingData(items);
+        }
+
+        //See if items A and B are interacting in terms of manifest and return the intersect
+        public void GetModOverridingData(ListViewItem itemA, ListViewItem itemB, int itemCount, OverridingData A, OverridingData B)
+        {
+            string modA = itemA.SubItems[2].Text;
+            string modB = itemB.SubItems[2].Text;
+
+            if (modA == modB)
+                return;
+
+            int priorityA = itemCount - itemA.Index;
+            int priorityB = itemCount - itemB.Index;
+
+            //Now we have a mod that is not the mod we are looking at is enbabled.
+            //Lets compare the manifest!
+            List<string> manifestA = this.ModDetails[modA].manifest;
+            List<string> manifestB = this.ModDetails[modB].manifest;
+            List<string> intersect = manifestA.Intersect(manifestB).ToList();
+
+            //If the intersects elements are greater then zero we have shared parts of the manifest
+            if (intersect.Count() == 0)
+                return;
+
+            //Console.WriteLine("---Intersection: " + modB + " : " + priorityB.ToString());
+
+            //If we are loaded after the mod we are looking at we are overriding it.
+            if (priorityA > priorityB)
+            {
+                if(!(A.mod == modB))
+                {
+                    A.isOverriding = true;
+                    A.overrides[modB] = intersect;
+                }
+                if(!(B.mod == modA))
+                {
+                    B.isOverriden = true;
+                    B.overriddenBy[modA] = intersect;
+                }
+            }
+            else
+            {
+                if (!(A.mod == modB))
+                {
+                    A.isOverriden = true;
+                    A.overriddenBy[modB] = intersect;
+                }
+                if (!(B.mod == modA))
+                {
+                    B.isOverriding = true;
+                    B.overrides[modA] = intersect;
+                }
+            }
+            this.OverrridingData[modA] = A;
+            this.OverrridingData[modB] = B;
+        }
+
         //Return a dict of all overriden mods with a list of overriden files as values.
         //else returns an empty string.
         public void GetOverridingData(ListView.ListViewItemCollection items)
         {
+            //Console.WriteLine(Environment.StackTrace);
             //Console.WriteLine("Starting Overriding data check");
             this.OverrridingData.Clear();
-            foreach (ListViewItem item in items)
+            foreach (ListViewItem itemA in items)
             {
                 //We only wanna check this for items actually enabled.
-                if (!item.Checked)
+                if (!itemA.Checked)
                     continue;
 
-                string modA = item.SubItems[2].Text;
-                int priorityA = items.Count - item.Index;
-                OverridingData A = new OverridingData();
-                A.mod = modA;
-                A.overrides = new Dictionary<string, List<string>>();
-                A.overriddenBy = new Dictionary<string, List<string>>();
+                string modA = itemA.SubItems[2].Text;
+                int priorityA = items.Count - itemA.Index;
+                if (!this.OverrridingData.ContainsKey(modA))
+                {
+                    this.OverrridingData[modA] = new OverridingData
+                    {
+                        mod = modA,
+                        overrides = new Dictionary<string, List<string>>(),
+                        overriddenBy = new Dictionary<string, List<string>>()
+                    };
+                }
+                OverridingData A = this.OverrridingData[modA];
 
                 Console.WriteLine("Checking: " + modA + " : " + priorityA.ToString());
-
-                foreach (ListViewItem itemb in items)
+                foreach (ListViewItem itemB in items)
                 {
-                    string modB = itemb.SubItems[2].Text;
-                    int priorityB = items.Count - itemb.Index;
+                    string modB = itemB.SubItems[2].Text;
 
-                    //we dont need to know of a mod overrides itself..
-                    if (modB == modA)
+                    if (modA == modB)
                         continue;
 
-                    //if not active we don't care if its beeing overriden.
-                    if (!item.Checked)
+                    if (!itemB.Checked)
                         continue;
 
-                    //Now we have a mod that is not the mod we are looking at is enbabled.
-                    //Lets compare the manifest!
-                    List<string> manifestA = this.ModDetails[modA].manifest;
-                    List<string> manifestB = this.ModDetails[modB].manifest;
-                    List<string> intersect = manifestA.Intersect(manifestB).ToList();
-
-                    //If the intersects elements are greater then zero we have shared parts of the manifest
-                    if (intersect.Count() == 0)
-                        continue;
-
-                    Console.WriteLine("---Intersection: " + modB + " : " + priorityB.ToString());
-
-                    //If we are loaded after the mod we are looking at we are overriding it.
-                    if (priorityA > priorityB)
+                    //If we have allready seen modb in comparison to modA we don't need to compare because the comparison is bi-directionary.
+                    if (
+                        A.overriddenBy.ContainsKey(modB) ||
+                        A.overrides.ContainsKey(modB)
+                        )
                     {
-                        A.isOverriding = true;
-                        A.overrides[modB] = intersect;
+                        //Console.WriteLine("--" + modA + "has allready been compared to: " + modB);
+                        continue;
+                    }
+
+                    //Check if we have allready seen modB before.
+                    if (this.OverrridingData.ContainsKey(modB))
+                    {
+                        //If we have allready seen modB and we have allready compared modB and modA we don't need to compare because the comparison is bi-directionary.
+                        if (
+                            this.OverrridingData[modB].overriddenBy.ContainsKey(modA) ||
+                            this.OverrridingData[modB].overrides.ContainsKey(modA)
+                            )
+                        {
+                            //Console.WriteLine("--" + modB + "has allready been compared to: " + modA);
+                            continue;
+                        }
                     }
                     else
                     {
-                        A.isOverriden = true;
-                        A.overriddenBy[modB] = intersect;
+                        //If we have not make a new modB overridingDatas
+                        this.OverrridingData[modB] = new OverridingData
+                        {
+                            mod = modB,
+                            overrides = new Dictionary<string, List<string>>(),
+                            overriddenBy = new Dictionary<string, List<string>>()
+                        };
                     }
+                    GetModOverridingData(itemA, itemB, items.Count, this.OverrridingData[modA], this.OverrridingData[modB]);
                 }
-                this.OverrridingData[modA] = A;
+            }
+
+            #region debug output
+            //Debug output
+            //foreach(string key in this.OverrridingData.Keys)
+            //{
+            //    Console.WriteLine("MOD: " + key);
+            //    Console.WriteLine("--Overriden:");
+            //    foreach (string mod in OverrridingData[key].overriddenBy.Keys)
+            //    {
+            //        Console.WriteLine("----" + OverrridingData[key].isOverriden);
+            //    }
+            //    Console.WriteLine("--Overrides:");
+            //    foreach (string mod in OverrridingData[key].overrides.Keys)
+            //    {
+            //        Console.WriteLine("----" + OverrridingData[key].isOverriding);
+            //    }
+            //}
+            #endregion
+
+            ColorItemsOnOverridingData(items);
+        }
+
+        //Color the list view items based on data
+        public void ColorItemsOnOverridingData(ListView.ListViewItemCollection items)
+        {
+            foreach (ListViewItem item in items)
+            {
+                string mod = item.SubItems[2].Text;
+                //Console.WriteLine("Coloring mod: " + mod);
+                if (!this.OverrridingData.ContainsKey(mod))
+                {
+                    item.SubItems[1].ForeColor = Color.Black;
+                    //Console.WriteLine("Black");
+
+                    continue;
+                }
+                OverridingData A = OverrridingData[mod];
                 if (A.isOverriden)
+                {
+                    //Console.WriteLine("OrangeRed");
                     item.SubItems[1].ForeColor = Color.OrangeRed;
+                }
                 if (A.isOverriding)
+                {
+                    //Console.WriteLine("Green");
                     item.SubItems[1].ForeColor = Color.Green;
+                }
                 if (A.isOverriding && A.isOverriden)
+                {
+                    //Console.WriteLine("Orange");
                     item.SubItems[1].ForeColor = Color.Orange;
+                }
+                if (!A.isOverriding && !A.isOverriden)
+                {
+                    //Console.WriteLine("Black");
+                    item.SubItems[1].ForeColor = Color.Black;
+                }
             }
         }
 
@@ -708,7 +976,8 @@ namespace MW5_Mod_Manager
 
                 if (ModDetails[modFolderName].Requires == null)
                 {
-                    item.SubItems[5].BackColor = Color.Green;
+                    item.SubItems[5].BackColor = Color.White;
+                    item.SubItems[5].Text = "NONE";
                     continue;
                 }
 
@@ -739,10 +1008,12 @@ namespace MW5_Mod_Manager
                 {
                     Console.WriteLine("All subset items found!");
                     item.SubItems[5].BackColor = Color.Green;
+                    item.SubItems[5].Text = "FOUND";
                     continue;
                 }
                 Console.WriteLine("Not all subset items found!");
                 item.SubItems[5].BackColor = Color.Red;
+                item.SubItems[5].Text = "MISSING";
                 MissingModsDependenciesDict[modDisplayName] = missingMods;
             }
             return MissingModsDependenciesDict;
@@ -751,6 +1022,10 @@ namespace MW5_Mod_Manager
         //Get display names of all dependencies of given mod.
         public List<string> GetModDependencies(string selectedMod)
         {
+            if (!ModDetails.ContainsKey(selectedMod))
+            {
+                return new List<string>();
+            }
             return ModDetails[selectedMod].Requires;
         }
 

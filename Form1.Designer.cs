@@ -79,15 +79,15 @@ namespace MW5_Mod_Manager
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.listView2 = new System.Windows.Forms.ListView();
             this.label8 = new System.Windows.Forms.Label();
-            this.rotatingLabel1 = new MW5_Mod_Manager.RotatingLabel();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
+            this.rotatingLabel1 = new MW5_Mod_Manager.RotatingLabel();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -96,9 +96,9 @@ namespace MW5_Mod_Manager
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(13, 130);
+            this.button1.Location = new System.Drawing.Point(13, 122);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(128, 38);
+            this.button1.Size = new System.Drawing.Size(70, 38);
             this.button1.TabIndex = 1;
             this.button1.Text = "UP";
             this.button1.UseVisualStyleBackColor = true;
@@ -106,9 +106,9 @@ namespace MW5_Mod_Manager
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(13, 174);
+            this.button2.Location = new System.Drawing.Point(13, 166);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(128, 38);
+            this.button2.Size = new System.Drawing.Size(70, 38);
             this.button2.TabIndex = 2;
             this.button2.Text = "Down";
             this.button2.UseVisualStyleBackColor = true;
@@ -116,9 +116,9 @@ namespace MW5_Mod_Manager
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(13, 218);
+            this.button3.Location = new System.Drawing.Point(13, 210);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(128, 38);
+            this.button3.Size = new System.Drawing.Size(70, 38);
             this.button3.TabIndex = 3;
             this.button3.Text = "Apply";
             this.button3.UseVisualStyleBackColor = true;
@@ -134,6 +134,7 @@ namespace MW5_Mod_Manager
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(506, 20);
             this.textBox1.TabIndex = 5;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // button6
             // 
@@ -332,31 +333,32 @@ namespace MW5_Mod_Manager
             // 
             this.display.Tag = "display";
             this.display.Text = "Display Name";
-            this.display.Width = 200;
+            this.display.Width = 188;
             // 
             // folder
             // 
             this.folder.Tag = "folder";
             this.folder.Text = "Mod Folder";
-            this.folder.Width = 200;
+            this.folder.Width = 196;
             // 
             // author
             // 
             this.author.Tag = "author";
             this.author.Text = "Author";
-            this.author.Width = 73;
+            this.author.Width = 72;
             // 
             // version
             // 
             this.version.Tag = "version";
             this.version.Text = "Version";
-            this.version.Width = 49;
+            this.version.Width = 54;
             // 
             // dependencies
             // 
             this.dependencies.Tag = "dependencies";
             this.dependencies.Text = "Dependencies";
-            this.dependencies.Width = 84;
+            this.dependencies.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.dependencies.Width = 88;
             // 
             // button4
             // 
@@ -417,9 +419,9 @@ namespace MW5_Mod_Manager
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(13, 272);
+            this.button5.Location = new System.Drawing.Point(13, 258);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(128, 38);
+            this.button5.Size = new System.Drawing.Size(70, 38);
             this.button5.TabIndex = 19;
             this.button5.Text = "Mark for Removal";
             this.button5.UseVisualStyleBackColor = true;
@@ -428,7 +430,7 @@ namespace MW5_Mod_Manager
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 35);
+            this.label4.Location = new System.Drawing.Point(6, 11);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(16, 13);
             this.label4.TabIndex = 20;
@@ -446,6 +448,7 @@ namespace MW5_Mod_Manager
             // listBox2
             // 
             this.listBox2.FormattingEnabled = true;
+            this.listBox2.HorizontalScrollbar = true;
             this.listBox2.Location = new System.Drawing.Point(6, 256);
             this.listBox2.Name = "listBox2";
             this.listBox2.Size = new System.Drawing.Size(329, 225);
@@ -488,28 +491,6 @@ namespace MW5_Mod_Manager
             this.label7.TabIndex = 26;
             this.label7.Text = "Manifest Entries";
             // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(6, 6);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(123, 17);
-            this.checkBox2.TabIndex = 28;
-            this.checkBox2.Text = "Check for Overriding";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(6, 6);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(144, 17);
-            this.checkBox3.TabIndex = 29;
-            this.checkBox3.Text = "Check for Dependencies";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
-            // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
@@ -524,7 +505,6 @@ namespace MW5_Mod_Manager
             // 
             this.tabPage1.Controls.Add(this.label6);
             this.tabPage1.Controls.Add(this.label4);
-            this.tabPage1.Controls.Add(this.checkBox2);
             this.tabPage1.Controls.Add(this.listBox1);
             this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.listBox2);
@@ -544,7 +524,6 @@ namespace MW5_Mod_Manager
             this.tabPage2.BackColor = System.Drawing.Color.Transparent;
             this.tabPage2.Controls.Add(this.listView2);
             this.tabPage2.Controls.Add(this.label8);
-            this.tabPage2.Controls.Add(this.checkBox3);
             this.tabPage2.Cursor = System.Windows.Forms.Cursors.Default;
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
@@ -567,23 +546,11 @@ namespace MW5_Mod_Manager
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(3, 35);
+            this.label8.Location = new System.Drawing.Point(6, 11);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(16, 13);
             this.label8.TabIndex = 31;
             this.label8.Text = "---";
-            // 
-            // rotatingLabel1
-            // 
-            this.rotatingLabel1.AutoSize = true;
-            this.rotatingLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rotatingLabel1.Location = new System.Drawing.Point(161, 103);
-            this.rotatingLabel1.Name = "rotatingLabel1";
-            this.rotatingLabel1.NewText = "";
-            this.rotatingLabel1.RotateAngle = 0;
-            this.rotatingLabel1.Size = new System.Drawing.Size(18, 17);
-            this.rotatingLabel1.TabIndex = 12;
-            this.rotatingLabel1.Text = "X";
             // 
             // backgroundWorker2
             // 
@@ -591,11 +558,47 @@ namespace MW5_Mod_Manager
             this.backgroundWorker2.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker2_ProgressChanged);
             this.backgroundWorker2.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker2_RunWorkerCompleted);
             // 
+            // button9
+            // 
+            this.button9.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.button9.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.button9.Location = new System.Drawing.Point(89, 191);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(70, 38);
+            this.button9.TabIndex = 32;
+            this.button9.Text = "Disable All";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(89, 147);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(70, 38);
+            this.button10.TabIndex = 31;
+            this.button10.Text = "Enable All";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
+            // rotatingLabel1
+            // 
+            this.rotatingLabel1.AutoSize = true;
+            this.rotatingLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rotatingLabel1.Location = new System.Drawing.Point(168, 118);
+            this.rotatingLabel1.Name = "rotatingLabel1";
+            this.rotatingLabel1.NewText = "";
+            this.rotatingLabel1.RotateAngle = 0;
+            this.rotatingLabel1.Size = new System.Drawing.Size(18, 17);
+            this.rotatingLabel1.TabIndex = 12;
+            this.rotatingLabel1.Text = "X";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 561);
+            this.Controls.Add(this.button9);
+            this.Controls.Add(this.button10);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.checkBox1);
@@ -679,9 +682,7 @@ namespace MW5_Mod_Manager
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.ColumnHeader dependencies;
-        private System.Windows.Forms.CheckBox checkBox3;
         private TabControl tabControl1;
         private TabPage tabPage1;
         private TabPage tabPage2;
@@ -689,6 +690,8 @@ namespace MW5_Mod_Manager
         private ListView listView2;
         private ToolStripMenuItem exportModsFolderToolStripMenuItem;
         public System.ComponentModel.BackgroundWorker backgroundWorker2;
+        private Button button9;
+        private Button button10;
     }
 }
 

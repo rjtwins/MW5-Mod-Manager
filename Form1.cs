@@ -23,6 +23,7 @@ namespace MW5_Mod_Manager
         bool filtered = false;
         private List<ListViewItem> markedForRemoval;
         public Form4 WaitForm;
+        private bool MovingItem = false;
         public Form1()
         {
             InitializeComponent();
@@ -52,7 +53,7 @@ namespace MW5_Mod_Manager
         //handling key presses for hotkeys.
         private async void form1_KeyUp(object sender, KeyEventArgs e)
         {
-            Console.WriteLine("KEY Released: " + e.KeyCode);
+            //Console.WriteLine("KEY Released: " + e.KeyCode);
             if (e.KeyCode == Keys.ShiftKey)
             {
                 await Task.Delay(50);
@@ -63,7 +64,7 @@ namespace MW5_Mod_Manager
 
         private void form1_KeyDown(object sender, KeyEventArgs e)
         {
-            Console.WriteLine("KEY Pressed: " + e.KeyCode);
+            //Console.WriteLine("KEY Pressed: " + e.KeyCode);
             if (e.Shift)
             {
                 this.button1.Text = "MOVE TO TOP";
@@ -134,7 +135,7 @@ namespace MW5_Mod_Manager
                 }
                 string[] splitString = file.Split('\\');
                 string modName = splitString[splitString.Length - 1];
-                Console.WriteLine(logic.BasePath + "\\" + modName);
+                //Console.WriteLine(logic.BasePath + "\\" + modName);
                 Utils.DirectoryCopy(file, logic.BasePath + "\\" + modName, true);
                 button6_Click(null, null);
             }
@@ -149,11 +150,11 @@ namespace MW5_Mod_Manager
                         bool modFound = false;
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
-                            Console.WriteLine(entry.FullName);
+                            //Console.WriteLine(entry.FullName);
                             if (entry.Name.Contains("mod.json"))
                             {
                                 //we have found a mod!
-                                Console.WriteLine("MOD FOUND IN ZIP!: " + entry.FullName);
+                                //Console.WriteLine("MOD FOUND IN ZIP!: " + entry.FullName);
                                 modFound = true;
                                 break;
                             }
@@ -183,10 +184,14 @@ namespace MW5_Mod_Manager
         //Get item info, remove item, insert above, set new item as selected.
         private void button1_Click(object sender, EventArgs e)
         {
-
+            this.MovingItem = true;
+            bool movedToTop = false;
             int i = SelectedItemIndex();
             if (i < 1)
+            {
+                this.MovingItem = false;
                 return;
+            }
             ListViewItem item = listView1.Items[i];
             listView1.Items.RemoveAt(i);
 
@@ -194,6 +199,7 @@ namespace MW5_Mod_Manager
             if (Control.ModifierKeys == Keys.Shift)
             {
                 //Move to top
+                movedToTop = true;
                 listView1.Items.Insert(0, item);
             }
             else
@@ -203,30 +209,33 @@ namespace MW5_Mod_Manager
             }
             item.Selected = true;
 
-            if (checkBox2.Checked)
-            {
-                this.logic.GetOverridingData(this.listView1.Items);
-                listView1_SelectedIndexChanged(null, null);
-            }
+            this.logic.GetOverridingData(this.listView1.Items);
+            this.logic.CheckRequires(listView1.Items);
+            listView1_SelectedIndexChanged(null, null);
 
-            if (checkBox3.Checked)
-                this.logic.CheckRequires(listView1.Items);
+            this.MovingItem = false;
         }
 
         //Down button
         //Get item info, remove item, insert below, set new item as selected.
         private void button2_Click(object sender, EventArgs e)
         {
+            this.MovingItem = true;
+            bool movedToBottom = false;
             int i = SelectedItemIndex();
             if (i > listView1.Items.Count - 2 || i < 0)
+            {
+                this.MovingItem = false;
                 return;
+            }
 
             ListViewItem item = listView1.Items[i];
             listView1.Items.RemoveAt(i);
 
             if (Control.ModifierKeys == Keys.Shift)
             {
-                //Move to buttom
+                //Move to bottom
+                movedToBottom = true;
                 listView1.Items.Insert(listView1.Items.Count, item);
             }
             else
@@ -236,15 +245,11 @@ namespace MW5_Mod_Manager
             }
             item.Selected = true;
 
-            if (checkBox2.Checked)
-            {
-                this.logic.GetOverridingData(this.listView1.Items);
-                listView1_SelectedIndexChanged(null, null);
-            }
+            this.logic.GetOverridingData(listView1.Items);
+            this.logic.CheckRequires(listView1.Items);
+            listView1_SelectedIndexChanged(null, null);
 
-            if (checkBox3.Checked)
-                this.logic.CheckRequires(listView1.Items);
-
+            this.MovingItem = false;
         }
 
         //Apply button
@@ -297,7 +302,7 @@ namespace MW5_Mod_Manager
                 item.SubItems[5].BackColor = Color.White;
             }
 
-            if(CheckResult.Count > 0)
+            if (CheckResult.Count > 0)
             {
                 string wText = "";
                 foreach (string key in CheckResult.Keys)
@@ -519,9 +524,9 @@ namespace MW5_Mod_Manager
             {
                 LoadAndFill(false);
                 filterBox_TextChanged(null, null);
-                if (checkBox2.Checked)
+                if (true /*checkBox2.Checked*/)
                     logic.GetOverridingData(listView1.Items);
-                if (checkBox3.Checked)
+                if (true /*checkBox3.Checked*/)
                     logic.CheckRequires(listView1.Items);
             }
         }
@@ -786,10 +791,6 @@ namespace MW5_Mod_Manager
                 }
                 MainForm.button1.Enabled = true;
                 MainForm.button2.Enabled = true;
-                MainForm.checkBox2.Enabled = true;
-                MainForm.checkBox2_CheckedChanged(null, null);
-                MainForm.checkBox3.Enabled = true;
-                MainForm.checkBox3_CheckedChanged(null, null);
                 MainForm.listBox1.Items.Clear();
                 MainForm.listBox2.Items.Clear();
                 MainForm.listBox3.Items.Clear();
@@ -844,12 +845,6 @@ namespace MW5_Mod_Manager
                 }
                 MainForm.button1.Enabled = false;
                 MainForm.button2.Enabled = false;
-                MainForm.checkBox2.Enabled = false;
-                MainForm.checkBox2.Checked = false;
-                MainForm.checkBox2_CheckedChanged(null, null);
-                MainForm.checkBox3.Enabled = false;
-                MainForm.checkBox3.Checked = false;
-                MainForm.checkBox3_CheckedChanged(null, null);
                 MainForm.listBox1.Items.Clear();
                 MainForm.listBox2.Items.Clear();
                 MainForm.listBox3.Items.Clear();
@@ -883,6 +878,7 @@ namespace MW5_Mod_Manager
             }
         }
 
+        //Unused
         private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -966,15 +962,9 @@ namespace MW5_Mod_Manager
                 )
                 return;
 
-            //For overriding
-            if (checkBox2.Checked)
+            if (!filtered)
             {
                 HandleOverrding(SelectedMod);
-            }
-
-            //For dependencies
-            if (checkBox3.Checked)
-            {
                 HandleDependencies(SelectedMod, SelectedModDisplayName);
             }
         }
@@ -1018,7 +1008,7 @@ namespace MW5_Mod_Manager
                 MissingDependencies = logic.MissingModsDependenciesDict[SelectedModDisplayName];
             }
 
-            if(Dependencies == null)
+            if (Dependencies == null)
             {
                 ListViewItem item = new ListViewItem();
                 item.Text = "No Dependencies";
@@ -1040,26 +1030,22 @@ namespace MW5_Mod_Manager
         //Fires when an item is checked or unchecked.
         private void listView1_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            if (checkBox2.Checked)
+            //While we are removing/inserting items this will fire and we dont want that to happen when we move an item.
+            if (MovingItem || this.filtered)
             {
-                logic.GetOverridingData(listView1.Items);
+                return;
             }
-            if (checkBox3.Checked)
-            {
-                logic.CheckRequires(listView1.Items);
-            }
-        }
 
-        //unused button
-        private void button7_Click(object sender, EventArgs e)
-        {
-            this.logic.GetOverridingData(listView1.Items);
+            logic.UpdateNewModOverrideData(listView1.Items, e.Item);
+            logic.CheckRequires(listView1.Items);
+            HandleOverrding(e.Item.SubItems[2].Text);
+            HandleDependencies(e.Item.SubItems[2].Text, e.Item.SubItems[1].Text);
         }
 
         //Check for mod overrding data
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox2.Checked)
+            if (true /*checkBox2.Checked*/)
                 this.logic.GetOverridingData(listView1.Items);
             else
             {
@@ -1074,7 +1060,7 @@ namespace MW5_Mod_Manager
         //Check for mod requirements/dependencies
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox3.Checked)
+            if (true /*checkBox3.Checked*/)
             {
                 this.logic.CheckRequires(listView1.Items);
             }
@@ -1083,6 +1069,7 @@ namespace MW5_Mod_Manager
                 foreach (ListViewItem item in listView1.Items)
                 {
                     item.SubItems[5].BackColor = Color.White;
+                    item.SubItems[5].Text = "";
                 }
                 listView2.Items.Clear();
             }
@@ -1188,8 +1175,39 @@ namespace MW5_Mod_Manager
                 MainForm.WaitForm.textProgressBar1.Value = e.ProgressPercentage;
             });
         }
-
         #endregion
+
+        //unused
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        //check all items.
+        private void button10_Click(object sender, EventArgs e)
+        {
+            this.MovingItem = true;
+            foreach (ListViewItem item in this.listView1.Items)
+            {
+                item.Checked = true;
+            }
+            this.MovingItem = false;
+            this.logic.GetOverridingData(listView1.Items);
+            this.logic.CheckRequires(listView1.Items);
+        }
+
+        //Disable all items
+        private void button9_Click(object sender, EventArgs e)
+        {
+            this.MovingItem = true;
+            foreach (ListViewItem item in this.listView1.Items)
+            {
+                item.Checked = false;
+            }
+            this.MovingItem = false;
+            this.logic.GetOverridingData(listView1.Items);
+            this.logic.CheckRequires(listView1.Items);
+        }
     }
 
     #region extra designer items

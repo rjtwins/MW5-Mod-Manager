@@ -9,6 +9,10 @@ using System.ComponentModel;
 using System.Reflection;
 using Application = System.Windows.Forms.Application;
 using System.Drawing;
+using System.IO.Compression;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace MW5_Mod_Manager
 {
@@ -49,6 +53,24 @@ namespace MW5_Mod_Manager
                 }
             }
         }
+
+        public static long DirSize(DirectoryInfo d)
+        {
+            long size = 0;
+            // Add file sizes.
+            FileInfo[] fis = d.GetFiles();
+            foreach (FileInfo fi in fis)
+            {
+                size += fi.Length;
+            }
+            // Add subdirectory sizes.
+            DirectoryInfo[] dis = d.GetDirectories();
+            foreach (DirectoryInfo di in dis)
+            {
+                size += DirSize(di);
+            }
+            return size;
+        }
     }
 
     static class Program
@@ -79,6 +101,7 @@ namespace MW5_Mod_Manager
     public class MainLogic
     {
         public Form1 MainForm;
+        public MainLogic Logic;
 
         public float Version = 0f;
         public string Vendor = "";
@@ -101,6 +124,11 @@ namespace MW5_Mod_Manager
         public bool InterruptSearch = false;
 
         public string rawJson;
+
+        public MainLogic()
+        {
+            this.Logic = this;
+        }
 
         public void Loadstuff()
         {
@@ -503,34 +531,43 @@ namespace MW5_Mod_Manager
 
         }
 
-        public string FindInstallDir(BackgroundWorker worker, DoWorkEventArgs e)
+        public void ThreadProc()
         {
-            //No dir set from previous session locate install dir
-            //first lets look in common install folders to minimize search time:
-            foreach (DriveInfo d in DriveInfo.GetDrives().Where(x => x.IsReady == true))
+            //Get parent dir
+            string parent = Directory.GetParent(Logic.BasePath).ToString();
+
+            //Check if Mods.zip allready exists delete it if so, we need to do this else the ZipFile lib will error.
+            if (File.Exists(parent + "\\Mods.zip"))
             {
-                foreach (string folder in this.CommonFolders)
+                File.Delete(parent + "\\Mods.zip");
+            }
+            ZipFile.CreateFromDirectory(this.BasePath, parent + "\\Mods.zip", CompressionLevel.Fastest, false);
+        }
+
+        public void PackModsToZip(BackgroundWorker worker, DoWorkEventArgs e)
+        {
+            string parent = Directory.GetParent(Logic.BasePath).ToString();
+
+            Thread t = new Thread(new ThreadStart(ThreadProc));
+            t.Start();
+            while (t.IsAlive)
+            {
+                System.Threading.Thread.Sleep(500);
+                if(worker.CancellationPending || e.Cancel)
                 {
-                    string found = Findfile(d.Name, "MechWarrior.exe", worker, e);
-                    if (found != null && found != "")
+                    t.Abort();
+                    t.Join();
+                    e.Result = "ABORTED";
+                    if (File.Exists(parent + "\\Mods.zip"))
                     {
-                        this.BasePath = found + @"\MW5Mercs\Mods";
-                        return BasePath;
+                        File.Delete(parent + "\\Mods.zip");
                     }
+                    return;
                 }
             }
-            //install location not found, look EVERYWHERE:
-            foreach (DriveInfo d in DriveInfo.GetDrives().Where(x => x.IsReady == true))
-            {
-                string found = Findfile(d.Name, "MechWarrior.exe", worker, e);
-                if (found != null && found != "")
-                {
-                    this.BasePath = found + @"\MW5Mercs\Mods";
-                    return BasePath;
-                }
-            }
-            //return some sort of error in locating the install location.
-            return "";
+            //Open folder where we stored the zip file
+            e.Result = "DONE";
+            Process.Start(parent);
         }
 
         /* unused
@@ -711,9 +748,30 @@ namespace MW5_Mod_Manager
             return MissingModsDependenciesDict;
         }
 
+        //Get display names of all dependencies of given mod.
         public List<string> GetModDependencies(string selectedMod)
         {
             return ModDetails[selectedMod].Requires;
+        }
+
+        //Monitor the size of a given zip file
+        public void MonitorZipSize(BackgroundWorker worker, DoWorkEventArgs e)
+        {
+            string zipFile = Directory.GetParent(this.BasePath).ToString() + "\\Mods.zip";
+            long folderSize = Utils.DirSize(new DirectoryInfo(BasePath));
+            //zip usually does about 60 percent but we dont wanna complete at like 85 or 90 lets overestimate
+            long compressedFolderSize = (long)Math.Round(folderSize * 0.35);
+            Console.WriteLine("Starting file size monitor, FolderSize: " + compressedFolderSize.ToString());
+            while (!e.Cancel && !worker.CancellationPending)
+            {
+                long zipFileSize = new FileInfo(zipFile).Length;
+                int progress = Math.Min((int)((zipFileSize * (long)100) / compressedFolderSize ), 100);
+                Console.WriteLine("--" + zipFileSize.ToString());
+                Console.WriteLine("--" + progress.ToString());
+                worker.ReportProgress(progress);
+                System.Threading.Thread.Sleep(500);
+            }
+
         }
     }
 

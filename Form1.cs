@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Media;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Application = System.Windows.Forms.Application;
@@ -16,14 +17,12 @@ namespace MW5_Mod_Manager
     public partial class Form1 : Form
     {
 
-
-
-
         public Form1 MainForm;
         public MainLogic logic = new MainLogic();
         private List<ListViewItem> backupListView;
         bool filtered = false;
         private List<ListViewItem> markedForRemoval;
+        public Form4 WaitForm;
         public Form1()
         {
             InitializeComponent();
@@ -44,9 +43,10 @@ namespace MW5_Mod_Manager
             this.KeyUp += new KeyEventHandler(form1_KeyUp);
 
             backgroundWorker1.RunWorkerCompleted += backgroundWorker1_RunWorkerCompleted;
-            backgroundWorker1.ProgressChanged += backgroundWorker1_ProgressChanged;
             backgroundWorker1.WorkerReportsProgress = true;
             backgroundWorker1.WorkerSupportsCancellation = true;
+            backgroundWorker2.WorkerReportsProgress = true;
+            backgroundWorker2.WorkerSupportsCancellation = true;
         }
 
         //handling key presses for hotkeys.
@@ -297,27 +297,42 @@ namespace MW5_Mod_Manager
                 item.SubItems[5].BackColor = Color.White;
             }
 
-            string wText = "";
-            foreach (string key in CheckResult.Keys)
+            if(CheckResult.Count > 0)
             {
-                wText += (key + "\n");
-                foreach (string value in CheckResult[key])
+                string wText = "";
+                foreach (string key in CheckResult.Keys)
                 {
-                    wText += ("--" + value + "\n");
+                    wText += (key + "\n");
+                    foreach (string value in CheckResult[key])
+                    {
+                        wText += ("--" + value + "\n");
+                    }
                 }
+
+                string m2 = "Mods are missing or loaded after required dependencies: \n\n" + wText + "\nDo you want to apply anyway?";
+                string c2 = "Mods Missing Dependencies";
+                MessageBoxButtons b2 = MessageBoxButtons.YesNo;
+                DialogResult r2 = MessageBox.Show(m2, c2, b2);
+                if (r2 == DialogResult.No)
+                    return;
             }
-
-            string m2 = "Mods are missing or loaded after required dependencies: \n\n" + wText + "\nDo you want to apply anyway?";
-            string c2 = "Mods Missing Dependencies";
-            MessageBoxButtons b2 = MessageBoxButtons.YesNo;
-            DialogResult r2 = MessageBox.Show(m2, c2, b2);
-            if (r2 == DialogResult.No)
-                return;
-
             #endregion
 
+            #region Activation and Load order
             //Stuff for applying mods activation and load order:
+
+            //Reset filter:
+            this.filterBox.Text = "";
+            this.filterBox_TextChanged(null, null);
+
+            //Regenerate ModList dict
             this.logic.ModList = new Dictionary<string, bool>();
+
+            //For each mod in the list view:
+            //Check if mod enabled
+            //Get its priority
+            //Put mod in the ModList with it status
+            //Adjust the ModDetails priority
             int length = listView1.Items.Count;
             for (int i = 0; i < length; i++)
             {
@@ -341,7 +356,10 @@ namespace MW5_Mod_Manager
                 }
 
             }
+
+            //Save the ModDetails to json file.
             this.logic.SaveToFiles();
+            #endregion
         }
 
         //For clearing the entire applications data
@@ -461,48 +479,6 @@ namespace MW5_Mod_Manager
                 }
             }
             return -1;
-        }
-
-        //Background worker stuff for search, no longer used.
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        {
-            // Get the BackgroundWorker that raised this event.
-            BackgroundWorker worker = sender as BackgroundWorker;
-            e.Result = this.logic.FindInstallDir(worker, e);
-        }
-
-        //Background worker stuff for search, no longer 
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            // First, handle the case where an exception was thrown.
-            if (e.Error != null)
-            {
-                MessageBox.Show(e.Error.Message);
-            }
-            else if (e.Cancelled)
-            {
-                //we just wanna do nothing and return here.
-            }
-            else
-            {
-
-                string txt = (string)e.Result;
-                MainForm.textBox1.Invoke((MethodInvoker)delegate {
-                    // Running on the UI thread
-                    MainForm.textBox1.Text = txt;
-                });
-                LoadAndFill(false);
-            }
-        }
-
-        // This event handler updates the progress bar.
-        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            string txt = (string)e.UserState;
-            MainForm.textBox1.Invoke((MethodInvoker)delegate {
-                // Running on the UI thread
-                MainForm.textBox1.Text = "Searching: " + txt;
-            });
         }
 
         //Select install directory button
@@ -1118,8 +1094,105 @@ namespace MW5_Mod_Manager
 
         }
 
+        //Export all mods in the mods foler (after pressing apply)
+        private void exportModsFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //apply current settings to file
+            this.button3_Click(null, null);
+
+            //Show Form 4 with informing user that we are packaging mods..
+
+            //start packing worker
+            backgroundWorker1.RunWorkerAsync();
+            //A little time to start up
+            System.Threading.Thread.Sleep(100);
+            //Start monitoring worker
+            backgroundWorker2.RunWorkerAsync();
+
+            Console.WriteLine("Opening form:");
+            this.WaitForm = new Form4(backgroundWorker1, backgroundWorker2);
+            string message = "Packaging Mods.zip, this may take several minutes depending on the combinded size of your mods...";
+            this.WaitForm.textBox1.Text = message;
+            string caption = "Packing Mods.zip";
+            this.WaitForm.Text = caption;
+            WaitForm.ShowDialog(this);
+
+            backgroundWorker2.CancelAsync();
+            //For the rest of the code see "background"
+        }
+
+        #region background workers
+        //Background worker stuff for search, no longer used.
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // Get the BackgroundWorker that raised this event.
+            BackgroundWorker worker = sender as BackgroundWorker;
+            this.logic.PackModsToZip(worker, e);
+        }
+
+        //Background worker stuff for search, no longer 
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            // First, handle the case where an exception was thrown.
+            if (e.Error != null)
+            {
+                MessageBox.Show(e.Error.Message);
+            }
+            else if (e.Cancelled || (string)e.Result == "ABORTED")
+            {
+                //we just wanna do nothing and return here.
+                MainForm.WaitForm.Close();
+                //MessageBox.Show("TEST123");
+            }
+            else
+            {
+                //We are actually done!
+                MainForm.WaitForm.Close();
+                //Returing from dialog:
+                SystemSounds.Asterisk.Play();
+                //Get parent dir
+                string parent = Directory.GetParent(this.logic.BasePath).ToString();
+                string m = "Done packing mods, output in: \n" + parent + "\\Mods.zip";
+                string c = "Done";
+                MessageBoxButtons b = MessageBoxButtons.OK;
+                MessageBox.Show(m, c, b);
+            }
+        }
+
+        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            logic.MonitorZipSize(worker, e);
+            //We dont need to pass any results anywhere as we are just monitoring.
+        }
+
+        private void backgroundWorker2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            // First, handle the case where an exception was thrown.
+            if (e.Error != null)
+            {
+                MessageBox.Show(e.Error.Message);
+            }
+            else
+            {
+                //We are actually done!
+                MainForm.textBox1.Invoke((MethodInvoker)delegate {
+                });
+            }
+        }
+
+        private void backgroundWorker2_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            MainForm.textBox1.Invoke((MethodInvoker)delegate {
+                // Running on the UI thread
+                MainForm.WaitForm.textProgressBar1.Value = e.ProgressPercentage;
+            });
+        }
+
+        #endregion
     }
 
+    #region extra designer items
     //The rotating label for priority indication.
     public class RotatingLabel : System.Windows.Forms.Label
     {
@@ -1186,4 +1259,177 @@ namespace MW5_Mod_Manager
             base.OnPaint(e);
         }
     }
+
+    public enum ProgressBarDisplayMode
+    {
+        NoText,
+        Percentage,
+        CurrProgress,
+        CustomText,
+        TextAndPercentage,
+        TextAndCurrProgress
+    }
+
+    public class TextProgressBar : ProgressBar
+    {
+        [Description("Font of the text on ProgressBar"), Category("Additional Options")]
+        public Font TextFont { get; set; } = new Font(FontFamily.GenericSerif, 11, FontStyle.Bold | FontStyle.Italic);
+
+        private SolidBrush _textColourBrush = (SolidBrush)Brushes.Black;
+        [Category("Additional Options")]
+        public Color TextColor
+        {
+            get
+            {
+                return _textColourBrush.Color;
+            }
+            set
+            {
+                _textColourBrush.Dispose();
+                _textColourBrush = new SolidBrush(value);
+            }
+        }
+
+        private SolidBrush _progressColourBrush = (SolidBrush)Brushes.LightGreen;
+        [Category("Additional Options"), Browsable(true), EditorBrowsable(EditorBrowsableState.Always)]
+        public Color ProgressColor
+        {
+            get
+            {
+                return _progressColourBrush.Color;
+            }
+            set
+            {
+                _progressColourBrush.Dispose();
+                _progressColourBrush = new SolidBrush(value);
+            }
+        }
+
+        private ProgressBarDisplayMode _visualMode = ProgressBarDisplayMode.CurrProgress;
+        [Category("Additional Options"), Browsable(true)]
+        public ProgressBarDisplayMode VisualMode
+        {
+            get
+            {
+                return _visualMode;
+            }
+            set
+            {
+                _visualMode = value;
+                Invalidate();//redraw component after change value from VS Properties section
+            }
+        }
+
+        private string _text = string.Empty;
+
+        [Description("If it's empty, % will be shown"), Category("Additional Options"), Browsable(true), EditorBrowsable(EditorBrowsableState.Always)]
+        public string CustomText
+        {
+            get
+            {
+                return _text;
+            }
+            set
+            {
+                _text = value;
+                Invalidate();//redraw component after change value from VS Properties section
+            }
+        }
+
+        private string _textToDraw
+        {
+            get
+            {
+                string text = CustomText;
+
+                switch (VisualMode)
+                {
+                    case (ProgressBarDisplayMode.Percentage):
+                        text = _percentageStr;
+                        break;
+                    case (ProgressBarDisplayMode.CurrProgress):
+                        text = _currProgressStr;
+                        break;
+                    case (ProgressBarDisplayMode.TextAndCurrProgress):
+                        text = $"{CustomText}: {_currProgressStr}";
+                        break;
+                    case (ProgressBarDisplayMode.TextAndPercentage):
+                        text = $"{CustomText}: {_percentageStr}";
+                        break;
+                }
+
+                return text;
+            }
+            set { }
+        }
+
+        private string _percentageStr { get { return $"{(int)((float)Value - Minimum) / ((float)Maximum - Minimum) * 100 } %"; } }
+
+        private string _currProgressStr
+        {
+            get
+            {
+                return $"{Value}/{Maximum}";
+            }
+        }
+
+        public TextProgressBar()
+        {
+            Value = Minimum;
+            FixComponentBlinking();
+        }
+
+        private void FixComponentBlinking()
+        {
+            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+
+            DrawProgressBar(g);
+
+            DrawStringIfNeeded(g);
+        }
+
+        private void DrawProgressBar(Graphics g)
+        {
+            Rectangle rect = ClientRectangle;
+
+            ProgressBarRenderer.DrawHorizontalBar(g, rect);
+
+            rect.Inflate(-3, -3);
+
+            if (Value > 0)
+            {
+                Rectangle clip = new Rectangle(rect.X, rect.Y, (int)Math.Round(((float)Value / Maximum) * rect.Width), rect.Height);
+
+                g.FillRectangle(_progressColourBrush, clip);
+            }
+        }
+
+        private void DrawStringIfNeeded(Graphics g)
+        {
+            if (VisualMode != ProgressBarDisplayMode.NoText)
+            {
+
+                string text = _textToDraw;
+
+                SizeF len = g.MeasureString(text, TextFont);
+
+                Point location = new Point(((Width / 2) - (int)len.Width / 2), ((Height / 2) - (int)len.Height / 2));
+
+                g.DrawString(text, TextFont, (Brush)_textColourBrush, location);
+            }
+        }
+
+        public new void Dispose()
+        {
+            _textColourBrush.Dispose();
+            _progressColourBrush.Dispose();
+            base.Dispose();
+        }
+    }
+    #endregion
 }

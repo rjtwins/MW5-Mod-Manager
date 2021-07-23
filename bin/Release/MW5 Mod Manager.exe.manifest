@@ -4,7 +4,7 @@
   <description asmv2:iconFile="exeIcon.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="MW5 Mod Manager" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="MW5 Mod Manager" version="2.1.0.0" language="neutral" processorArchitecture="msil" />
     <commandLine file="MW5 Mod Manager.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MW5 Mod Manager.exe" size="1201152">
-      <assemblyIdentity name="MW5 Mod Manager" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MW5 Mod Manager.exe" size="1205248">
+      <assemblyIdentity name="MW5 Mod Manager" version="2.1.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>wk6hj0d12mP4sld+Vn515h4mA/wh5KiWvLVZVmk3lM0=</dsig:DigestValue>
+        <dsig:DigestValue>O91umHogvnaZ9vlb0Fyo0s9XqPh5aSWgtsoReyl3FSg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

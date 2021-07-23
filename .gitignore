@@ -338,3 +338,7 @@ healthchecksdb
 bin/Release/MW5 Mod Manager.application
 *.exe
 bin/Release/MW5 Mod Manager.exe.manifest
+bin/Release/MW5 Mod Manager.exe.manifest
+bin/Release/MW5 Mod Manager.exe
+bin/Release/MW5 Mod Manager.application
+bin/Release/app.publish/MW5 Mod Manager.exe

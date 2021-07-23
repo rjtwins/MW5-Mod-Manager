@@ -53,6 +53,8 @@ namespace MW5_Mod_Manager
             this.exportLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportModsFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -185,7 +187,9 @@ namespace MW5_Mod_Manager
             this.toolStripSeparator1,
             this.exportLoadOrderToolStripMenuItem,
             this.importLoadOrderToolStripMenuItem,
-            this.exportModsFolderToolStripMenuItem});
+            this.exportModsFolderToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.toolStripMenuItem1});
             this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
@@ -197,7 +201,7 @@ namespace MW5_Mod_Manager
             this.installDirectoryToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.selectToolStripMenuItem});
             this.installDirectoryToolStripMenuItem.Name = "installDirectoryToolStripMenuItem";
-            this.installDirectoryToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.installDirectoryToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.installDirectoryToolStripMenuItem.Text = "Install Directory";
             // 
             // selectToolStripMenuItem
@@ -215,7 +219,7 @@ namespace MW5_Mod_Manager
             this.windowsStoreToolStripMenuItem,
             this.epicStoreToolStripMenuItem});
             this.changeVendorToolStripMenuItem.Name = "changeVendorToolStripMenuItem";
-            this.changeVendorToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.changeVendorToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.changeVendorToolStripMenuItem.Text = "Set Vendor";
             // 
             // steamToolStripMenuItem
@@ -249,28 +253,40 @@ namespace MW5_Mod_Manager
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(174, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(175, 6);
             // 
             // exportLoadOrderToolStripMenuItem
             // 
             this.exportLoadOrderToolStripMenuItem.Name = "exportLoadOrderToolStripMenuItem";
-            this.exportLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.exportLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.exportLoadOrderToolStripMenuItem.Text = "Export Load Order";
             this.exportLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.exportLoadOrderToolStripMenuItem_Click);
             // 
             // importLoadOrderToolStripMenuItem
             // 
             this.importLoadOrderToolStripMenuItem.Name = "importLoadOrderToolStripMenuItem";
-            this.importLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.importLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.importLoadOrderToolStripMenuItem.Text = "Import Load Order";
             this.importLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.importLoadOrderToolStripMenuItem_Click);
             // 
             // exportModsFolderToolStripMenuItem
             // 
             this.exportModsFolderToolStripMenuItem.Name = "exportModsFolderToolStripMenuItem";
-            this.exportModsFolderToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.exportModsFolderToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.exportModsFolderToolStripMenuItem.Text = "Export Mods Folder";
             this.exportModsFolderToolStripMenuItem.Click += new System.EventHandler(this.exportModsFolderToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(175, 6);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
+            this.toolStripMenuItem1.Text = "Share Mods Via TCP";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // toolStripSeparator3
             // 
@@ -705,6 +721,8 @@ namespace MW5_Mod_Manager
         private Button button9;
         private Button button10;
         private Panel panel1;
+        private ToolStripSeparator toolStripSeparator5;
+        private ToolStripMenuItem toolStripMenuItem1;
     }
 }
 

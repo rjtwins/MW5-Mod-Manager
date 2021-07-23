@@ -534,9 +534,10 @@ namespace MW5_Mod_Manager
         #region pack mods to zip
         public void ThreadProc()
         {
+
+
             //Get parent dir
             string parent = Directory.GetParent(Logic.BasePath).ToString();
-
             //Check if Mods.zip allready exists delete it if so, we need to do this else the ZipFile lib will error.
             if (File.Exists(parent + "\\Mods.zip"))
             {
@@ -547,6 +548,7 @@ namespace MW5_Mod_Manager
 
         public void PackModsToZip(BackgroundWorker worker, DoWorkEventArgs e)
         {
+            Console.WriteLine("Starting zip compression");
             string parent = Directory.GetParent(Logic.BasePath).ToString();
 
             Thread t = new Thread(new ThreadStart(ThreadProc));
@@ -568,7 +570,6 @@ namespace MW5_Mod_Manager
             }
             //Open folder where we stored the zip file
             e.Result = "DONE";
-            Process.Start(parent);
         }
         #endregion
 
@@ -662,7 +663,7 @@ namespace MW5_Mod_Manager
         public void UpdateNewModOverrideData(ListView.ListViewItemCollection items, ListViewItem newItem)
         {
             string modA = newItem.SubItems[2].Text;
-            Console.WriteLine("UpdateNewModOverrideData");
+            //Console.WriteLine("UpdateNewModOverrideData");
             //Console.WriteLine("Mod checked or unchecked: " + modA);
 
             if (!newItem.Checked)
@@ -962,7 +963,7 @@ namespace MW5_Mod_Manager
         //Check for all active mods in list provided if the mods in the required section are also active.
         public Dictionary<string, List<string>> CheckRequires (ListView.ListViewItemCollection items)
         {
-            Console.WriteLine("Checking mods Requires");
+            //Console.WriteLine("Checking mods Requires");
             this.MissingModsDependenciesDict = new Dictionary<string, List<string>>();
 
             //For each mod check if their requires list is a sub list of the active mods list... aka see if the required mods are active.
@@ -1039,6 +1040,10 @@ namespace MW5_Mod_Manager
             Console.WriteLine("Starting file size monitor, FolderSize: " + compressedFolderSize.ToString());
             while (!e.Cancel && !worker.CancellationPending)
             {
+                while (!File.Exists(zipFile))
+                {
+                    System.Threading.Thread.Sleep(1000);
+                }
                 long zipFileSize = new FileInfo(zipFile).Length;
                 int progress = Math.Min((int)((zipFileSize * (long)100) / compressedFolderSize ), 100);
                 Console.WriteLine("--" + zipFileSize.ToString());
@@ -1046,7 +1051,6 @@ namespace MW5_Mod_Manager
                 worker.ReportProgress(progress);
                 System.Threading.Thread.Sleep(500);
             }
-
         }
     }
 

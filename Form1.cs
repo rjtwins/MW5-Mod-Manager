@@ -8,6 +8,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Media;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Application = System.Windows.Forms.Application;
@@ -16,19 +17,22 @@ namespace MW5_Mod_Manager
 {
     public partial class Form1 : Form
     {
-
         public Form1 MainForm;
         public MainLogic logic = new MainLogic();
+        public TCPFileShare fileShare;
         private List<ListViewItem> backupListView;
         bool filtered = false;
         private List<ListViewItem> markedForRemoval;
         public Form4 WaitForm;
         private bool MovingItem = false;
+        internal bool JustPacking = true;
+
         public Form1()
         {
             InitializeComponent();
             this.MainForm = this;
             this.logic.MainForm = this;
+            this.fileShare = new TCPFileShare(logic, this);
             this.backupListView = new List<ListViewItem>();
             this.markedForRemoval = new List<ListViewItem>();
 
@@ -48,6 +52,9 @@ namespace MW5_Mod_Manager
             backgroundWorker1.WorkerSupportsCancellation = true;
             backgroundWorker2.WorkerReportsProgress = true;
             backgroundWorker2.WorkerSupportsCancellation = true;
+
+            //start the TCP listner for TCP mod sharing
+            this.fileShare.Listener.RunWorkerAsync();
         }
 
         //handling key presses for hotkeys.
@@ -1089,12 +1096,10 @@ namespace MW5_Mod_Manager
         }
 
         //Export all mods in the mods foler (after pressing apply)
-        private void exportModsFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        internal void exportModsFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //apply current settings to file
             this.button3_Click(null, null);
-
-            //Show Form 4 with informing user that we are packaging mods..
 
             //start packing worker
             backgroundWorker1.RunWorkerAsync();
@@ -1103,6 +1108,7 @@ namespace MW5_Mod_Manager
             //Start monitoring worker
             backgroundWorker2.RunWorkerAsync();
 
+            //Show Form 4 with informing user that we are packaging mods..
             Console.WriteLine("Opening form:");
             this.WaitForm = new Form4(backgroundWorker1, backgroundWorker2);
             string message = "Packaging Mods.zip, this may take several minutes depending on the combinded size of your mods...";
@@ -1142,6 +1148,14 @@ namespace MW5_Mod_Manager
             {
                 //We are actually done!
                 MainForm.WaitForm.Close();
+
+                //For when we just wanna pack and not show the dialog
+                if (!JustPacking)
+                {
+                    JustPacking = true;
+                    return;
+                }
+
                 //Returing from dialog:
                 SystemSounds.Asterisk.Play();
                 //Get parent dir
@@ -1150,6 +1164,7 @@ namespace MW5_Mod_Manager
                 string c = "Done";
                 MessageBoxButtons b = MessageBoxButtons.OK;
                 MessageBox.Show(m, c, b);
+                Process.Start(parent);
             }
         }
 
@@ -1170,8 +1185,6 @@ namespace MW5_Mod_Manager
             else
             {
                 //We are actually done!
-                MainForm.textBox1.Invoke((MethodInvoker)delegate {
-                });
             }
         }
 
@@ -1214,6 +1227,13 @@ namespace MW5_Mod_Manager
             this.MovingItem = false;
             this.logic.GetOverridingData(listView1.Items);
             this.logic.CheckRequires(listView1.Items);
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine(logic.BasePath);
+            Form5 form5 = new Form5(this);
+            form5.ShowDialog(this);
         }
     }
 

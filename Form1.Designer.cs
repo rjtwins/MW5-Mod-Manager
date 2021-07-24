@@ -53,6 +53,8 @@ namespace MW5_Mod_Manager
             this.exportLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportModsFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -84,6 +86,12 @@ namespace MW5_Mod_Manager
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.listView2 = new System.Windows.Forms.ListView();
             this.label8 = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.button12 = new System.Windows.Forms.Button();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.listBox4 = new System.Windows.Forms.ListBox();
+            this.button11 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.button9 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
@@ -93,6 +101,7 @@ namespace MW5_Mod_Manager
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -185,7 +194,9 @@ namespace MW5_Mod_Manager
             this.toolStripSeparator1,
             this.exportLoadOrderToolStripMenuItem,
             this.importLoadOrderToolStripMenuItem,
-            this.exportModsFolderToolStripMenuItem});
+            this.exportModsFolderToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.toolStripMenuItem1});
             this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
@@ -197,7 +208,7 @@ namespace MW5_Mod_Manager
             this.installDirectoryToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.selectToolStripMenuItem});
             this.installDirectoryToolStripMenuItem.Name = "installDirectoryToolStripMenuItem";
-            this.installDirectoryToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.installDirectoryToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.installDirectoryToolStripMenuItem.Text = "Install Directory";
             // 
             // selectToolStripMenuItem
@@ -215,7 +226,7 @@ namespace MW5_Mod_Manager
             this.windowsStoreToolStripMenuItem,
             this.epicStoreToolStripMenuItem});
             this.changeVendorToolStripMenuItem.Name = "changeVendorToolStripMenuItem";
-            this.changeVendorToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.changeVendorToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.changeVendorToolStripMenuItem.Text = "Set Vendor";
             // 
             // steamToolStripMenuItem
@@ -249,28 +260,42 @@ namespace MW5_Mod_Manager
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(174, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(175, 6);
             // 
             // exportLoadOrderToolStripMenuItem
             // 
             this.exportLoadOrderToolStripMenuItem.Name = "exportLoadOrderToolStripMenuItem";
-            this.exportLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.exportLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.exportLoadOrderToolStripMenuItem.Text = "Export Load Order";
             this.exportLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.exportLoadOrderToolStripMenuItem_Click);
             // 
             // importLoadOrderToolStripMenuItem
             // 
             this.importLoadOrderToolStripMenuItem.Name = "importLoadOrderToolStripMenuItem";
-            this.importLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.importLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.importLoadOrderToolStripMenuItem.Text = "Import Load Order";
             this.importLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.importLoadOrderToolStripMenuItem_Click);
             // 
             // exportModsFolderToolStripMenuItem
             // 
             this.exportModsFolderToolStripMenuItem.Name = "exportModsFolderToolStripMenuItem";
-            this.exportModsFolderToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.exportModsFolderToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.exportModsFolderToolStripMenuItem.Text = "Export Mods Folder";
             this.exportModsFolderToolStripMenuItem.Click += new System.EventHandler(this.exportModsFolderToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(175, 6);
+            this.toolStripSeparator5.Visible = false;
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
+            this.toolStripMenuItem1.Text = "Share Mods Via TCP";
+            this.toolStripMenuItem1.Visible = false;
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // toolStripSeparator3
             // 
@@ -454,6 +479,7 @@ namespace MW5_Mod_Manager
             this.listBox2.HorizontalScrollbar = true;
             this.listBox2.Location = new System.Drawing.Point(6, 256);
             this.listBox2.Name = "listBox2";
+            this.listBox2.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.listBox2.Size = new System.Drawing.Size(329, 225);
             this.listBox2.TabIndex = 22;
             this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
@@ -496,6 +522,7 @@ namespace MW5_Mod_Manager
             // 
             // tabControl1
             // 
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Location = new System.Drawing.Point(838, 26);
@@ -554,6 +581,69 @@ namespace MW5_Mod_Manager
             this.label8.Size = new System.Drawing.Size(16, 13);
             this.label8.TabIndex = 31;
             this.label8.Text = "---";
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.button12);
+            this.tabPage3.Controls.Add(this.textBox2);
+            this.tabPage3.Controls.Add(this.listBox4);
+            this.tabPage3.Controls.Add(this.button11);
+            this.tabPage3.Controls.Add(this.button7);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(338, 484);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Save/Load Presets";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            this.tabPage3.Click += new System.EventHandler(this.tabPage3_Click);
+            // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(243, 13);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(86, 41);
+            this.button12.TabIndex = 5;
+            this.button12.Text = "Delete Preset";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(6, 84);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(323, 20);
+            this.textBox2.TabIndex = 4;
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            // 
+            // listBox4
+            // 
+            this.listBox4.FormattingEnabled = true;
+            this.listBox4.Location = new System.Drawing.Point(7, 125);
+            this.listBox4.Name = "listBox4";
+            this.listBox4.Size = new System.Drawing.Size(323, 355);
+            this.listBox4.TabIndex = 3;
+            this.listBox4.SelectedIndexChanged += new System.EventHandler(this.listBox4_SelectedIndexChanged);
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(125, 13);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(86, 41);
+            this.button11.TabIndex = 2;
+            this.button11.Text = "Load Preset";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(7, 13);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(86, 41);
+            this.button7.TabIndex = 1;
+            this.button7.Text = "Save Preset";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // backgroundWorker2
             // 
@@ -642,6 +732,8 @@ namespace MW5_Mod_Manager
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -705,6 +797,14 @@ namespace MW5_Mod_Manager
         private Button button9;
         private Button button10;
         private Panel panel1;
+        private ToolStripSeparator toolStripSeparator5;
+        private ToolStripMenuItem toolStripMenuItem1;
+        private TabPage tabPage3;
+        public TextBox textBox2;
+        public ListBox listBox4;
+        public Button button11;
+        public Button button7;
+        public Button button12;
     }
 }
 

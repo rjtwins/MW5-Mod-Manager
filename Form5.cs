@@ -13,13 +13,13 @@ namespace MW5_Mod_Manager
     public partial class Form5 : Form
     {
         Form1 MainForm;
-        TCPFileShare fileShare;
+        //TCPFileShare fileShare;
 
         public Form5(Form1 MainForm)
         {
             InitializeComponent();
             this.MainForm = MainForm;
-            this.fileShare = MainForm.fileShare;
+            //this.fileShare = MainForm.fileShare;
             this.textBox1.Text = "127.0.0.1";
         }
 
@@ -30,7 +30,7 @@ namespace MW5_Mod_Manager
             button2.Enabled = false;
             this.progressBar1.Value = 0;
             this.label1.Text = "";
-            fileShare.prepareSentTCP(MainForm, this);
+            //fileShare.prepareSentTCP(MainForm, this);
         }
 
         public void SetLabel1Text(string txt)
@@ -55,7 +55,7 @@ namespace MW5_Mod_Manager
 
         private void button3_Click(object sender, EventArgs e)
         {
-            this.fileShare.CancelUpload();
+            //this.fileShare.CancelUpload();
         }
 
         private void button2_Click(object sender, EventArgs e)

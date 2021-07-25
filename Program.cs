@@ -188,10 +188,10 @@ namespace MW5_Mod_Manager
                 string json = File.ReadAllText(complete + @"\ProgramData.json");
                 this.ProgramData = JsonConvert.DeserializeObject<ProgramData>(json);
 
-                Console.WriteLine("Finshed loading ProgramData.json:" 
-                    + " Vendor: " + this.ProgramData.vendor 
-                    + " Version: " + this.ProgramData.version 
-                    + " Installdir: " + this.ProgramData.installdir);
+                //Console.WriteLine("Finshed loading ProgramData.json:" 
+                    //+ " Vendor: " + this.ProgramData.vendor 
+                    //+ " Version: " + this.ProgramData.version 
+                    //+ " Installdir: " + this.ProgramData.installdir);
 
                 if (this.ProgramData.installdir != null && this.ProgramData.installdir != "")
                 {
@@ -208,9 +208,9 @@ namespace MW5_Mod_Manager
             }
             catch (Exception e)
             {
-                Console.WriteLine("ERROR: Something went wrong while loading ProgramData.json");
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                //Console.WriteLine("ERROR: Something went wrong while loading ProgramData.json");
+                //Console.WriteLine(e.Message);
+                //Console.WriteLine(e.StackTrace);
             }
 
             if (this.BasePath != null && this.BasePath != "")
@@ -235,8 +235,8 @@ namespace MW5_Mod_Manager
                 System.IO.File.WriteAllText(complete + @"\ProgramData.json", " ");
             }catch(Exception Ex)
             {
-                Console.WriteLine(Ex.Message);
-                Console.WriteLine(Ex.StackTrace);
+                //Console.WriteLine(Ex.Message);
+                //Console.WriteLine(Ex.StackTrace);
                 return;
             }
         }
@@ -256,12 +256,12 @@ namespace MW5_Mod_Manager
             //{
             //    if (WorkshopPath == "")
             //    {
-            //        Console.WriteLine("Found Steam version");
+            //        //Console.WriteLine("Found Steam version");
             //        string workshopPath = BasePath;
             //        workshopPath = workshopPath.Remove(workshopPath.Length - 46, 46);
-            //        Console.WriteLine($"trimmed path is {workshopPath}");
+            //        //Console.WriteLine($"trimmed path is {workshopPath}");
             //        workshopPath += ("workshop\\content\\784080");
-            //        Console.WriteLine($"full workshop path is {workshopPath}");
+            //        //Console.WriteLine($"full workshop path is {workshopPath}");
             //        WorkshopPath = workshopPath;
             //    }
             //    if (!Directory.Exists(WorkshopPath))
@@ -502,7 +502,7 @@ namespace MW5_Mod_Manager
 
         public void PackModsToZip(BackgroundWorker worker, DoWorkEventArgs e)
         {
-            Console.WriteLine("Starting zip compression");
+            //Console.WriteLine("Starting zip compression");
             string parent = Directory.GetParent(Logic.BasePath).ToString();
 
             Thread t = new Thread(new ThreadStart(ThreadProc));
@@ -543,7 +543,7 @@ namespace MW5_Mod_Manager
                 chars[i] = temp;
             }
             string scrambled = new string(chars);
-            Console.WriteLine(scrambled);
+            //Console.WriteLine(scrambled);
             return scrambled;
         }
 
@@ -563,7 +563,7 @@ namespace MW5_Mod_Manager
                 scramChars[i] = temp;
             }
             string unscrambled = new string(scramChars);
-            Console.WriteLine(unscrambled);
+            //Console.WriteLine(unscrambled);
             return unscrambled;
         }
         */
@@ -608,8 +608,8 @@ namespace MW5_Mod_Manager
                 if (this.OverrridingData[modB].overriddenBy.Count == 0)
                     this.OverrridingData[modB].isOverriden = false;
             }
-            Console.WriteLine("ResetOverrdingBetweenMods modA: " + modA + " " + this.OverrridingData[modA].isOverriding + " " + this.OverrridingData[modA].isOverriden);
-            Console.WriteLine("ResetOverrdingBetweenMods modB: " + modB + " " + this.OverrridingData[modB].isOverriding + " " + this.OverrridingData[modB].isOverriden);
+            //Console.WriteLine("ResetOverrdingBetweenMods modA: " + modA + " " + this.OverrridingData[modA].isOverriding + " " + this.OverrridingData[modA].isOverriden);
+            //Console.WriteLine("ResetOverrdingBetweenMods modB: " + modB + " " + this.OverrridingData[modB].isOverriding + " " + this.OverrridingData[modB].isOverriden);
 
         }
 
@@ -622,7 +622,7 @@ namespace MW5_Mod_Manager
             if (File.Exists(JsonFile))
                 File.Delete(JsonFile);
 
-            Console.WriteLine(JsonString);
+            //Console.WriteLine(JsonString);
             StreamWriter sw = File.CreateText(JsonFile);
             sw.WriteLine(JsonString);
             sw.Flush();
@@ -643,8 +643,8 @@ namespace MW5_Mod_Manager
             {
                 string json = File.ReadAllText(JsonFile);
                 temp = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-                Console.WriteLine("OUTPUT HERE!");
-                Console.WriteLine(JsonConvert.SerializeObject(temp, Formatting.Indented));
+                //Console.WriteLine("OUTPUT HERE!");
+                //Console.WriteLine(JsonConvert.SerializeObject(temp, Formatting.Indented));
             }
             catch (Exception Ex)
             {
@@ -661,12 +661,12 @@ namespace MW5_Mod_Manager
         public void UpdateNewModOverrideData(List<ModItem> items, ModItem newItem)
         {
             string modA = newItem.SubItems[2].Text;
-            //Console.WriteLine("UpdateNewModOverrideData");
-            //Console.WriteLine("Mod checked or unchecked: " + modA);
+            ////Console.WriteLine("UpdateNewModOverrideData");
+            ////Console.WriteLine("Mod checked or unchecked: " + modA);
 
             if (!newItem.Checked)
             {
-                //Console.WriteLine("--Unchecked");
+                ////Console.WriteLine("--Unchecked");
                 if (this.OverrridingData.ContainsKey(modA))
                     this.OverrridingData.Remove(modA);
 
@@ -687,7 +687,7 @@ namespace MW5_Mod_Manager
             }
             else
             {
-                //Console.WriteLine("--Unchecked");
+                ////Console.WriteLine("--Unchecked");
                 if (!this.OverrridingData.ContainsKey(modA))
                 {
                     this.OverrridingData[modA] = new OverridingData
@@ -728,8 +728,8 @@ namespace MW5_Mod_Manager
         {
             string modA = movedMod.SubItems[2].Text;
 
-            Console.WriteLine("UpdateModOverridingdata");
-            Console.WriteLine("--" + modA);
+            //Console.WriteLine("UpdateModOverridingdata");
+            //Console.WriteLine("--" + modA);
 
             int indexToCheck = 0;
             if (movedUp)
@@ -739,7 +739,7 @@ namespace MW5_Mod_Manager
 
             ModItem itemB = items[indexToCheck];
             string modB = itemB.SubItems[2].Text;
-            Console.WriteLine("++" + modB);
+            //Console.WriteLine("++" + modB);
 
             if (!this.OverrridingData.ContainsKey(modA))
             {
@@ -792,7 +792,7 @@ namespace MW5_Mod_Manager
             if (intersect.Count() == 0)
                 return;
 
-            //Console.WriteLine("---Intersection: " + modB + " : " + priorityB.ToString());
+            ////Console.WriteLine("---Intersection: " + modB + " : " + priorityB.ToString());
 
             //If we are loaded after the mod we are looking at we are overriding it.
             if (priorityA > priorityB)
@@ -829,8 +829,8 @@ namespace MW5_Mod_Manager
         //else returns an empty string.
         public void GetOverridingData(List<ModItem> items)
         {
-            //Console.WriteLine(Environment.StackTrace);
-            //Console.WriteLine("Starting Overriding data check");
+            ////Console.WriteLine(Environment.StackTrace);
+            ////Console.WriteLine("Starting Overriding data check");
             this.OverrridingData.Clear();
 
             foreach (ModItem itemA in items)
@@ -854,7 +854,7 @@ namespace MW5_Mod_Manager
                 }
                 OverridingData A = this.OverrridingData[modA];
 
-                Console.WriteLine("Checking: " + modA + " : " + priorityA.ToString());
+                //Console.WriteLine("Checking: " + modA + " : " + priorityA.ToString());
                 foreach (ModItem itemB in items)
                 {
                     string modB = itemB.FolderName;
@@ -871,7 +871,7 @@ namespace MW5_Mod_Manager
                         A.overrides.ContainsKey(modB)
                         )
                     {
-                        //Console.WriteLine("--" + modA + "has allready been compared to: " + modB);
+                        ////Console.WriteLine("--" + modA + "has allready been compared to: " + modB);
                         continue;
                     }
 
@@ -884,7 +884,7 @@ namespace MW5_Mod_Manager
                             this.OverrridingData[modB].overrides.ContainsKey(modA)
                             )
                         {
-                            //Console.WriteLine("--" + modB + "has allready been compared to: " + modA);
+                            ////Console.WriteLine("--" + modB + "has allready been compared to: " + modA);
                             continue;
                         }
                     }
@@ -906,16 +906,16 @@ namespace MW5_Mod_Manager
             //Debug output
             //foreach(string key in this.OverrridingData.Keys)
             //{
-            //    Console.WriteLine("MOD: " + key);
-            //    Console.WriteLine("--Overriden:");
+            //    //Console.WriteLine("MOD: " + key);
+            //    //Console.WriteLine("--Overriden:");
             //    foreach (string mod in OverrridingData[key].overriddenBy.Keys)
             //    {
-            //        Console.WriteLine("----" + OverrridingData[key].isOverriden);
+            //        //Console.WriteLine("----" + OverrridingData[key].isOverriden);
             //    }
-            //    Console.WriteLine("--Overrides:");
+            //    //Console.WriteLine("--Overrides:");
             //    foreach (string mod in OverrridingData[key].overrides.Keys)
             //    {
-            //        Console.WriteLine("----" + OverrridingData[key].isOverriding);
+            //        //Console.WriteLine("----" + OverrridingData[key].isOverriding);
             //    }
             //}
             #endregion
@@ -942,33 +942,33 @@ namespace MW5_Mod_Manager
                     continue;
                 }
 
-                //Console.WriteLine("Coloring mod: " + mod);
+                ////Console.WriteLine("Coloring mod: " + mod);
                 if (!this.OverrridingData.ContainsKey(mod))
                 {
                     item.SubItems[1].ForeColor = Color.Black;
-                    //Console.WriteLine("Black");
+                    ////Console.WriteLine("Black");
 
                     continue;
                 }
                 OverridingData A = OverrridingData[mod];
                 if (A.isOverriden)
                 {
-                    //Console.WriteLine("OrangeRed");
+                    ////Console.WriteLine("OrangeRed");
                     item.SubItems[1].ForeColor = Color.OrangeRed;
                 }
                 if (A.isOverriding)
                 {
-                    //Console.WriteLine("Green");
+                    ////Console.WriteLine("Green");
                     item.SubItems[1].ForeColor = Color.Green;
                 }
                 if (A.isOverriding && A.isOverriden)
                 {
-                    //Console.WriteLine("Orange");
+                    ////Console.WriteLine("Orange");
                     item.SubItems[1].ForeColor = Color.Orange;
                 }
                 if (!A.isOverriding && !A.isOverriden)
                 {
-                    //Console.WriteLine("Black");
+                    ////Console.WriteLine("Black");
                     item.SubItems[1].ForeColor = Color.Black;
                 }
             }
@@ -977,12 +977,13 @@ namespace MW5_Mod_Manager
         //Check for all active mods in list provided if the mods in the required section are also active.
         public Dictionary<string, List<string>> CheckRequires (List<ModItem> items)
         {
-            //Console.WriteLine("Checking mods Requires");
+            ////Console.WriteLine("Checking mods Requires");
             this.MissingModsDependenciesDict = new Dictionary<string, List<string>>();
 
             //For each mod check if their requires list is a sub list of the active mods list... aka see if the required mods are active.
             foreach(ModItem item in items)
             {
+                Console.WriteLine("---" + item.SubItems[1].Text);
                 if (!item.Checked)
                 {
                     item.SubItems[5].BackColor = Color.White;
@@ -1003,13 +1004,6 @@ namespace MW5_Mod_Manager
                     continue;
                 }
 
-                Console.WriteLine(item.SubItems[1].Text);
-                Console.WriteLine("List of Requires");
-                foreach (string mod in ModDetails[modFolderName].Requires)
-                {
-                    Console.WriteLine("--" + mod);
-                }
-
                 List<string> Requires = ModDetails[modFolderName].Requires;
                 List<string> activeMods = new List<string>();
 
@@ -1019,7 +1013,7 @@ namespace MW5_Mod_Manager
                         continue;
                     if (!(items.IndexOf(itemB) > items.IndexOf(item)))
                         continue;
-                    //Console.WriteLine(itemB.SubItems[1].Text);
+                    ////Console.WriteLine(itemB.SubItems[1].Text);
                     activeMods.Add(itemB.SubItems[1].Text);
                 }
                 
@@ -1028,12 +1022,12 @@ namespace MW5_Mod_Manager
 
                 if (missingMods.Count == 0)
                 {
-                    Console.WriteLine("All subset items found!");
+                    ////Console.WriteLine("All subset items found!");
                     item.SubItems[5].BackColor = Color.Green;
                     item.SubItems[5].Text = "FOUND";
                     continue;
                 }
-                Console.WriteLine("Not all subset items found!");
+                ////Console.WriteLine("Not all subset items found!");
                 item.SubItems[5].BackColor = Color.Red;
                 item.SubItems[5].Text = "MISSING";
                 MissingModsDependenciesDict[modDisplayName] = missingMods;
@@ -1058,7 +1052,7 @@ namespace MW5_Mod_Manager
             long folderSize = Utils.DirSize(new DirectoryInfo(BasePath));
             //zip usually does about 60 percent but we dont wanna complete at like 85 or 90 lets overestimate
             long compressedFolderSize = (long)Math.Round(folderSize * 0.35);
-            Console.WriteLine("Starting file size monitor, FolderSize: " + compressedFolderSize.ToString());
+            //Console.WriteLine("Starting file size monitor, FolderSize: " + compressedFolderSize.ToString());
             while (!e.Cancel && !worker.CancellationPending)
             {
                 while (!File.Exists(zipFile))
@@ -1067,8 +1061,8 @@ namespace MW5_Mod_Manager
                 }
                 long zipFileSize = new FileInfo(zipFile).Length;
                 int progress = Math.Min((int)((zipFileSize * (long)100) / compressedFolderSize ), 100);
-                Console.WriteLine("--" + zipFileSize.ToString());
-                Console.WriteLine("--" + progress.ToString());
+                //Console.WriteLine("--" + zipFileSize.ToString());
+                //Console.WriteLine("--" + progress.ToString());
                 worker.ReportProgress(progress);
                 System.Threading.Thread.Sleep(500);
             }

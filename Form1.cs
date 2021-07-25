@@ -79,6 +79,9 @@ namespace MW5_Mod_Manager
             this.rotatingLabel1.NewText = "<- Low Priority/Loaded First --- High Priority/Loaded Last ->";     // whatever you want to display
             this.rotatingLabel1.ForeColor = Color.Black;    // color to display
             this.rotatingLabel1.RotateAngle = -90;          // angle to rotate
+
+            logic.CheckRequires(ListViewData);
+            logic.GetOverridingData(ListViewData);
         }
 
         //handling key presses for hotkeys.
@@ -492,7 +495,6 @@ namespace MW5_Mod_Manager
                     ListViewData.Add(item1);
                 }
 
-                logic.GetOverridingData(ListViewData);
                 UpdateListView();
                 logic.SaveProgramData();
             }
@@ -505,7 +507,6 @@ namespace MW5_Mod_Manager
                 MessageBox.Show(message, caption, buttons);
             }
             this.LoadingAndFilling = false;
-            logic.CheckRequires(ListViewData);
         }
 
         //Fill list view from internal list of data.
@@ -857,8 +858,6 @@ namespace MW5_Mod_Manager
         //Crude filter because to lazy to add a proper list as backup for the items.
         private void filterBox_TextChanged(object sender, EventArgs e)
         {
-            //Console.WriteLine("There are " + this.backupListView.Count() + " items in the backup");
-
             string filtertext = MainForm.filterBox.Text.ToLower();
             if (
                 filtertext == "" 
@@ -866,12 +865,11 @@ namespace MW5_Mod_Manager
                 || string.IsNullOrEmpty(filtertext)
                 )
             {
-                Console.WriteLine("No filter text");
+                //Console.WriteLine("No filter text");
                 if (this.filtered) //we are returning from filtering
                 {
                     foreach (ListViewItem x in this.ListViewData)
                     {
-                        x.SubItems[0].BackColor = Color.White;
                         x.SubItems[1].BackColor = Color.White;
                         x.SubItems[2].BackColor = Color.White;
                         x.SubItems[3].BackColor = Color.White;
@@ -881,6 +879,7 @@ namespace MW5_Mod_Manager
                 }
                 else //We are not returning from a filter
                 {
+                    //This should never happen. We can't return from a filter we never entered.
                     // do nothing
                 }
                 MainForm.button1.Enabled = true;
@@ -889,37 +888,14 @@ namespace MW5_Mod_Manager
             }
             else
             {
-                Console.WriteLine("Filter Text: " + filtertext);
-                this.listView1.Items.Clear();
-
-                foreach (ListViewItem x in this.ListViewData)
+                this.filtered = true;
+                //Console.WriteLine("Filter Text: " + filtertext);
+                if (MainForm.checkBox1.Checked)
                 {
-                    x.SubItems[0].BackColor = Color.White;
-                    x.SubItems[1].BackColor = Color.White;
-                    x.SubItems[2].BackColor = Color.White;
-                    x.SubItems[3].BackColor = Color.White;
-                    x.SubItems[4].BackColor = Color.White;
-                }
-
-                //Check if the items modname, foltername or author stars with or contains the filter text
-                foreach (ListViewItem item in this.ListViewData)
-                {
-                    if (
-                        item.SubItems[1].Text.ToLower().StartsWith(filtertext) ||
-                        item.SubItems[2].Text.ToLower().StartsWith(filtertext) ||
-                        item.SubItems[3].Text.ToLower().StartsWith(filtertext) ||
-                        item.SubItems[1].Text.ToLower().Contains(filtertext) ||
-                        item.SubItems[2].Text.ToLower().Contains(filtertext) ||
-                        item.SubItems[3].Text.ToLower().Contains(filtertext)
-                        )
+                    foreach (ListViewItem item in this.ListViewData)
                     {
-                        if (!MainForm.checkBox1.Checked)
+                        if(MatchItemToText(filtertext, item))
                         {
-                            MainForm.listView1.Items.Add(item);
-                        }
-                        else
-                        {
-                            item.SubItems[0].BackColor = Color.Yellow;
                             item.SubItems[1].BackColor = Color.Yellow;
                             item.SubItems[2].BackColor = Color.Yellow;
                             item.SubItems[3].BackColor = Color.Yellow;
@@ -927,14 +903,42 @@ namespace MW5_Mod_Manager
                         }
                     }
                 }
-                if (MainForm.checkBox1.Checked)
+                else
                 {
-                    UpdateListView();
+                    this.listView1.Items.Clear();
+                    foreach (ListViewItem item in this.ListViewData)
+                    {
+                        if (MatchItemToText(filtertext, item))
+                        {
+                            item.SubItems[1].BackColor = Color.White;
+                            item.SubItems[2].BackColor = Color.White;
+                            item.SubItems[3].BackColor = Color.White;
+                            item.SubItems[4].BackColor = Color.White;
+                            MainForm.listView1.Items.Add(item);
+                        }
+                    }
                 }
                 MainForm.button1.Enabled = false;
                 MainForm.button2.Enabled = false;
-                this.filtered = true;
             }
+        }
+
+        //Check all items in list view data and see if their content can be matched to a string.
+        private bool MatchItemToText(string filtertext, ListViewItem item)
+        {
+            if
+                (
+                    item.SubItems[1].Text.ToLower().StartsWith(filtertext) ||
+                    item.SubItems[2].Text.ToLower().StartsWith(filtertext) ||
+                    item.SubItems[3].Text.ToLower().StartsWith(filtertext) ||
+                    item.SubItems[1].Text.ToLower().Contains(filtertext) ||
+                    item.SubItems[2].Text.ToLower().Contains(filtertext) ||
+                    item.SubItems[3].Text.ToLower().Contains(filtertext)
+                )
+            {
+                return true;
+            }
+            return false;
         }
 
         //Filter or Highlight checkbox on tick action

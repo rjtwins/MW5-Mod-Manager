@@ -292,15 +292,16 @@ namespace MW5_Mod_Manager
                     modNames.Add(item.SubItems[1].Text);
                 }
 
-                string m = "The following mods will be permanently removed from your mods folder: " + string.Join("\n\t", modNames) + ". ARE YOU SURE?";
+                string m = "The following mods will be permanently be removed:\n" + string.Join("\n---", modNames) + "\nARE YOU SURE?";
                 string c = "Are you sure?";
                 MessageBoxButtons b = MessageBoxButtons.YesNo;
                 DialogResult r = MessageBox.Show(m, c, b);
 
                 if (r == DialogResult.Yes)
                 {
-                    foreach (ListViewItem item in markedForRemoval)
+                    foreach (ModItem item in markedForRemoval)
                     {
+                        ListViewData.Remove(item);
                         listView1.Items.Remove(item);
                         logic.DeleteMod(item.SubItems[2].Text);
                         this.logic.ModDetails.Remove(item.SubItems[2].Text);

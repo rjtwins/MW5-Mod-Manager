@@ -292,7 +292,7 @@ namespace MW5_Mod_Manager
                     modNames.Add(item.SubItems[1].Text);
                 }
 
-                string m = "The following mods will be permanently removed from your mods folder: " + string.Join(",", modNames) + ". ARE YOU SURE?";
+                string m = "The following mods will be permanently removed from your mods folder: " + string.Join("\n\t", modNames) + ". ARE YOU SURE?";
                 string c = "Are you sure?";
                 MessageBoxButtons b = MessageBoxButtons.YesNo;
                 DialogResult r = MessageBox.Show(m, c, b);
@@ -543,9 +543,20 @@ namespace MW5_Mod_Manager
                     //We need to do something different for steam cause its special.
                     if (this.logic.Vendor == "STEAM")
                     {
-                        string workShopPath = logic.BasePath.Remove(logic.BasePath.Length - 29, 29);
-                        workShopPath += ("workshop\\content\\784080");
-                        logic.BasePath = workShopPath;
+                        //Split by folder depth
+                        List<string> splitBasePath = this.logic.BasePath.Split('\\').ToList<string>();
+
+                        //Find the steamapps folder
+                        int steamAppsIndex = splitBasePath.IndexOf("steamapps");
+
+                        //Remove all past the steamapps folder
+                        splitBasePath.RemoveRange(steamAppsIndex + 1, splitBasePath.Count - steamAppsIndex - 1);
+
+                        //Put string back together
+                        this.logic.BasePath = string.Join("\\", splitBasePath);
+
+                        //Point to workshop folder.
+                        this.logic.BasePath += @"\workshop\content\784080";
                     }
                     MainForm.textBox1.Text = logic.BasePath;
                     LoadAndFill(false);
@@ -617,8 +628,6 @@ namespace MW5_Mod_Manager
             {
                 this.listBox4.Items.Add(key);
             }
-            //Pres apply
-            button3_Click(null, null);
         }
 
         //Export load order

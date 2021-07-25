@@ -993,6 +993,9 @@ namespace MW5_Mod_Manager
                 string modDisplayName = item.SubItems[1].Text;
                 string modFolderName = item.SubItems[2].Text;
 
+                if (!ModDetails.ContainsKey(modFolderName))
+                    continue;
+
                 if (ModDetails[modFolderName].Requires == null)
                 {
                     item.SubItems[5].BackColor = Color.White;

@@ -68,7 +68,7 @@ namespace MW5_Mod_Manager
             this.logic = new MainLogic();
             if (logic.TryLoadProgramData())
             {
-                this.textBox1.Text = logic.BasePath;
+                this.textBox1.Text = logic.BasePath[0];
                 LoadAndFill(false);
             }
             this.LoadPresets();
@@ -78,10 +78,9 @@ namespace MW5_Mod_Manager
             this.rotatingLabel1.AutoSize = false;           // adjust according to your text
             this.rotatingLabel1.NewText = "<- Low Priority/Loaded First --- High Priority/Loaded Last ->";     // whatever you want to display
             this.rotatingLabel1.ForeColor = Color.Black;    // color to display
+            string one = this.logic.BasePath[0];
+            string two = this.logic.BasePath[1];
             this.rotatingLabel1.RotateAngle = -90;          // angle to rotate
-
-            logic.CheckRequires(ListViewData);
-            logic.GetOverridingData(ListViewData);
         }
 
         //handling key presses for hotkeys.
@@ -147,15 +146,14 @@ namespace MW5_Mod_Manager
                 {
 
                 }
-                if (string.IsNullOrEmpty(logic.BasePath) || string.IsNullOrWhiteSpace(logic.BasePath) || logic.Vendor == "STEAM")
+                if (string.IsNullOrEmpty(logic.BasePath[0]) || string.IsNullOrWhiteSpace(logic.BasePath[0]))
                 {
                     //we may have found a mod but we have nowhere to put it :(
                     return;
                 }
                 string[] splitString = file.Split('\\');
                 string modName = splitString[splitString.Length - 1];
-                //Console.WriteLine(logic.BasePath + "\\" + modName);
-                Utils.DirectoryCopy(file, logic.BasePath + "\\" + modName, true);
+                Utils.DirectoryCopy(file, logic.BasePath[0] + "\\" + modName, true);
                 button6_Click(null, null);
             }
             else
@@ -183,7 +181,7 @@ namespace MW5_Mod_Manager
                             return;
                         }
                         //Extract mod to mods dir
-                        ZipFile.ExtractToDirectory(file, logic.BasePath);
+                        ZipFile.ExtractToDirectory(file, logic.BasePath[0]);
                         button6_Click(null, null);
                     }
                 }
@@ -306,8 +304,8 @@ namespace MW5_Mod_Manager
                     {
                         ListViewData.Remove(item);
                         listView1.Items.Remove(item);
-                        logic.DeleteMod(item.SubItems[2].Text);
-                        this.logic.ModDetails.Remove(item.SubItems[2].Text);
+                        logic.DeleteMod(logic.DirectoryToPathDict[item.SubItems[2].Text]);
+                        this.logic.ModDetails.Remove(logic.DirectoryToPathDict[item.SubItems[2].Text]);
                     }
                     markedForRemoval.Clear();
                 }
@@ -372,13 +370,14 @@ namespace MW5_Mod_Manager
             for (int i = 0; i < length; i++)
             {
                 string modName = listView1.Items[i].SubItems[2].Text;
+                string modDir = logic.DirectoryToPathDict[modName];
                 try
                 {
                     bool modEnabled = listView1.Items[i].Checked;
                     int priority = listView1.Items.Count - i;
-                    this.logic.ModList[modName] = modEnabled;
-                    this.logic.ModDetails[modName].defaultLoadOrder = priority;
-                    Console.WriteLine(modName + " : " + priority.ToString());
+                    this.logic.ModList[modDir] = modEnabled;
+                    this.logic.ModDetails[modDir].defaultLoadOrder = priority;
+                    Console.WriteLine(modDir + " : " + priority.ToString());
                 }
                 catch (Exception Ex)
                 {
@@ -425,6 +424,9 @@ namespace MW5_Mod_Manager
                     this.epicStoreToolStripMenuItem.Enabled = false;
                     this.button4.Enabled = true;
                     this.MainForm.button5.Enabled = true;
+
+                    this.textBox3.Visible = false;
+                    this.textBox1.Size = new Size(506, 20);
                 }
                 else if (this.logic.Vendor == "WINDOWS")
                 {
@@ -437,6 +439,9 @@ namespace MW5_Mod_Manager
                     this.epicStoreToolStripMenuItem.Enabled = true;
                     this.button4.Enabled = false;
                     this.MainForm.button5.Enabled = true;
+
+                    this.textBox3.Visible = false;
+                    this.textBox1.Size = new Size(506, 20);
 
                 }
                 else if (this.logic.Vendor == "STEAM")
@@ -451,6 +456,10 @@ namespace MW5_Mod_Manager
                     this.MainForm.button5.Enabled = false;
                     this.button4.Enabled = true;
 
+                    this.textBox3.Visible = true;
+                    this.textBox1.Size = new Size(250, 20);
+                    this.textBox3.Text = logic.BasePath[1];
+
                 }
                 else if (this.logic.Vendor == "GOG")
                 {
@@ -463,8 +472,19 @@ namespace MW5_Mod_Manager
                     this.epicStoreToolStripMenuItem.Enabled = true;
                     this.button4.Enabled = true;
                     this.MainForm.button5.Enabled = true;
+
+                    this.textBox3.Visible = false;
+                    this.textBox1.Size = new Size(506, 20);
                 }
             }
+
+            //Scroll all the way to the right so we can see the mods folder
+            textBox1.SelectionStart = textBox1.Text.Length;
+            textBox1.ScrollToCaret();
+            textBox1.Focus();
+            textBox3.SelectionStart = textBox1.Text.Length;
+            textBox3.ScrollToCaret();
+            textBox3.Focus();
         }
 
         //Load mod data and fill in the list box..
@@ -481,13 +501,19 @@ namespace MW5_Mod_Manager
 
                 foreach (KeyValuePair<string, bool> entry in logic.ModList)
                 {
+                    if (entry.Equals(new KeyValuePair<string, bool>(null, false)))
+                        continue;
+                    if (entry.Key == null)
+                        continue;
+
                     currentEntry = entry;
                     string modName = entry.Key;
                     ModItem item1 = new ModItem();
                     item1.UseItemStyleForSubItems = false;
                     item1.Checked = entry.Value;
                     item1.SubItems.Add(logic.ModDetails[entry.Key].displayName);
-                    item1.SubItems.Add(modName);
+                    
+                    item1.SubItems.Add(logic.PathToDirectoryDict[modName]);
                     item1.SubItems.Add(logic.ModDetails[entry.Key].author);
                     item1.SubItems.Add(logic.ModDetails[entry.Key].version);
                     item1.SubItems.Add(" ");
@@ -507,6 +533,8 @@ namespace MW5_Mod_Manager
                 MessageBox.Show(message, caption, buttons);
             }
             this.LoadingAndFilling = false;
+            logic.CheckRequires(ListViewData);
+            logic.GetOverridingData(ListViewData);
         }
 
         //Fill list view from internal list of data.
@@ -540,13 +568,13 @@ namespace MW5_Mod_Manager
                 {
                     string path = fbd.SelectedPath;
 
-                    logic.BasePath = path + @"\MW5Mercs\Mods";
+                    logic.BasePath[0] = path + @"\MW5Mercs\Mods";
 
                     //We need to do something different for steam cause its special.
                     if (this.logic.Vendor == "STEAM")
                     {
                         //Split by folder depth
-                        List<string> splitBasePath = this.logic.BasePath.Split('\\').ToList<string>();
+                        List<string> splitBasePath = this.logic.BasePath[0].Split('\\').ToList<string>();
 
                         //Find the steamapps folder
                         int steamAppsIndex = splitBasePath.IndexOf("steamapps");
@@ -555,13 +583,22 @@ namespace MW5_Mod_Manager
                         splitBasePath.RemoveRange(steamAppsIndex + 1, splitBasePath.Count - steamAppsIndex - 1);
 
                         //Put string back together
-                        this.logic.BasePath = string.Join("\\", splitBasePath);
+                        this.logic.BasePath[1] = string.Join("\\", splitBasePath);
 
                         //Point to workshop folder.
-                        this.logic.BasePath += @"\workshop\content\784080";
+                        this.logic.BasePath[1] += @"\workshop\content\784080";
                     }
-                    MainForm.textBox1.Text = logic.BasePath;
+                    MainForm.textBox1.Text = logic.BasePath[0];
+                    MainForm.textBox3.Text = logic.BasePath[1];
+
                     LoadAndFill(false);
+
+                    textBox1.SelectionStart = textBox1.Text.Length;
+                    textBox1.ScrollToCaret();
+                    textBox1.Focus();
+                    textBox3.SelectionStart = textBox1.Text.Length;
+                    textBox3.ScrollToCaret();
+                    textBox3.Focus();
                 }
             }
         }
@@ -588,7 +625,13 @@ namespace MW5_Mod_Manager
         //Saves current load order to preset.
         private void SavePreset(string name)
         {
-            this.logic.Presets[name] = JsonConvert.SerializeObject(logic.ModList, Formatting.Indented);
+            Dictionary<string, bool> NoPathModlist = new Dictionary<string, bool>();
+            foreach(KeyValuePair<string, bool> entry in logic.ModList)
+            {
+                string folderName = logic.PathToDirectoryDict[entry.Key];
+                NoPathModlist[folderName] = entry.Value;
+            }
+            this.logic.Presets[name] = JsonConvert.SerializeObject(NoPathModlist, Formatting.Indented);
             this.logic.SavePresets();
         }
 
@@ -616,7 +659,7 @@ namespace MW5_Mod_Manager
             this.listView1.Items.Clear();
             this.ListViewData.Clear();
             this.logic.ModDetails = new Dictionary<string, ModObject>();
-            this.logic.ModList = new Dictionary<string, bool>();
+            this.logic.ModList.Clear();
             this.logic.ModList = temp;
             this.LoadAndFill(true);
             this.filterBox_TextChanged(null, null);
@@ -633,9 +676,18 @@ namespace MW5_Mod_Manager
         }
 
         //Export load order
-        private void exportLoadOrderToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExportLoadOrderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string json = JsonConvert.SerializeObject(logic.ModList, Formatting.Indented);
+            Dictionary<string, bool> FolderNameModList = new Dictionary<string, bool>();
+
+            //Get the folder names from the paths in modlist
+            foreach (string key in logic.ModList.Keys)
+            {
+                string folderName = logic.PathToDirectoryDict[key];
+                FolderNameModList[folderName] = logic.ModList[key];
+            } 
+
+            string json = JsonConvert.SerializeObject(FolderNameModList, Formatting.Indented);
             Form3 exportDialog = new Form3();
 
             // Show testDialog as a modal dialog and determine if DialogResult = OK.
@@ -645,7 +697,7 @@ namespace MW5_Mod_Manager
         }
 
         //Import load order
-        private void importLoadOrderToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ImportLoadOrderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form2 testDialog = new Form2();
             string txtResult = "";
@@ -699,8 +751,11 @@ namespace MW5_Mod_Manager
             this.windowsStoreToolStripMenuItem.Enabled = true;
             this.epicStoreToolStripMenuItem.Enabled = true;
             this.MainForm.button5.Enabled = false;
-            this.textBox1.Text = logic.BasePath;
-            LoadAndFill(false);
+            this.textBox1.Text = logic.BasePath[0];
+            this.textBox3.Text = logic.BasePath[1];
+
+            this.textBox3.Visible = true;
+            this.textBox1.Size = new Size(250, 20);
         }
 
         //Tool strip for selecting gog as a vendor
@@ -717,9 +772,11 @@ namespace MW5_Mod_Manager
             this.gogToolStripMenuItem.Enabled = false;
             this.windowsStoreToolStripMenuItem.Enabled = true;
             this.epicStoreToolStripMenuItem.Enabled = true;
-            this.textBox1.Text = logic.BasePath;
+            this.textBox1.Text = logic.BasePath[0];
             this.MainForm.button5.Enabled = true;
-            LoadAndFill(false);
+
+            this.textBox3.Visible = false;
+            this.textBox1.Size = new Size(506, 20);
         }
 
         //Tool strip for selecting windows store as a vendor
@@ -737,10 +794,12 @@ namespace MW5_Mod_Manager
             this.gogToolStripMenuItem.Enabled = true;
             this.windowsStoreToolStripMenuItem.Enabled = false;
             this.epicStoreToolStripMenuItem.Enabled = true;
-            this.logic.BasePath = Application.LocalUserAppDataPath.Replace(@"\MW5_Mod_Manager\MW5 Mod Manager\1.0.0.0", "") + @"\MW5Mercs\Saved\Mods";
-            this.textBox1.Text = logic.BasePath;
+            this.logic.BasePath[0] = Application.LocalUserAppDataPath.Replace(@"\MW5_Mod_Manager\MW5 Mod Manager\1.0.0.0", "") + @"\MW5Mercs\Saved\Mods";
+            this.textBox1.Text = logic.BasePath[0];
             this.MainForm.button5.Enabled = true;
-            LoadAndFill(false);
+
+            this.textBox3.Visible = false;
+            this.textBox1.Size = new Size(506, 20);
         }
 
         //Tool strip for selecting epic store as a vendor
@@ -757,8 +816,11 @@ namespace MW5_Mod_Manager
             this.gogToolStripMenuItem.Enabled = true;
             this.windowsStoreToolStripMenuItem.Enabled = true;
             this.epicStoreToolStripMenuItem.Enabled = false;
-            this.textBox1.Text = logic.BasePath;
+            this.textBox1.Text = logic.BasePath[0];
             this.MainForm.button5.Enabled = true;
+
+            this.textBox3.Visible = false;
+            this.textBox1.Size = new Size(506, 20);
         }
         #endregion
 
@@ -799,7 +861,7 @@ namespace MW5_Mod_Manager
             }
             else if (this.logic.Vendor == "GOG")
             {
-                string Gamepath = this.logic.BasePath;
+                string Gamepath = this.logic.BasePath[0];
                 Gamepath = Gamepath.Remove(Gamepath.Length - 13, 13);
                 Gamepath += "MechWarrior.exe";
                 try
@@ -836,13 +898,17 @@ namespace MW5_Mod_Manager
         //Open mods folder button
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(this.logic.BasePath) || string.IsNullOrWhiteSpace(this.logic.BasePath))
+            if (string.IsNullOrEmpty(this.logic.BasePath[0]) || string.IsNullOrWhiteSpace(this.logic.BasePath[0]))
             {
                 return;
             }
             try
             {
-                Process.Start(this.logic.BasePath);
+                Process.Start(this.logic.BasePath[0]);
+                if (!string.IsNullOrEmpty(this.logic.BasePath[1]) && !string.IsNullOrWhiteSpace(this.logic.BasePath[1]))
+                {
+                    Process.Start(this.logic.BasePath[1]);
+                }
             }
             catch (Win32Exception win32Exception)
             {
@@ -1237,7 +1303,7 @@ namespace MW5_Mod_Manager
                 //Returing from dialog:
                 SystemSounds.Asterisk.Play();
                 //Get parent dir
-                string parent = Directory.GetParent(this.logic.BasePath).ToString();
+                string parent = Directory.GetParent(this.logic.BasePath[0]).ToString();
                 string m = "Done packing mods, output in: \n" + parent + "\\Mods.zip";
                 string c = "Done";
                 MessageBoxButtons b = MessageBoxButtons.OK;
@@ -1309,7 +1375,6 @@ namespace MW5_Mod_Manager
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Console.WriteLine(logic.BasePath);
             Form5 form5 = new Form5(this);
             form5.ShowDialog(this);
         }
@@ -1429,6 +1494,7 @@ namespace MW5_Mod_Manager
         {
 
         }
+
     }
 
     #region extra designer items

@@ -31,6 +31,7 @@ namespace MW5_Mod_Manager
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -82,27 +83,30 @@ namespace MW5_Mod_Manager
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.listView2 = new System.Windows.Forms.ListView();
-            this.label8 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.button12 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.listBox4 = new System.Windows.Forms.ListBox();
             this.button11 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.listView2 = new System.Windows.Forms.ListView();
+            this.label8 = new System.Windows.Forms.Label();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.button9 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.textProgressBarBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.rotatingLabel1 = new MW5_Mod_Manager.RotatingLabel();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.textProgressBarBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -143,6 +147,7 @@ namespace MW5_Mod_Manager
             // 
             this.textBox1.Location = new System.Drawing.Point(260, 26);
             this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(506, 20);
             this.textBox1.TabIndex = 5;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
@@ -267,14 +272,14 @@ namespace MW5_Mod_Manager
             this.exportLoadOrderToolStripMenuItem.Name = "exportLoadOrderToolStripMenuItem";
             this.exportLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.exportLoadOrderToolStripMenuItem.Text = "Export Load Order";
-            this.exportLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.exportLoadOrderToolStripMenuItem_Click);
+            this.exportLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.ExportLoadOrderToolStripMenuItem_Click);
             // 
             // importLoadOrderToolStripMenuItem
             // 
             this.importLoadOrderToolStripMenuItem.Name = "importLoadOrderToolStripMenuItem";
             this.importLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.importLoadOrderToolStripMenuItem.Text = "Import Load Order";
-            this.importLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.importLoadOrderToolStripMenuItem_Click);
+            this.importLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.ImportLoadOrderToolStripMenuItem_Click);
             // 
             // exportModsFolderToolStripMenuItem
             // 
@@ -341,9 +346,11 @@ namespace MW5_Mod_Manager
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.HideSelection = false;
+            this.listView1.LabelWrap = false;
             this.listView1.Location = new System.Drawing.Point(192, 90);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
+            this.listView1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.listView1.Size = new System.Drawing.Size(640, 446);
             this.listView1.TabIndex = 11;
             this.listView1.UseCompatibleStateImageBehavior = false;
@@ -531,57 +538,6 @@ namespace MW5_Mod_Manager
             this.tabControl1.Size = new System.Drawing.Size(346, 510);
             this.tabControl1.TabIndex = 30;
             // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.label6);
-            this.tabPage1.Controls.Add(this.label4);
-            this.tabPage1.Controls.Add(this.listBox1);
-            this.tabPage1.Controls.Add(this.label7);
-            this.tabPage1.Controls.Add(this.listBox2);
-            this.tabPage1.Controls.Add(this.listBox3);
-            this.tabPage1.Controls.Add(this.label5);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(338, 484);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Overrding Data";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage2.Controls.Add(this.listView2);
-            this.tabPage2.Controls.Add(this.label8);
-            this.tabPage2.Cursor = System.Windows.Forms.Cursors.Default;
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(338, 484);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Dependencies";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // listView2
-            // 
-            this.listView2.HideSelection = false;
-            this.listView2.Location = new System.Drawing.Point(6, 69);
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(329, 409);
-            this.listView2.TabIndex = 32;
-            this.listView2.UseCompatibleStateImageBehavior = false;
-            this.listView2.View = System.Windows.Forms.View.List;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 11);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(16, 13);
-            this.label8.TabIndex = 31;
-            this.label8.Text = "---";
-            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.button12);
@@ -645,6 +601,57 @@ namespace MW5_Mod_Manager
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.label6);
+            this.tabPage1.Controls.Add(this.label4);
+            this.tabPage1.Controls.Add(this.listBox1);
+            this.tabPage1.Controls.Add(this.label7);
+            this.tabPage1.Controls.Add(this.listBox2);
+            this.tabPage1.Controls.Add(this.listBox3);
+            this.tabPage1.Controls.Add(this.label5);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(338, 484);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Overrding Data";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage2.Controls.Add(this.listView2);
+            this.tabPage2.Controls.Add(this.label8);
+            this.tabPage2.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(338, 484);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Dependencies";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // listView2
+            // 
+            this.listView2.HideSelection = false;
+            this.listView2.Location = new System.Drawing.Point(6, 69);
+            this.listView2.Name = "listView2";
+            this.listView2.Size = new System.Drawing.Size(329, 409);
+            this.listView2.TabIndex = 32;
+            this.listView2.UseCompatibleStateImageBehavior = false;
+            this.listView2.View = System.Windows.Forms.View.List;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 11);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(16, 13);
+            this.label8.TabIndex = 31;
+            this.label8.Text = "---";
+            // 
             // backgroundWorker2
             // 
             this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker2_DoWork);
@@ -682,6 +689,15 @@ namespace MW5_Mod_Manager
             this.panel1.Size = new System.Drawing.Size(173, 248);
             this.panel1.TabIndex = 33;
             // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(513, 26);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.ReadOnly = true;
+            this.textBox3.Size = new System.Drawing.Size(253, 20);
+            this.textBox3.TabIndex = 34;
+            this.textBox3.Visible = false;
+            // 
             // rotatingLabel1
             // 
             this.rotatingLabel1.AutoSize = true;
@@ -699,6 +715,7 @@ namespace MW5_Mod_Manager
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 561);
+            this.Controls.Add(this.textBox3);
             this.Controls.Add(this.rotatingLabel1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.button9);
@@ -728,13 +745,14 @@ namespace MW5_Mod_Manager
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.textProgressBarBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -805,6 +823,8 @@ namespace MW5_Mod_Manager
         public Button button11;
         public Button button7;
         public Button button12;
+        public TextBox textBox3;
+        private BindingSource textProgressBarBindingSource;
     }
 }
 

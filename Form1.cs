@@ -8,7 +8,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Media;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Application = System.Windows.Forms.Application;
@@ -78,8 +77,6 @@ namespace MW5_Mod_Manager
             this.rotatingLabel1.AutoSize = false;           // adjust according to your text
             this.rotatingLabel1.NewText = "<- Low Priority/Loaded First --- High Priority/Loaded Last ->";     // whatever you want to display
             this.rotatingLabel1.ForeColor = Color.Black;    // color to display
-            string one = this.logic.BasePath[0];
-            string two = this.logic.BasePath[1];
             this.rotatingLabel1.RotateAngle = -90;          // angle to rotate
         }
 
@@ -142,7 +139,7 @@ namespace MW5_Mod_Manager
                     return;
                 }
                 //we've got a mod people!
-                if(logic.Vendor == "STEAM")
+                if (logic.Vendor == "STEAM")
                 {
 
                 }
@@ -191,7 +188,7 @@ namespace MW5_Mod_Manager
                         "Please extract first and drag the folder into the application.";
                     string caption = "Unsuported File Type";
                     MessageBoxButtons buttons = MessageBoxButtons.OK;
-                    DialogResult Result = MessageBox.Show(message, caption, buttons);
+                    MessageBox.Show(message, caption, buttons);
                     return;
                 }
             }
@@ -385,7 +382,7 @@ namespace MW5_Mod_Manager
                         + ". Details keys available: " + string.Join(",", this.logic.ModDetails.Keys.ToList()) + ". This mod will be skipped and the operation continued.";
                     string caption = "ERROR Key Mismatch";
                     MessageBoxButtons buttons = MessageBoxButtons.OK;
-                    DialogResult Result = MessageBox.Show(message, caption, buttons);
+                    MessageBox.Show(message, caption, buttons);
                     continue;
                 }
 
@@ -508,11 +505,13 @@ namespace MW5_Mod_Manager
 
                     currentEntry = entry;
                     string modName = entry.Key;
-                    ModItem item1 = new ModItem();
-                    item1.UseItemStyleForSubItems = false;
-                    item1.Checked = entry.Value;
+                    ModItem item1 = new ModItem
+                    {
+                        UseItemStyleForSubItems = false,
+                        Checked = entry.Value
+                    };
                     item1.SubItems.Add(logic.ModDetails[entry.Key].displayName);
-                    
+
                     item1.SubItems.Add(logic.PathToDirectoryDict[modName]);
                     item1.SubItems.Add(logic.ModDetails[entry.Key].author);
                     item1.SubItems.Add(logic.ModDetails[entry.Key].version);
@@ -626,7 +625,7 @@ namespace MW5_Mod_Manager
         private void SavePreset(string name)
         {
             Dictionary<string, bool> NoPathModlist = new Dictionary<string, bool>();
-            foreach(KeyValuePair<string, bool> entry in logic.ModList)
+            foreach (KeyValuePair<string, bool> entry in logic.ModList)
             {
                 string folderName = logic.PathToDirectoryDict[entry.Key];
                 NoPathModlist[folderName] = entry.Value;
@@ -685,7 +684,7 @@ namespace MW5_Mod_Manager
             {
                 string folderName = logic.PathToDirectoryDict[key];
                 FolderNameModList[folderName] = logic.ModList[key];
-            } 
+            }
 
             string json = JsonConvert.SerializeObject(FolderNameModList, Formatting.Indented);
             Form3 exportDialog = new Form3();
@@ -926,7 +925,7 @@ namespace MW5_Mod_Manager
         {
             string filtertext = MainForm.filterBox.Text.ToLower();
             if (
-                filtertext == "" 
+                filtertext == ""
                 || string.IsNullOrWhiteSpace(MainForm.filterBox.Text)
                 || string.IsNullOrEmpty(filtertext)
                 )
@@ -955,23 +954,36 @@ namespace MW5_Mod_Manager
             else
             {
                 this.filtered = true;
-                //Console.WriteLine("Filter Text: " + filtertext);
+                //If we are filtering with highlight
                 if (MainForm.checkBox1.Checked)
                 {
+                    //For each item in the list
                     foreach (ListViewItem item in this.ListViewData)
                     {
-                        if(MatchItemToText(filtertext, item))
+                        //Check if there is a hit.
+                        if (MatchItemToText(filtertext, item))
                         {
                             item.SubItems[1].BackColor = Color.Yellow;
                             item.SubItems[2].BackColor = Color.Yellow;
                             item.SubItems[3].BackColor = Color.Yellow;
                             item.SubItems[4].BackColor = Color.Yellow;
                         }
+                        //if not set to white.
+                        else
+                        {
+                            item.SubItems[1].BackColor = Color.White;
+                            item.SubItems[2].BackColor = Color.White;
+                            item.SubItems[3].BackColor = Color.White;
+                            item.SubItems[4].BackColor = Color.White;
+                        }
                     }
                 }
+                //We are filtering by selected adding.
                 else
                 {
+                    //Clear the list view
                     this.listView1.Items.Clear();
+                    //For each item check if they are a hit if so add them.
                     foreach (ListViewItem item in this.ListViewData)
                     {
                         if (MatchItemToText(filtertext, item))
@@ -984,12 +996,13 @@ namespace MW5_Mod_Manager
                         }
                     }
                 }
+                //While filtering dissable the up/down buttons (tough this should no longer be needed).
                 MainForm.button1.Enabled = false;
                 MainForm.button2.Enabled = false;
             }
         }
 
-        //Check all items in list view data and see if their content can be matched to a string.
+        //Check if given listviewitem can be matched to a string.
         private bool MatchItemToText(string filtertext, ListViewItem item)
         {
             if
@@ -1010,6 +1023,14 @@ namespace MW5_Mod_Manager
         //Filter or Highlight checkbox on tick action
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
+            if (checkBox1.Checked)
+            {
+                this.listView1.Items.Clear();
+                foreach (ModItem item in this.ListViewData)
+                {
+                    listView1.Items.Add(item);
+                }
+            }
             this.filterBox_TextChanged(null, null);
         }
 
@@ -1170,15 +1191,19 @@ namespace MW5_Mod_Manager
 
             if (Dependencies == null)
             {
-                ListViewItem item = new ListViewItem();
-                item.Text = "No Dependencies";
+                ListViewItem item = new ListViewItem
+                {
+                    Text = "No Dependencies"
+                };
                 return;
             }
 
             foreach (string mod in Dependencies)
             {
-                ListViewItem item = new ListViewItem();
-                item.Text = mod;
+                ListViewItem item = new ListViewItem
+                {
+                    Text = mod
+                };
                 if (MissingDependencies.Contains(mod))
                 {
                     item.ForeColor = Color.Red;
@@ -1205,16 +1230,7 @@ namespace MW5_Mod_Manager
         //Check for mod overrding data
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            if (true /*checkBox2.Checked*/)
-                this.logic.GetOverridingData(ListViewData);
-            else
-            {
-                foreach(ListViewItem item in listView1.Items)
-                {
-                    item.SubItems[1].ForeColor = Color.Black;
-                    logic.OverrridingData.Clear();
-                }
-            }
+            this.logic.GetOverridingData(ListViewData);
         }
 
         //Check for mod requirements/dependencies
@@ -1334,7 +1350,8 @@ namespace MW5_Mod_Manager
 
         private void backgroundWorker2_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            MainForm.textBox1.Invoke((MethodInvoker)delegate {
+            MainForm.textBox1.Invoke((MethodInvoker)delegate
+            {
                 // Running on the UI thread
                 MainForm.WaitForm.textProgressBar1.Value = e.ProgressPercentage;
             });
@@ -1416,8 +1433,8 @@ namespace MW5_Mod_Manager
                 string message = selected + " selected do you want to override?";
                 string caption = "Override?";
                 MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-                DialogResult result =  MessageBox.Show(message, caption, buttons);
-                if(result != DialogResult.Yes)
+                DialogResult result = MessageBox.Show(message, caption, buttons);
+                if (result != DialogResult.Yes)
                 {
                     return;
                 }
@@ -1463,14 +1480,14 @@ namespace MW5_Mod_Manager
             {
                 //No
                 //where we the top item?
-                if(index == 0)
+                if (index == 0)
                 {
                     listBox4.SelectedIndex = 0;
                 }
                 //where we the last item?
                 else if (index == listBox4.Items.Count)
                 {
-                    listBox4.SelectedIndex = listBox4.Items.Count -1;
+                    listBox4.SelectedIndex = listBox4.Items.Count - 1;
                 }
                 else
                 {
@@ -1480,7 +1497,7 @@ namespace MW5_Mod_Manager
             }
             this.logic.SavePresets();
         }
-       
+
         //For unselecting items in listbox4
         void listBox4_OnMouseClick(object sender, MouseEventArgs e)
         {

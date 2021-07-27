@@ -9,6 +9,7 @@ namespace MW5_Mod_Manager
 {
     internal static class Utils
     {
+        
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
             // Get the subdirectories for the specified directory.
@@ -364,4 +365,6 @@ namespace MW5_Mod_Manager
             set { this.SubItems[2].Text = value; }
         }
     }
+
+
 }

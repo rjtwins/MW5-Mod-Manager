@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS0168: The variable 'e' is declared but never used
+dotnet_diagnostic.CS0168.severity = none

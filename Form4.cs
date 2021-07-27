@@ -4,7 +4,6 @@ using System.Windows.Forms;
 
 namespace MW5_Mod_Manager
 {
-
     public partial class Form4 : Form
     {
         private BackgroundWorker worker1, worker2;
@@ -18,7 +17,6 @@ namespace MW5_Mod_Manager
 
         private void progressBar1_Click(object sender, EventArgs e)
         {
-
         }
 
         private void button1_Click(object sender, EventArgs e)

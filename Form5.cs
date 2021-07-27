@@ -5,7 +5,7 @@ namespace MW5_Mod_Manager
 {
     public partial class Form5 : Form
     {
-        Form1 MainForm;
+        private Form1 MainForm;
         //TCPFileShare fileShare;
 
         public Form5(Form1 MainForm)
@@ -59,17 +59,14 @@ namespace MW5_Mod_Manager
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void label1_Click(object sender, EventArgs e)
         {
-
         }
 
         private void progressBar1_Click(object sender, EventArgs e)
         {
-
         }
     }
 }

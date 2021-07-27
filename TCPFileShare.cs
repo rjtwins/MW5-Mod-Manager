@@ -33,7 +33,6 @@
 //        public BackgroundWorker Runner = new BackgroundWorker();
 //        public BackgroundWorker Listener = new BackgroundWorker();
 
-
 //        public TCPFileShare(MainLogic logic, Form1 MainForm)
 //        {
 //            this.MainForm = MainForm;
@@ -316,7 +315,6 @@
 
 //                        //Super ugly but we wanna run this on the UI thread else it will complain.
 //                        Thread t = (new Thread(() => {
-
 //                            if (MessageBox.Show(message, caption, buttons) != DialogResult.Yes)
 //                            {
 //                                //Deny the connection

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets="PostSharpHandleProduceReferenceAssemblyOverride">
+  <!-- This file is imported on .NET 5.0.100 SDK and later. -->
+
+  <PropertyGroup Condition="'$(PostSharpDisableProduceReferenceAssemblyHandling)' != 'True'">
+    <_PostSharpOriginalProduceReferenceAssembly>$(ProduceReferenceAssembly)</_PostSharpOriginalProduceReferenceAssembly>
+    <ProduceReferenceAssembly Condition="'$(ProduceReferenceAssembly)' == ''">False</ProduceReferenceAssembly>
+  </PropertyGroup>
+
+  <Target Name="PostSharpHandleProduceReferenceAssemblyOverride" Condition="'$(PostSharpDisableProduceReferenceAssemblyHandling)' != 'True'">
+    <Message Text="PostSharp has overridden the default value of the &quot;ProduceReferenceAssembly&quot; property and has set it to &quot;False&quot;. To disable this behavior, set &quot;PostSharpDisableProduceReferenceAssemblyHandling&quot; to &quot;True&quot;."
+             Importance="Normal"
+             Condition="'$(_PostSharpOriginalProduceReferenceAssembly)' == ''"
+             />    
+  </Target>
+  
+</Project>

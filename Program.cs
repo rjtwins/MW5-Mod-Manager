@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PostSharp.Community.Packer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,93 +13,30 @@ using System.Threading;
 using System.Windows.Forms;
 using Application = System.Windows.Forms.Application;
 
+[assembly: Packer]
 namespace MW5_Mod_Manager
 {
-    static class Utils
-    {
-        public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
-        {
-            // Get the subdirectories for the specified directory.
-            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
-
-            if (!dir.Exists)
-            {
-                throw new DirectoryNotFoundException(
-                    "Source directory does not exist or could not be found: "
-                    + sourceDirName);
-            }
-
-            DirectoryInfo[] dirs = dir.GetDirectories();
-
-            // If the destination directory doesn't exist, create it.       
-            Directory.CreateDirectory(destDirName);
-
-            // Get the files in the directory and copy them to the new location.
-            FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files)
-            {
-                string tempPath = Path.Combine(destDirName, file.Name);
-                file.CopyTo(tempPath, true);
-            }
-
-            // If copying subdirectories, copy them and their contents to new location.
-            if (copySubDirs)
-            {
-                foreach (DirectoryInfo subdir in dirs)
-                {
-                    string tempPath = Path.Combine(destDirName, subdir.Name);
-                    DirectoryCopy(subdir.FullName, tempPath, copySubDirs);
-                }
-            }
-        }
-
-        public static long DirSize(DirectoryInfo d)
-        {
-            long size = 0;
-            // Add file sizes.
-            FileInfo[] fis = d.GetFiles();
-            foreach (FileInfo fi in fis)
-            {
-                size += fi.Length;
-            }
-            // Add subdirectory sizes.
-            DirectoryInfo[] dis = d.GetDirectories();
-            foreach (DirectoryInfo di in dis)
-            {
-                size += DirSize(di);
-            }
-            return size;
-        }
-    }
-
-    static class Program
+    internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             Application.Run(new Form1());
-        }
-        private static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EmbedAssembly.Newtonsoft.Json.dll"))
-            {
-                byte[] assemblyData = new byte[stream.Length];
-                stream.Read(assemblyData, 0, assemblyData.Length);
-                return Assembly.Load(assemblyData);
-            }
         }
     }
 
+    /// <summary>
+    /// Contains most of the background logic and operations
+    /// Also has some dataobjects to keep track of various interal statuses.
+    /// </summary>
     public class MainLogic
     {
         public Form1 MainForm;
-        public MainLogic Logic;
 
         public float Version = 0f;
         public string Vendor = "";
@@ -122,11 +60,10 @@ namespace MW5_Mod_Manager
 
         public string rawJson;
 
-        public MainLogic()
-        {
-            this.Logic = this;
-        }
-
+        /// <summary>
+        /// Starts suquence to load all mods from folders, loads modlist, combines modlist with found folders structure
+        /// and loads details of each found mod.
+        /// </summary>
         public void Loadstuff()
         {
             //Check if the Mods directory exits:
@@ -143,6 +80,11 @@ namespace MW5_Mod_Manager
             LoadModDetails();
         }
 
+        /// <summary>
+        /// Used to load mods when using a preset or importing a load order string.
+        /// Starts suquence to load all mods from folders, loads modlist, checks mod folder names against their possible paths
+        /// and adds those paths, combines modlist with found folders structure and loads details of each found mod.
+        /// </summary>
         public void LoadStuff2()
         {
             //find all mod directories and parse them into just folder names:
@@ -158,7 +100,10 @@ namespace MW5_Mod_Manager
             LoadModDetails();
         }
 
-        //Check if a mod in the modlist (after loading from a preset or import string) is present in the loaded directories.
+        /// <summary>
+        /// Checks for all items in the modlist if they have a possible folder on system they can point to.
+        /// If not removes them from the modlist and imforms user.
+        /// </summary>
         private void CheckModDirPresent()
         {
             List<string> MissingModDirs = new List<string>();
@@ -190,9 +135,12 @@ namespace MW5_Mod_Manager
             }
         }
 
+        /// <summary>
+        /// Matches each folder name in the modlist to a folder on system.
+        /// Then replaces the old modlist with a new one keyed by full folder path.
+        /// </summary>
         private void AddPathsToModList()
         {
-            //Try and match the paths in the DirectoryToPathDict to mods just loaded in the ModList
             Dictionary<string, bool> newModList = new Dictionary<string, bool>();
             foreach (string key in this.ModList.Keys)
             {
@@ -202,7 +150,11 @@ namespace MW5_Mod_Manager
             this.ModList = newModList;
         }
 
-        //TODO FIX nah its fine I think steam will make a workshop folder automatically? maybe there are failsaves anyway.
+        //TODO Write summary
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private bool CheckModsDir()
         {
             if (this.BasePath[0] == null || this.BasePath[0] == "" || this.BasePath[0] == " ")
@@ -294,7 +246,7 @@ namespace MW5_Mod_Manager
         }
 
         //parse all directories in the basepath mods folder or steam workshop mods folder.
-        public void ParseDirectories()
+        private void ParseDirectories()
         {
             this.Directories.Clear();
 
@@ -389,7 +341,7 @@ namespace MW5_Mod_Manager
         }
 
         //Check if the mod dir is already present in data loaded from modlist.json, if not add it.
-        public void CombineDirModList()
+        private void CombineDirModList()
         {
             foreach (string modDir in this.Directories)
             {
@@ -417,7 +369,7 @@ namespace MW5_Mod_Manager
             }
         }
 
-        public void LoadModDetails()
+        private void LoadModDetails()
         {
             foreach (string modDir in this.Directories)
             {
@@ -508,10 +460,11 @@ namespace MW5_Mod_Manager
         }
 
         #region pack mods to zip
+
         public void ThreadProc()
         {
             //Get parent dir
-            string parent = Directory.GetParent(Logic.BasePath[0]).ToString();
+            string parent = Directory.GetParent(this.BasePath[0]).ToString();
             //Check if Mods.zip allready exists delete it if so, we need to do this else the ZipFile lib will error.
             if (File.Exists(parent + "\\Mods.zip"))
             {
@@ -523,7 +476,7 @@ namespace MW5_Mod_Manager
         public void PackModsToZip(BackgroundWorker worker, DoWorkEventArgs e)
         {
             //Console.WriteLine("Starting zip compression");
-            string parent = Directory.GetParent(Logic.BasePath[0]).ToString();
+            string parent = Directory.GetParent(this.BasePath[0]).ToString();
 
             Thread t = new Thread(new ThreadStart(ThreadProc));
             t.Start();
@@ -545,60 +498,8 @@ namespace MW5_Mod_Manager
             //Open folder where we stored the zip file
             e.Result = "DONE";
         }
-        #endregion
 
-        /* unused
-        public string Scramble(string input)
-        {
-            input = input.Replace(" ", "");
-            input = input.Replace("\n", "");
-            input = input.Replace("\t", "");
-            char[] chars = input.ToArray();
-            Random r = new Random(69); //he he he...
-            for (int i = 0; i < chars.Length; i++)
-            {
-                int randomIndex = r.Next(0, chars.Length);
-                char temp = chars[randomIndex];
-                chars[randomIndex] = chars[i];
-                chars[i] = temp;
-            }
-            string scrambled = new string(chars);
-            //Console.WriteLine(scrambled);
-            return scrambled;
-        }
-
-        public string UnScramble(string scrambled)
-        {
-            Random r = new Random(69);
-            char[] scramChars = scrambled.ToArray();
-            List<int> swaps = new List<int>();
-            for (int i = 0; i < scramChars.Length; i++)
-            {
-                swaps.Add(r.Next(0, scramChars.Length));
-            }
-            for (int i = scramChars.Length - 1; i >= 0; i--)
-            {
-                char temp = scramChars[swaps[i]];
-                scramChars[swaps[i]] = scramChars[i];
-                scramChars[i] = temp;
-            }
-            string unscrambled = new string(scramChars);
-            //Console.WriteLine(unscrambled);
-            return unscrambled;
-        }
-        */
-
-        //Searched first when looking for file names
-        public List<string> CommonFolders = new List<string>()
-        {
-            @"games\",
-            @"Program Files\",
-            @"Program Files (x86)\",
-            @"Epic\",
-            @"EpicGames\",
-            @"Epic Games\",
-            @"Epic_Games\"
-        };
+        #endregion pack mods to zip
 
         //Reset the orriding data between two mods and check if after mods are still overriding/beeing overrriden
         public void ResetOverrdingBetweenMods(ModItem itemA, ModItem itemB)
@@ -630,14 +531,13 @@ namespace MW5_Mod_Manager
             }
             //Console.WriteLine("ResetOverrdingBetweenMods modA: " + modA + " " + this.OverrridingData[modA].isOverriding + " " + this.OverrridingData[modA].isOverriden);
             //Console.WriteLine("ResetOverrdingBetweenMods modB: " + modB + " " + this.OverrridingData[modB].isOverriding + " " + this.OverrridingData[modB].isOverriden);
-
         }
 
         //Save presets from memory to file for use in next session.
         internal void SavePresets()
         {
             string JsonFile = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\MW5LoadOrderManager\presets.json";
-            string JsonString = JsonConvert.SerializeObject(Logic.Presets, Formatting.Indented);
+            string JsonString = JsonConvert.SerializeObject(this.Presets, Formatting.Indented);
 
             if (File.Exists(JsonFile))
                 File.Delete(JsonFile);
@@ -923,6 +823,7 @@ namespace MW5_Mod_Manager
             }
 
             #region debug output
+
             //Debug output
             //foreach(string key in this.OverrridingData.Keys)
             //{
@@ -938,7 +839,8 @@ namespace MW5_Mod_Manager
             //        //Console.WriteLine("----" + OverrridingData[key].isOverriding);
             //    }
             //}
-            #endregion
+
+            #endregion debug output
 
             ColorItemsOnOverridingData(items);
         }
@@ -1087,60 +989,6 @@ namespace MW5_Mod_Manager
                 worker.ReportProgress(progress);
                 System.Threading.Thread.Sleep(500);
             }
-        }
-    }
-
-    public class ModObject
-    {
-        public string displayName { set; get; }
-        public string version { set; get; }
-        public int buildNumber { set; get; }
-        public string description { set; get; }
-        public string author { set; get; }
-        public string authorURL { set; get; }
-        public float defaultLoadOrder { set; get; }
-        public string gameVersion { set; get; }
-        public List<string> manifest { get; set; }
-        public long steamPublishedFileId { set; get; }
-        public long steamLastSubmittedBuildNumber { set; get; }
-        public string steamModVisibility { set; get; }
-        public List<string> Requires { set; get; }
-    }
-
-    public class ProgramData
-    {
-        public string vendor { set; get; }
-        public float version { set; get; }
-        public string[] installdir { set; get; }
-    }
-
-    public class OverridingData
-    {
-        public string mod { set; get; }
-        public bool isOverriden { set; get; }
-        public bool isOverriding { set; get; }
-        public Dictionary<string, List<string>> overrides { set; get; }
-        public Dictionary<string, List<string>> overriddenBy { set; get; }
-    }
-
-    public class ModItem : ListViewItem
-    {
-
-        public ModItem() : base("", 0)
-        {
-            //other stuff here
-        }
-
-        public string DisplayName
-        {
-            get { return this.SubItems[1].Text; }
-            set { this.SubItems[1].Text = value; }
-        }
-
-        public string FolderName
-        {
-            get { return this.SubItems[2].Text; }
-            set { this.SubItems[2].Text = value; }
         }
     }
 }

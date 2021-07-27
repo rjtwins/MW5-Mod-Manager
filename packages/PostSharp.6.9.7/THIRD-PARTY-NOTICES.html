@@ -1,0 +1,582 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>PostSharp &ndash; Inclusion of third-party products</title>
+    <style type="text/css">
+        body {
+            font-family: Segoe UI;
+            font-size: 10pt;
+        }
+
+        td, th {
+            padding: 5px;
+            text-align: left;
+        }
+
+		table {
+		    border-spacing: 0;
+		    border-collapse: collapse;
+		}
+
+		table, th, td {
+	        border: 1px solid lightgrey;
+		}
+
+        pre {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>PostSharp &ndash; Inclusion of third-party products</h1>
+
+    <p>PostSharp uses third-party libraries or other resources that may be
+        distributed under licenses different than the PostSharp software.</p>
+        
+    <p>In the event that we accidentally failed to list a required notice, please
+        bring it to our attention. Create a suport request or email us:</p>
+        
+    <p>hello@postsharp.net</p>
+        
+    <p>PostSharp includes parts of the following products developer by third parties:</p>
+
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Url</th>
+            <th>Rights Owner</th>
+            <th>License</th>
+            <th>Dependency Kind</th>
+            <th>Usage Description</th>
+        </tr>
+        <tr>
+            <td>Microsoft Common Compiler Infrastructure (CCI)</td>
+            <td><a href="https://github.com/microsoft/cci">https://github.com/microsoft/cci</a></td>
+            <td>Microsoft</td>
+            <td><a href="#license-cci">MIT License</a></td>
+            <td>Source code: modified and integrated with our product</td>
+            <td>Reading and writing debugging symbols.</td>
+        </tr>
+        <tr>
+            <td>
+                Microsoft.CodeAnalysis<br />
+                Microsoft.CodeAnalysis.CSharp
+            </td>
+            <td><a href="https://github.com/dotnet/roslyn">https://github.com/dotnet/roslyn</a></td>
+            <td>.NET Foundation and Contributors</td>
+            <td><a href="#license-roslyn">MIT License</a></td>
+            <td>Source code: unchanged but recompiled with original strong name keys, used as binary dependencies, IL-merged inside our own libraries</td>
+            <td rowspan="2">Resolving file/line/column of errors and warnings</td>
+        </tr>
+        <tr>
+            <td>
+                System.Collections.Immutable
+                <br/>
+                System.Reflection.Metadata
+            </td>
+            <td><a href="https://github.com/dotnet/runtime">https://github.com/dotnet/runtime</a></td>
+            <td>.NET Foundation and Contributors</td>
+            <td><a href="#license-dotnet-runtime">MIT License</a></td>
+            <td>Source code: unchanged but recompiled with different strong name keys, used as binary dependencies, IL-merged inside our own libraries</td>
+        </tr>
+        <tr>
+            <td>
+                MD5
+            </td>
+            <td><a href="http://dlaa.me/blog/post/10100917">http://dlaa.me/blog/post/10100917</a></td>
+            <td>David Anson &amp; RSA Data Security, Inc.</td>
+            <td><a href="#license-md5">MIT License</a></td>
+            <td>Source code: modified and compiled inside our dependencies</td>
+            <td>Computing non-secure unique hashes.</td>
+        </tr>
+        <tr>
+            <td>
+                System.Threading.ReaderWriterLockSlim
+            </td>
+            <td><a href="https://github.com/Microsoft/referencesource">https://github.com/Microsoft/referencesource</a></td>
+            <td>Microsoft Corporation</td>
+            <td><a href="#license-reference-source">MIT License</a></td>
+            <td>Source code: changed, compiled together with our own libraries</td>
+            <td>Custom awaitable synchronization primitive.</td>
+        </tr>
+        <tr>
+            <td>Mhook</td>
+            <td><a href="http://codefromthe70s.org/mhook22.aspx">http://codefromthe70s.org/mhook22.aspx</a></td>
+            <td>Marton Anka, Matt Conover</td>
+            <td><a href="#license-mhook">MIT License</a></td>
+            <td>Source code: unchanged but compiled together with our own libraries</td>
+            <td>Disabling strong name verification</td>
+        </tr>
+        <tr>
+            <td>SharpCompress</td>
+            <td><a href="https://github.com/adamhathcock/sharpcompress">https://github.com/adamhathcock/sharpcompress</a></td>
+            <td>Adam Hatcock</td>
+            <td><a href="#license-sharpcompress">MIT License</a></td>
+            <td>Binaries</td>
+            <td>Uncompressing archive contained in PostSharp NuGet package.</td>
+        </tr>
+        <tr>
+            <td>System.Data.HashFunction.FNV</td>
+            <td><a href="https://github.com/brandondahler/Data.HashFunction">https://github.com/brandondahler/Data.HashFunction</a></td>
+            <td>Data.HashFunction Developers</td>
+            <td><a href="#license-data-hashfunction">MIT License</a></td>
+            <td>NuGet package</td>
+            <td>Computing fast non-cryptographic hashes.</td>
+        </tr>
+        <tr>
+            <td>MSBuild Community Tasks</td>
+            <td><a href="https://github.com/loresoft/msbuildtasks">https://github.com/loresoft/msbuildtasks</a></td>
+            <td>LoreSoft</td>
+            <td><a href="#license-msbuildtasks">BSD-2-Clause License</a></td>
+            <td>Binaries included in the repository.</td>
+            <td>Used internally within our CI.</td>
+        </tr>
+        <tr>
+            <td>NuGet Client Tools</td>
+            <td><a href="https://github.com/NuGet/NuGet.Client">https://github.com/NuGet/NuGet.Client</a></td>
+            <td>.NET Foundation and Contributors</td>
+            <td><a href="#license-nuget-client">Apache License, Version 2.0.</a></td>
+            <td>Binaries included in the repository.</td>
+            <td>Used internally within our CI.</td>
+        </tr>
+        <tr>
+            <td>7-Zip</td>
+            <td><a href="https://www.7-zip.org/">https://www.7-zip.org/</a></td>
+            <td>Igor Pavlov</td>
+            <td><a href="#license-7zip">BSD and GNU LGPL*</a></td>
+            <td>Binaries included in the repository, auto-extracted archives our distribution.</td>
+            <td>Auto-extracted archives our distribution.</td>
+        </tr>
+        <tr>
+            <td>Dynamic Expresso</td>
+            <td><a href="https://github.com/davideicardi/DynamicExpresso">https://github.com/davideicardi/DynamicExpresso</a></td>
+            <td>Davide Icardi</td>
+            <td><a href="#license-dynamicexpresso">MIT License</a></td>
+            <td>NuGet package IL-merged inside our own redistributable libraries.</td>
+            <td>Interpreting expressions for PostSharp Logging configuration.</td>
+        </tr>
+    </table>
+
+    <p>The attached notices are provided for information only.</p>
+
+    <p id="license-cci"><pre>
+License notice for Microsoft Common Compiler Infrastructure (CCI)
+--------------------------------------------------------------------
+
+http://ccimetadata.codeplex.com/
+
+The MIT License (MIT)
+
+Copyright (c) Microsoft
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+    </pre></p>
+
+    <p id="license-roslyn"><pre>
+License notice for Roslyn
+----------------------------
+        
+https://github.com/dotnet/roslyn
+        
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+    </pre></p>
+    
+    <p id="license-dotnet-runtime"><pre>
+License notice for .NET Runtime
+----------------------------------
+
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+    
+All rights reserved.
+    
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+    </pre></p>
+
+    <p id="license-md5"><pre>
+License notice for MD5
+-------------------------
+
+MIT License
+
+Copyright (c) 2006-2020 by David Anson
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+    </pre></p>
+
+    <p id="license-reference-source"><pre>
+License notice for .NET Reference Source
+-------------------------------------------
+
+https://github.com/microsoft/referencesource
+
+The MIT License (MIT)
+
+Copyright (c) Microsoft Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy 
+of this software and associated documentation files (the "Software"), to deal 
+in the Software without restriction, including without limitation the rights 
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+copies of the Software, and to permit persons to whom the Software is 
+furnished to do so, subject to the following conditions: 
+
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software. 
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
+    </pre></p>
+
+    <p id="license-mhook"><pre>
+License notice for Mhook
+---------------------------
+
+http://codefromthe70s.org/mhook22.aspx
+
+MIT License
+
+Copyright (c) 2004-2008 CodeFromThe70s.org. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+    </pre></p>
+
+    <p id="license-sharpcompress"><pre>
+License notice for SharpCompress
+-----------------------------------
+
+https://github.com/adamhathcock/sharpcompress
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Adam Hathcock
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+    </pre></p>
+
+    <p id="license-data-hashfunction"><pre>
+License notice for Data.HashFunction
+---------------------------------------
+
+https://github.com/brandondahler/Data.HashFunction
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Data.HashFunction Developers
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+    </pre></p>
+
+    <p id="license-msbuildtasks"><pre>
+License notice for MSBuild Community Tasks
+---------------------------------------------
+
+https://github.com/loresoft/msbuildtasks
+
+Copyright (c) 2014, LoreSoft
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+    </pre></p>
+
+    <p id="license-nuget-client"><pre>
+License notice for NuGet Client Tools
+-------------------------------------------
+
+https://github.com/NuGet/NuGet.Client
+
+Copyright (c) .NET Foundation and Contributors.
+
+All rights reserved.
+
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+these files except in compliance with the License. You may obtain a copy of the
+License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
+
+
+    </pre></p>
+
+    <p id="license-7zip"><pre>
+License notice for 7-Zip
+---------------------------
+
+https://www.7-zip.org/
+
+7-Zip Copyright (C) 1999-2020 Igor Pavlov.
+
+The licenses for files are:
+
+  1) 7z.dll:
+       - The "GNU LGPL" as main license for most of the code
+       - The "GNU LGPL" with "unRAR license restriction" for some code
+       - The "BSD 3-clause License" for some code
+  2) All other files: the "GNU LGPL".
+
+Redistributions in binary form must reproduce related license information from this file.
+
+Note:
+  You can use 7-Zip on any computer, including a computer in a commercial
+  organization. You don't need to register or pay for 7-Zip.
+
+GNU LGPL information
+--------------------
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You can receive a copy of the GNU Lesser General Public License from
+  http://www.gnu.org/
+
+BSD 3-clause License
+--------------------
+
+  The "BSD 3-clause License" is used for the code in 7z.dll that implements LZFSE data decompression.
+  That code was derived from the code in the "LZFSE compression library" developed by Apple Inc,
+  that also uses the "BSD 3-clause License":
+
+  ----
+  Copyright (c) 2015-2016, Apple Inc. All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+  1.  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+  2.  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
+      in the documentation and/or other materials provided with the distribution.
+
+  3.  Neither the name of the copyright holder(s) nor the names of any contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  ----
+
+unRAR license restriction
+-------------------------
+
+  The decompression engine for RAR archives was developed using source
+  code of unRAR program.
+  All copyrights to original unRAR code are owned by Alexander Roshal.
+
+  The license for original unRAR code has the following restriction:
+
+    The unRAR sources cannot be used to re-create the RAR compression algorithm,
+    which is proprietary. Distribution of modified unRAR sources in separate form
+    or as a part of other software is permitted, provided that it is clearly
+    stated in the documentation and source comments that the code may
+    not be used to develop a RAR (WinRAR) compatible archiver.
+
+    
+    </pre></p>
+
+    <p id="license-dynamicexpresso"><pre>
+License notice for DynamicExpresso
+-------------------------------------
+
+https://github.com/davideicardi/DynamicExpresso
+
+MIT License
+
+Copyright (c) 2018 Davide Icardi
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+    </pre></p>
+
+  </body>
+</html>

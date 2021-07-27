@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <DontImportPostSharp>True</DontImportPostSharp>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Register our import before TargetFrameworkInferenceTargets, where we can read and override the value of ProduceReferenceAssembly before the default is set. -->
+    <!-- This is possible only on .NET 5.0.100 SDK and later. -->
+    <BeforeTargetFrameworkInferenceTargets>$(BeforeTargetFrameworkInferenceTargets);$(MSBuildThisFileDirectory)\PostSharp.BeforeTargetFrameworkInference.targets</BeforeTargetFrameworkInferenceTargets>
+  </PropertyGroup>
+  
+</Project>

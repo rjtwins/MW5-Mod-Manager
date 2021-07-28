@@ -64,12 +64,10 @@ namespace MW5_Mod_Manager
         /// Starts suquence to load all mods from folders, loads modlist, combines modlist with found folders structure
         /// and loads details of each found mod.
         /// </summary>
-        public void Loadstuff()
+        public void LoadFromFiles()
         {
             //Check if the Mods directory exits:
-            if (!this.CheckModsDir())
-                return;
-
+            CheckModsDir();
             //find all mod directories and parse them into just folder names:
             ParseDirectories();
             //parse modlist.json
@@ -85,7 +83,7 @@ namespace MW5_Mod_Manager
         /// Starts suquence to load all mods from folders, loads modlist, checks mod folder names against their possible paths
         /// and adds those paths, combines modlist with found folders structure and loads details of each found mod.
         /// </summary>
-        public void LoadStuff2()
+        public void LoadFromImportString()
         {
             //find all mod directories and parse them into just folder names:
             ParseDirectories();
@@ -155,23 +153,50 @@ namespace MW5_Mod_Manager
         /// Checks if the set mods directory exists, if not creates one.
         /// </summary>
         /// <returns></returns>
-        public bool CheckModsDir()
+        public void CheckModsDir()
+        {
+            CheckInstalDirModsDir();
+            CheckSteamDirModsDir();
+        }
+
+        private void CheckSteamDirModsDir()
+        {
+            if (Utils.StringNullEmptyOrWhiteSpace(this.BasePath[1]))
+            {
+                return;
+            }
+            if (Directory.Exists(this.BasePath[1]))
+            {
+                return;
+            }
+            string message = "ERROR Mods folder does not exits in : " + this.BasePath[0] + " Do you want to create it?";
+            string caption = "ERROR Loading";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult Result = MessageBox.Show(message, caption, buttons);
+            if (Result == DialogResult.Yes)
+            {
+                Directory.CreateDirectory(BasePath[1]);
+            }
+        }
+
+        private void CheckInstalDirModsDir()
         {
             if (Utils.StringNullEmptyOrWhiteSpace(this.BasePath[0]))
-                return false;
-            if (!Directory.Exists(this.BasePath[0]))
             {
-                string message = "ERROR Mods folder does not exits in : " + this.BasePath[0] + " Do you want to create it?";
-                string caption = "ERROR Loading";
-                MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-                DialogResult Result = MessageBox.Show(message, caption, buttons);
-                if (Result == DialogResult.Yes)
-                {
-                    Directory.CreateDirectory(BasePath[0]);
-                }
-                return false;
+                return;
             }
-            return true;
+            if (Directory.Exists(this.BasePath[0]))
+            {
+                return;
+            }
+            string message = "ERROR Mods folder does not exits in : " + this.BasePath[0] + " Do you want to create it?";
+            string caption = "ERROR Loading";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult Result = MessageBox.Show(message, caption, buttons);
+            if (Result == DialogResult.Yes)
+            {
+                Directory.CreateDirectory(BasePath[0]);
+            }
         }
 
         //Try and load data from previous sessions
@@ -195,12 +220,15 @@ namespace MW5_Mod_Manager
                     + " Version: " + this.ProgramData.version
                     + " Installdir: " + this.ProgramData.installdir);
 
-                if (this.ProgramData.installdir != null && this.ProgramData.installdir[0] != "")
+                if (!Utils.StringNullEmptyOrWhiteSpace(this.ProgramData.installdir[0]))
                 {
                     this.BasePath[0] = this.ProgramData.installdir[0];
+                }
+                if (!Utils.StringNullEmptyOrWhiteSpace(this.ProgramData.installdir[1]))
+                {
                     this.BasePath[1] = this.ProgramData.installdir[1];
                 }
-                if (this.ProgramData.vendor != null && this.ProgramData.vendor != "")
+                if (!Utils.StringNullEmptyOrWhiteSpace(this.ProgramData.vendor))
                 {
                     this.Vendor = this.ProgramData.vendor;
                 }
@@ -253,18 +281,16 @@ namespace MW5_Mod_Manager
             //Check if basepath is there
             if (BasePath == null)
                 return;
-            if (Utils.StringNullEmptyOrWhiteSpace(BasePath[0]))
-                return;
 
-            //add install folder mods dirs
-            this.Directories.AddRange(Directory.GetDirectories(BasePath[0]));
+            HandleInstalDirDirectories();
 
-            //Add steam dirs if they are pressent
-            if (!Utils.StringNullEmptyOrWhiteSpace(BasePath[1]))
-            {
-                this.Directories.AddRange(Directory.GetDirectories(BasePath[1]));
-            }
+            HandleSteamDirectories();
 
+            AddDirectoryPathsToDict();
+        }
+
+        private void AddDirectoryPathsToDict()
+        {
             for (int i = 0; i < Directories.Count; i++)
             {
                 string directory = this.Directories[i];
@@ -277,6 +303,24 @@ namespace MW5_Mod_Manager
                 this.DirectoryToPathDict[directoryName] = directory;
                 this.PathToDirectoryDict[directory] = directoryName;
             }
+        }
+
+        private void HandleInstalDirDirectories()
+        {
+            if (Utils.StringNullEmptyOrWhiteSpace(BasePath[0]))
+            {
+                return;
+            }
+            this.Directories.AddRange(Directory.GetDirectories(BasePath[0]));
+        }
+
+        private void HandleSteamDirectories()
+        {
+            if (Utils.StringNullEmptyOrWhiteSpace(BasePath[1]))
+            {
+                return;
+            }
+            this.Directories.AddRange(Directory.GetDirectories(BasePath[1]));
         }
 
         public void SaveProgramData()
@@ -494,6 +538,7 @@ namespace MW5_Mod_Manager
                     }
                     return;
                 }
+                Thread.Yield();
             }
             //Open folder where we stored the zip file
             e.Result = "DONE";

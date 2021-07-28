@@ -505,9 +505,9 @@ namespace MW5_Mod_Manager
             try
             {
                 if (FromClipboard)
-                    logic.LoadStuff2();
+                    logic.LoadFromImportString();
                 else
-                    logic.Loadstuff();
+                    logic.LoadFromFiles();
 
                 foreach (KeyValuePair<string, bool> entry in logic.ModList)
                 {

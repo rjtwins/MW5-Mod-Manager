@@ -826,8 +826,6 @@ namespace MW5_Mod_Manager
             this.logic.Vendor = "WINDOWS";
             this.toolStripLabel1.Text = "Game Vendor : Windows Store";
             this.selectToolStripMenuItem.Enabled = false;
-            //this.searcgToolStripMenuItem.Enabled = false;
-            //this.button5.Enabled = false;
             this.button4.Enabled = false;
             this.steamToolStripMenuItem.Enabled = true;
             this.gogToolStripMenuItem.Enabled = true;

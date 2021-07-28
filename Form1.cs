@@ -220,7 +220,6 @@ namespace MW5_Mod_Manager
         {
             ListView.ListViewItemCollection items = listView1.Items;
             this.MovingItem = true;
-            bool movedToTop = false;
             int i = SelectedItemIndex();
             if (i < 1)
             {
@@ -234,7 +233,6 @@ namespace MW5_Mod_Manager
             if (Control.ModifierKeys == Keys.Shift)
             {
                 //Move to top
-                movedToTop = true;
                 items.Insert(0, item);
                 ListViewData.Insert(0, item);
 
@@ -260,7 +258,6 @@ namespace MW5_Mod_Manager
         {
             ListView.ListViewItemCollection items = listView1.Items;
             this.MovingItem = true;
-            bool movedToBottom = false;
             int i = SelectedItemIndex();
             if (i > ListViewData.Count - 2 || i < 0)
             {
@@ -275,7 +272,6 @@ namespace MW5_Mod_Manager
             if (Control.ModifierKeys == Keys.Shift)
             {
                 //Move to bottom
-                movedToBottom = true;
                 items.Insert(ListViewData.Count, item);
                 ListViewData.Insert(ListViewData.Count, item);
             }
@@ -519,7 +515,6 @@ namespace MW5_Mod_Manager
                     currentEntry = entry;
                     AddEntryToListViewAndData(entry);
                 }
-
                 UpdateListView();
                 logic.SaveProgramData();
             }
@@ -569,7 +564,14 @@ namespace MW5_Mod_Manager
         private int SelectedItemIndex()
         {
             int index = -1;
+            var SelectedItems = listView1.SelectedItems;
+            if(SelectedItems.Count == 0)
+            {
+                return index;
+            }
+
             index = listView1.SelectedItems[0].Index;
+
             if (index < 0)
             {
                 return -1;
@@ -642,6 +644,11 @@ namespace MW5_Mod_Manager
 
         //Refresh listedcheckbox
         private void button6_Click(object sender, EventArgs e)
+        {
+            RefreshAll();
+        }
+
+        private void RefreshAll()
         {
             ClearAll();
             if (logic.TryLoadProgramData())
@@ -786,7 +793,6 @@ namespace MW5_Mod_Manager
             this.MainForm.button5.Enabled = false;
             this.textBox1.Text = logic.BasePath[0];
             this.textBox3.Text = logic.BasePath[1];
-
             this.textBox3.Visible = true;
             this.textBox1.Size = new Size(250, 20);
         }
@@ -840,6 +846,9 @@ namespace MW5_Mod_Manager
 
             this.textBox3.Visible = false;
             this.textBox1.Size = new Size(506, 20);
+            logic.SaveProgramData();
+            RefreshAll();
+
         }
 
         private static string GetBasePathFromAppDataRoaming(string AppDataRoaming)
@@ -1579,6 +1588,11 @@ namespace MW5_Mod_Manager
 
         //Unused
         private void listBox4_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripDropDownButton1_Click(object sender, EventArgs e)
         {
 
         }

@@ -207,6 +207,7 @@ namespace MW5_Mod_Manager
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
             this.toolStripDropDownButton1.Size = new System.Drawing.Size(38, 22);
             this.toolStripDropDownButton1.Text = "File";
+            this.toolStripDropDownButton1.Click += new System.EventHandler(this.toolStripDropDownButton1_Click);
             // 
             // installDirectoryToolStripMenuItem
             // 
@@ -237,28 +238,28 @@ namespace MW5_Mod_Manager
             // epicStoreToolStripMenuItem
             // 
             this.epicStoreToolStripMenuItem.Name = "epicStoreToolStripMenuItem";
-            this.epicStoreToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.epicStoreToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.epicStoreToolStripMenuItem.Text = "Epic Store";
             this.epicStoreToolStripMenuItem.Click += new System.EventHandler(this.epicStoreToolStripMenuItem_Click);
             // 
             // gogToolStripMenuItem
             // 
             this.gogToolStripMenuItem.Name = "gogToolStripMenuItem";
-            this.gogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.gogToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.gogToolStripMenuItem.Text = "GOG";
             this.gogToolStripMenuItem.Click += new System.EventHandler(this.gogToolStripMenuItem_Click);
             // 
             // steamToolStripMenuItem
             // 
             this.steamToolStripMenuItem.Name = "steamToolStripMenuItem";
-            this.steamToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.steamToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.steamToolStripMenuItem.Text = "Steam";
             this.steamToolStripMenuItem.Click += new System.EventHandler(this.steamToolStripMenuItem_Click);
             // 
             // windowsStoreToolStripMenuItem
             // 
             this.windowsStoreToolStripMenuItem.Name = "windowsStoreToolStripMenuItem";
-            this.windowsStoreToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.windowsStoreToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.windowsStoreToolStripMenuItem.Text = "Windows Store";
             this.windowsStoreToolStripMenuItem.Click += new System.EventHandler(this.windowsStoreToolStripMenuItem_Click);
             // 

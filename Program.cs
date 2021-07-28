@@ -263,7 +263,7 @@ namespace MW5_Mod_Manager
                 this.ProgramData = new ProgramData();
                 string systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 string complete = Path.Combine(systemPath, @"MW5LoadOrderManager");
-                System.IO.File.WriteAllText(complete + @"\ProgramData.json", " ");
+                System.IO.File.WriteAllText(complete + @"\ProgramData.json", "");
             }
             catch (Exception Ex)
             {
@@ -950,7 +950,7 @@ namespace MW5_Mod_Manager
             //For each mod check if their requires list is a sub list of the active mods list... aka see if the required mods are active.
             foreach (ModItem item in items)
             {
-                Console.WriteLine("---" + item.SubItems[1].Text);
+                //Console.WriteLine("---" + item.SubItems[1].Text);
                 if (!item.Checked)
                 {
                     item.SubItems[5].BackColor = Color.White;

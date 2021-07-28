@@ -73,6 +73,11 @@ namespace MW5_Mod_Manager
             this.LoadPresets();
             this.SetVersionAndVender();
 
+            SetupRotatingLabel();
+        }
+
+        private void SetupRotatingLabel()
+        {
             this.rotatingLabel1.Text = "";                  // which can be changed by NewText property
             this.rotatingLabel1.AutoSize = false;           // adjust according to your text
             this.rotatingLabel1.NewText = "<- Low Priority/Loaded First --- High Priority/Loaded Last ->";     // whatever you want to display
@@ -114,75 +119,26 @@ namespace MW5_Mod_Manager
             //We only support single file drops!
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             if (files.Length != 1)
+            {
                 return;
+            }
             string file = files[0];
 
             //Lets see what we got here
             // get the file attributes for file or directory
             FileAttributes attr = File.GetAttributes(file);
-            if (attr.HasFlag(FileAttributes.Directory))
-            {
-                //Directory
-                //Check if we have a mod.json
-                bool foundMod = false;
-                foreach (string f in Directory.GetFiles(file))
-                {
-                    if (f.Contains("mod.json"))
-                    {
-                        foundMod = true;
-                        break;
-                    }
-                }
-                if (!foundMod)
-                {
-                    //No mods found
-                    return;
-                }
-                //we've got a mod people!
-                if (logic.Vendor == "STEAM")
-                {
+            bool IsDirectory = attr.HasFlag(FileAttributes.Directory);
 
-                }
-                if (string.IsNullOrEmpty(logic.BasePath[0]) || string.IsNullOrWhiteSpace(logic.BasePath[0]))
-                {
-                    //we may have found a mod but we have nowhere to put it :(
-                    return;
-                }
-                string[] splitString = file.Split('\\');
-                string modName = splitString[splitString.Length - 1];
-                Utils.DirectoryCopy(file, logic.BasePath[0] + "\\" + modName, true);
-                button6_Click(null, null);
-            }
-            else
+            HandleDirectory();
+
+            HandleFile();
+
+            //Refresh button
+            button6_Click(null, null);
+
+            void HandleFile()
             {
-                //Its a file!
-                if (file.Contains(".zip"))
-                {
-                    //we have a zip!
-                    using (ZipArchive archive = ZipFile.OpenRead(file))
-                    {
-                        bool modFound = false;
-                        foreach (ZipArchiveEntry entry in archive.Entries)
-                        {
-                            //Console.WriteLine(entry.FullName);
-                            if (entry.Name.Contains("mod.json"))
-                            {
-                                //we have found a mod!
-                                //Console.WriteLine("MOD FOUND IN ZIP!: " + entry.FullName);
-                                modFound = true;
-                                break;
-                            }
-                        }
-                        if (!modFound)
-                        {
-                            return;
-                        }
-                        //Extract mod to mods dir
-                        ZipFile.ExtractToDirectory(file, logic.BasePath[0]);
-                        button6_Click(null, null);
-                    }
-                }
-                else
+                if (!file.Contains(".zip"))
                 {
                     string message = "Only .zip files are supported. " +
                         "Please extract first and drag the folder into the application.";
@@ -191,6 +147,70 @@ namespace MW5_Mod_Manager
                     MessageBox.Show(message, caption, buttons);
                     return;
                 }
+                //we have a zip!
+                using (ZipArchive archive = ZipFile.OpenRead(file))
+                {
+                    bool modFound = false;
+                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    {
+                        //Console.WriteLine(entry.FullName);
+                        if (entry.Name.Contains("mod.json"))
+                        {
+                            //we have found a mod!
+                            //Console.WriteLine("MOD FOUND IN ZIP!: " + entry.FullName);
+                            modFound = true;
+                            break;
+                        }
+                    }
+                    if (!modFound)
+                    {
+                        return;
+                    }
+                    //Extract mod to mods dir
+                    ZipFile.ExtractToDirectory(file, logic.BasePath[0]);
+                    button6_Click(null, null);
+                }
+            }
+
+            void HandleDirectory()
+            {
+                if (!IsDirectory)
+                {
+                    return;
+                }
+                if (!ModInDirectory(file))
+                {
+                    return;
+                }
+                if (ModsFolderNotSet())
+                {
+                    return;
+                }
+
+                string modName;
+                string[] splitString = file.Split('\\');
+                modName = splitString[splitString.Length - 1];
+                Utils.DirectoryCopy(file, logic.BasePath[0] + "\\" + modName, true);
+            }
+
+            bool ModInDirectory(string _file)
+            {
+                bool foundMod = false;
+                foreach (string f in Directory.GetFiles(_file))
+                {
+                    if (f.Contains("mod.json"))
+                    {
+                        foundMod = true;
+                        break;
+                    }
+                }
+
+                return foundMod;
+            }
+
+            bool ModsFolderNotSet()
+            {
+                return !Utils.StringNullEmptyOrWhiteSpace(logic.BasePath[0]);
             }
         }
 
@@ -505,6 +525,10 @@ namespace MW5_Mod_Manager
             }
             catch (Exception e)
             {
+                if(currentEntry.Key == null)
+                {
+                    currentEntry = new KeyValuePair<string, bool>("NULL", false);
+                }
                 Console.WriteLine(e.StackTrace);
                 string message = "While loading " + currentEntry.Key.ToString() + "something went wrong.\n" + e.StackTrace;
                 string caption = "Error Loading";
@@ -561,16 +585,22 @@ namespace MW5_Mod_Manager
             {
                 DialogResult result = fbd.ShowDialog();
 
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                if (result == DialogResult.OK && !Utils.StringNullEmptyOrWhiteSpace(fbd.SelectedPath))
                 {
                     string path = fbd.SelectedPath;
 
                     logic.BasePath[0] = path + @"\MW5Mercs\Mods";
 
                     //We need to do something different for steam cause its special.
-                    if (this.logic.Vendor == "STEAM")
+                    //Once a switch now an iff.
+                    switch (this.logic.Vendor)
                     {
-                        SetSteamWorkshopPath();
+                        case "STEAM":
+                            SetSteamWorkshopPath();
+                            break;
+                        //case "GAMEPASS":
+                        //    SetGamepassPath();
+                        //    break;
                     }
                     MainForm.textBox1.Text = logic.BasePath[0];
                     MainForm.textBox3.Text = logic.BasePath[1];
@@ -711,7 +741,7 @@ namespace MW5_Mod_Manager
             txtResult = testDialog.textBox1.Text;
             testDialog.Dispose();
 
-            if (txtResult == "" || txtResult == " " ||
+            if (Utils.StringNullEmptyOrWhiteSpace(txtResult) ||
                 txtResult == "Paste load order clipboard here, any mods that you do not have but are in the pasted load order will be ignored.")
                 return;
 
@@ -739,6 +769,7 @@ namespace MW5_Mod_Manager
         }
 
         #region Vendor Selection Tool Strip buttons
+
         //Tool strip for selecting steam as a vendor
         private void steamToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -796,12 +827,34 @@ namespace MW5_Mod_Manager
             this.gogToolStripMenuItem.Enabled = true;
             this.windowsStoreToolStripMenuItem.Enabled = false;
             this.epicStoreToolStripMenuItem.Enabled = true;
-            this.logic.BasePath[0] = Application.LocalUserAppDataPath.Replace(@"\MW5_Mod_Manager\MW5 Mod Manager\1.0.0.0", "") + @"\MW5Mercs\Saved\Mods";
+
+            string AppDataRoaming = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            this.logic.BasePath[0] = GetBasePathFromAppDataRoaming(AppDataRoaming);
+            this.logic.CheckModsDir();
+
+            Console.WriteLine("BasePath from AppDataRoaming" + this.logic.BasePath[0]);
+
             this.textBox1.Text = logic.BasePath[0];
             this.MainForm.button5.Enabled = true;
 
             this.textBox3.Visible = false;
             this.textBox1.Size = new Size(506, 20);
+        }
+
+        private static string GetBasePathFromAppDataRoaming(string AppDataRoaming)
+        {
+            //Split by folder depth
+            List<string> splitBasePath = AppDataRoaming.Split('\\').ToList<string>();
+
+            //Find the steamapps folder
+            int AppDataIndex = splitBasePath.IndexOf("AppData");
+
+            //Remove all past the steamapps folder
+            splitBasePath.RemoveRange(AppDataIndex + 1, splitBasePath.Count - AppDataIndex - 1);
+
+            //Put string back together
+            return string.Join("\\", splitBasePath) + @"\Local\MW5Mercs\Saved\Mods";
         }
 
         //Tool strip for selecting epic store as a vendor
@@ -829,27 +882,38 @@ namespace MW5_Mod_Manager
         //Launch game button
         private void button4_Click(object sender, EventArgs e)
         {
-            if (this.logic.Vendor == "EPIC")
+            switch (logic.Vendor)
             {
-                LaunchEpicGame();
-            }
-            else if (this.logic.Vendor == "STEAM")
-            {
-                LaunchSteamGame();
-            }
-            else if (this.logic.Vendor == "GOG")
-            {
-                LaunchGogGame();
-            }
-            else if (this.logic.Vendor == "WINDOWS")
-            {
-                LaunchWindowsGame();
+                case "EPIC":
+                    LaunchEpicGame();
+                    break;
+                case "STEAM":
+                    LaunchSteamGame();
+                    break;
+                case "GOG":
+                    LaunchGogGame();
+                    break;
+                case "WINDOWS":
+                    LaunchWindowsGame();
+                    break;
+                case "GAMEPASS":
+                    LaunchGamepassGame();
+                    break;
             }
 
         }
 
         #region Launch Game
         private static void LaunchWindowsGame()
+        {
+            //Dunno how this works at all.. 
+            string message = "This feature is not available in this version.";
+            string caption = "Feature not available.";
+            MessageBoxButtons buttons = MessageBoxButtons.OK;
+            MessageBox.Show(message, caption, buttons);
+        }
+
+        private static void LaunchGamepassGame()
         {
             //Dunno how this works at all.. 
             string message = "This feature is not available in this version.";
@@ -922,14 +986,14 @@ namespace MW5_Mod_Manager
         //Open mods folder button
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(this.logic.BasePath[0]) || string.IsNullOrWhiteSpace(this.logic.BasePath[0]))
+            if (Utils.StringNullEmptyOrWhiteSpace(this.logic.BasePath[0]))
             {
                 return;
             }
             try
             {
                 Process.Start(this.logic.BasePath[0]);
-                if (!string.IsNullOrEmpty(this.logic.BasePath[1]) && !string.IsNullOrWhiteSpace(this.logic.BasePath[1]))
+                if (!Utils.StringNullEmptyOrWhiteSpace(this.logic.BasePath[1]))
                 {
                     Process.Start(this.logic.BasePath[1]);
                 }
@@ -949,11 +1013,7 @@ namespace MW5_Mod_Manager
         private void filterBox_TextChanged(object sender, EventArgs e)
         {
             string filtertext = MainForm.filterBox.Text.ToLower();
-            if (
-                filtertext == ""
-                || string.IsNullOrWhiteSpace(MainForm.filterBox.Text)
-                || string.IsNullOrEmpty(filtertext)
-                )
+            if (Utils.StringNullEmptyOrWhiteSpace(filtertext))
             {
                 //Console.WriteLine("No filter text");
                 if (this.filtered) //we are returning from filtering
@@ -1098,7 +1158,7 @@ namespace MW5_Mod_Manager
                 return;
 
             string selectedMod = listBox3.SelectedItem.ToString();
-            if (string.IsNullOrEmpty(selectedMod) || string.IsNullOrWhiteSpace(selectedMod))
+            if (Utils.StringNullEmptyOrWhiteSpace(selectedMod))
                 return;
 
             string superMod = listView1.SelectedItems[0].SubItems[2].Text;
@@ -1129,7 +1189,7 @@ namespace MW5_Mod_Manager
                 return;
             string selectedMod = listBox1.SelectedItem.ToString();
 
-            if (string.IsNullOrEmpty(selectedMod) || string.IsNullOrWhiteSpace(selectedMod))
+            if (Utils.StringNullEmptyOrWhiteSpace(selectedMod))
                 return;
 
             string superMod = listView1.SelectedItems[0].SubItems[2].Text;
@@ -1157,10 +1217,8 @@ namespace MW5_Mod_Manager
             string SelectedModDisplayName = listView1.SelectedItems[0].SubItems[1].Text;
             bool ItemChecked = listView1.SelectedItems[0].Checked;
 
-            if (string.IsNullOrEmpty(SelectedMod) ||
-                string.IsNullOrWhiteSpace(SelectedMod) ||
-                string.IsNullOrEmpty(SelectedModDisplayName) ||
-                string.IsNullOrWhiteSpace(SelectedModDisplayName)
+            if (Utils.StringNullEmptyOrWhiteSpace(SelectedMod) ||
+                Utils.StringNullEmptyOrWhiteSpace(SelectedModDisplayName)
                 )
                 return;
 
@@ -1426,7 +1484,7 @@ namespace MW5_Mod_Manager
             if (listBox4.SelectedItem == null)
                 return;
             string selected = listBox4.SelectedItem.ToString();
-            if (string.IsNullOrEmpty(selected) || string.IsNullOrWhiteSpace(selected))
+            if (Utils.StringNullEmptyOrWhiteSpace(selected))
                 return;
             this.LoadPreset(selected);
         }
@@ -1454,7 +1512,7 @@ namespace MW5_Mod_Manager
                 Overriding = true;
             }
 
-            if (string.IsNullOrEmpty(selected) || string.IsNullOrWhiteSpace(selected))
+            if (Utils.StringNullEmptyOrWhiteSpace(selected))
                 return;
 
             if (this.listBox4.Items.Contains(selected) & !Overriding)
@@ -1483,7 +1541,7 @@ namespace MW5_Mod_Manager
             if (listBox4.SelectedItem == null)
                 return;
             string selected = listBox4.SelectedItem.ToString();
-            if (string.IsNullOrEmpty(selected) || string.IsNullOrWhiteSpace(selected))
+            if (Utils.StringNullEmptyOrWhiteSpace(selected))
                 return;
             this.logic.Presets.Remove(selected);
             int index = listBox4.SelectedIndex;
@@ -1524,6 +1582,5 @@ namespace MW5_Mod_Manager
         {
 
         }
-
     }
 }

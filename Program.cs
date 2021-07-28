@@ -109,7 +109,7 @@ namespace MW5_Mod_Manager
             List<string> MissingModDirs = new List<string>();
             foreach (string key in this.ModList.Keys)
             {
-                if (string.IsNullOrEmpty(key) || string.IsNullOrWhiteSpace(key))
+                if (Utils.StringNullEmptyOrWhiteSpace(key))
                 {
                     ModList.Remove(key);
                     continue;
@@ -152,12 +152,12 @@ namespace MW5_Mod_Manager
 
         //TODO Write summary
         /// <summary>
-        /// 
+        /// Checks if the set mods directory exists, if not creates one.
         /// </summary>
         /// <returns></returns>
-        private bool CheckModsDir()
+        public bool CheckModsDir()
         {
-            if (this.BasePath[0] == null || this.BasePath[0] == "" || this.BasePath[0] == " ")
+            if (Utils.StringNullEmptyOrWhiteSpace(this.BasePath[0]))
                 return false;
             if (!Directory.Exists(this.BasePath[0]))
             {
@@ -253,14 +253,14 @@ namespace MW5_Mod_Manager
             //Check if basepath is there
             if (BasePath == null)
                 return;
-            if (string.IsNullOrEmpty(BasePath[0]) || string.IsNullOrWhiteSpace(BasePath[0]))
+            if (Utils.StringNullEmptyOrWhiteSpace(BasePath[0]))
                 return;
 
             //add install folder mods dirs
             this.Directories.AddRange(Directory.GetDirectories(BasePath[0]));
 
             //Add steam dirs if they are pressent
-            if (!string.IsNullOrEmpty(BasePath[1]) && !string.IsNullOrWhiteSpace(BasePath[1]))
+            if (!Utils.StringNullEmptyOrWhiteSpace(BasePath[1]))
             {
                 this.Directories.AddRange(Directory.GetDirectories(BasePath[1]));
             }

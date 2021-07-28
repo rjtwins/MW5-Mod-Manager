@@ -46,10 +46,10 @@ namespace MW5_Mod_Manager
             this.installDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeVendorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.steamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.gogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.windowsStoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.epicStoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.steamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.windowsStoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exportLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importLoadOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -213,7 +213,7 @@ namespace MW5_Mod_Manager
             this.installDirectoryToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.selectToolStripMenuItem});
             this.installDirectoryToolStripMenuItem.Name = "installDirectoryToolStripMenuItem";
-            this.installDirectoryToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.installDirectoryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.installDirectoryToolStripMenuItem.Text = "Install Directory";
             // 
             // selectToolStripMenuItem
@@ -226,78 +226,78 @@ namespace MW5_Mod_Manager
             // changeVendorToolStripMenuItem
             // 
             this.changeVendorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.steamToolStripMenuItem,
+            this.epicStoreToolStripMenuItem,
             this.gogToolStripMenuItem,
-            this.windowsStoreToolStripMenuItem,
-            this.epicStoreToolStripMenuItem});
+            this.steamToolStripMenuItem,
+            this.windowsStoreToolStripMenuItem});
             this.changeVendorToolStripMenuItem.Name = "changeVendorToolStripMenuItem";
-            this.changeVendorToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.changeVendorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.changeVendorToolStripMenuItem.Text = "Set Vendor";
-            // 
-            // steamToolStripMenuItem
-            // 
-            this.steamToolStripMenuItem.Name = "steamToolStripMenuItem";
-            this.steamToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.steamToolStripMenuItem.Text = "Steam";
-            this.steamToolStripMenuItem.Click += new System.EventHandler(this.steamToolStripMenuItem_Click);
-            // 
-            // gogToolStripMenuItem
-            // 
-            this.gogToolStripMenuItem.Name = "gogToolStripMenuItem";
-            this.gogToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.gogToolStripMenuItem.Text = "GOG";
-            this.gogToolStripMenuItem.Click += new System.EventHandler(this.gogToolStripMenuItem_Click);
-            // 
-            // windowsStoreToolStripMenuItem
-            // 
-            this.windowsStoreToolStripMenuItem.Name = "windowsStoreToolStripMenuItem";
-            this.windowsStoreToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.windowsStoreToolStripMenuItem.Text = "Windows Store";
-            this.windowsStoreToolStripMenuItem.Click += new System.EventHandler(this.windowsStoreToolStripMenuItem_Click);
             // 
             // epicStoreToolStripMenuItem
             // 
             this.epicStoreToolStripMenuItem.Name = "epicStoreToolStripMenuItem";
-            this.epicStoreToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.epicStoreToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.epicStoreToolStripMenuItem.Text = "Epic Store";
             this.epicStoreToolStripMenuItem.Click += new System.EventHandler(this.epicStoreToolStripMenuItem_Click);
+            // 
+            // gogToolStripMenuItem
+            // 
+            this.gogToolStripMenuItem.Name = "gogToolStripMenuItem";
+            this.gogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.gogToolStripMenuItem.Text = "GOG";
+            this.gogToolStripMenuItem.Click += new System.EventHandler(this.gogToolStripMenuItem_Click);
+            // 
+            // steamToolStripMenuItem
+            // 
+            this.steamToolStripMenuItem.Name = "steamToolStripMenuItem";
+            this.steamToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.steamToolStripMenuItem.Text = "Steam";
+            this.steamToolStripMenuItem.Click += new System.EventHandler(this.steamToolStripMenuItem_Click);
+            // 
+            // windowsStoreToolStripMenuItem
+            // 
+            this.windowsStoreToolStripMenuItem.Name = "windowsStoreToolStripMenuItem";
+            this.windowsStoreToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.windowsStoreToolStripMenuItem.Text = "Windows Store";
+            this.windowsStoreToolStripMenuItem.Click += new System.EventHandler(this.windowsStoreToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(175, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // exportLoadOrderToolStripMenuItem
             // 
             this.exportLoadOrderToolStripMenuItem.Name = "exportLoadOrderToolStripMenuItem";
-            this.exportLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.exportLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportLoadOrderToolStripMenuItem.Text = "Export Load Order";
             this.exportLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.ExportLoadOrderToolStripMenuItem_Click);
             // 
             // importLoadOrderToolStripMenuItem
             // 
             this.importLoadOrderToolStripMenuItem.Name = "importLoadOrderToolStripMenuItem";
-            this.importLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.importLoadOrderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importLoadOrderToolStripMenuItem.Text = "Import Load Order";
             this.importLoadOrderToolStripMenuItem.Click += new System.EventHandler(this.ImportLoadOrderToolStripMenuItem_Click);
             // 
             // exportModsFolderToolStripMenuItem
             // 
             this.exportModsFolderToolStripMenuItem.Name = "exportModsFolderToolStripMenuItem";
-            this.exportModsFolderToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.exportModsFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportModsFolderToolStripMenuItem.Text = "Export Mods Folder";
             this.exportModsFolderToolStripMenuItem.Click += new System.EventHandler(this.exportModsFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(175, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             this.toolStripSeparator5.Visible = false;
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItem1.Text = "Share Mods Via TCP";
             this.toolStripMenuItem1.Visible = false;
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);

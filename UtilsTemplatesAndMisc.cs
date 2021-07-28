@@ -9,7 +9,11 @@ namespace MW5_Mod_Manager
 {
     internal static class Utils
     {
-        
+        public static bool StringNullEmptyOrWhiteSpace(string txt)
+        {
+            return string.IsNullOrEmpty(txt) || string.IsNullOrWhiteSpace(txt);
+        }
+
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
             // Get the subdirectories for the specified directory.

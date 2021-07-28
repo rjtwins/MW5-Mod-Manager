@@ -152,10 +152,10 @@ namespace MW5_Mod_Manager
 
         //TODO Write summary
         /// <summary>
-        /// 
+        /// Checks if the set mods directory exists, if not creates one.
         /// </summary>
         /// <returns></returns>
-        private bool CheckModsDir()
+        public bool CheckModsDir()
         {
             if (Utils.StringNullEmptyOrWhiteSpace(this.BasePath[0]))
                 return false;

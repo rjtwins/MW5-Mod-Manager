@@ -592,9 +592,15 @@ namespace MW5_Mod_Manager
                     logic.BasePath[0] = path + @"\MW5Mercs\Mods";
 
                     //We need to do something different for steam cause its special.
-                    if (this.logic.Vendor == "STEAM")
+                    //Once a switch now an iff.
+                    switch (this.logic.Vendor)
                     {
-                        SetSteamWorkshopPath();
+                        case "STEAM":
+                            SetSteamWorkshopPath();
+                            break;
+                        //case "GAMEPASS":
+                        //    SetGamepassPath();
+                        //    break;
                     }
                     MainForm.textBox1.Text = logic.BasePath[0];
                     MainForm.textBox3.Text = logic.BasePath[1];
@@ -763,6 +769,7 @@ namespace MW5_Mod_Manager
         }
 
         #region Vendor Selection Tool Strip buttons
+
         //Tool strip for selecting steam as a vendor
         private void steamToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -820,12 +827,34 @@ namespace MW5_Mod_Manager
             this.gogToolStripMenuItem.Enabled = true;
             this.windowsStoreToolStripMenuItem.Enabled = false;
             this.epicStoreToolStripMenuItem.Enabled = true;
-            this.logic.BasePath[0] = Application.LocalUserAppDataPath.Replace(@"\MW5_Mod_Manager\MW5 Mod Manager\1.0.0.0", "") + @"\MW5Mercs\Saved\Mods";
+
+            string AppDataRoaming = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            this.logic.BasePath[0] = GetBasePathFromAppDataRoaming(AppDataRoaming);
+            this.logic.CheckModsDir();
+
+            Console.WriteLine("BasePath from AppDataRoaming" + this.logic.BasePath[0]);
+
             this.textBox1.Text = logic.BasePath[0];
             this.MainForm.button5.Enabled = true;
 
             this.textBox3.Visible = false;
             this.textBox1.Size = new Size(506, 20);
+        }
+
+        private static string GetBasePathFromAppDataRoaming(string AppDataRoaming)
+        {
+            //Split by folder depth
+            List<string> splitBasePath = AppDataRoaming.Split('\\').ToList<string>();
+
+            //Find the steamapps folder
+            int AppDataIndex = splitBasePath.IndexOf("AppData");
+
+            //Remove all past the steamapps folder
+            splitBasePath.RemoveRange(AppDataIndex + 1, splitBasePath.Count - AppDataIndex - 1);
+
+            //Put string back together
+            return string.Join("\\", splitBasePath) + @"\Local\MW5Mercs\Saved\Mods";
         }
 
         //Tool strip for selecting epic store as a vendor
@@ -853,27 +882,38 @@ namespace MW5_Mod_Manager
         //Launch game button
         private void button4_Click(object sender, EventArgs e)
         {
-            if (this.logic.Vendor == "EPIC")
+            switch (logic.Vendor)
             {
-                LaunchEpicGame();
-            }
-            else if (this.logic.Vendor == "STEAM")
-            {
-                LaunchSteamGame();
-            }
-            else if (this.logic.Vendor == "GOG")
-            {
-                LaunchGogGame();
-            }
-            else if (this.logic.Vendor == "WINDOWS")
-            {
-                LaunchWindowsGame();
+                case "EPIC":
+                    LaunchEpicGame();
+                    break;
+                case "STEAM":
+                    LaunchSteamGame();
+                    break;
+                case "GOG":
+                    LaunchGogGame();
+                    break;
+                case "WINDOWS":
+                    LaunchWindowsGame();
+                    break;
+                case "GAMEPASS":
+                    LaunchGamepassGame();
+                    break;
             }
 
         }
 
         #region Launch Game
         private static void LaunchWindowsGame()
+        {
+            //Dunno how this works at all.. 
+            string message = "This feature is not available in this version.";
+            string caption = "Feature not available.";
+            MessageBoxButtons buttons = MessageBoxButtons.OK;
+            MessageBox.Show(message, caption, buttons);
+        }
+
+        private static void LaunchGamepassGame()
         {
             //Dunno how this works at all.. 
             string message = "This feature is not available in this version.";
@@ -1542,6 +1582,5 @@ namespace MW5_Mod_Manager
         {
 
         }
-
     }
 }

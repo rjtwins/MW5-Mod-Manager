@@ -122,15 +122,16 @@ namespace MW5_Mod_Manager
                 return;
             }
             string file = files[0];
-
+            Console.WriteLine(file);
             //Lets see what we got here
             // get the file attributes for file or directory
             FileAttributes attr = File.GetAttributes(file);
-            bool IsDirectory = attr.HasFlag(FileAttributes.Directory);
+            bool IsDirectory = attr.ToString() == "Directory";
 
-            HandleDirectory();
-
-            HandleFile();
+            if (!HandleDirectory())
+            {
+                HandleFile();
+            }
 
             //Refresh button
             button6_Click(null, null);
@@ -171,25 +172,27 @@ namespace MW5_Mod_Manager
                 }
             }
 
-            void HandleDirectory()
+            //Return succes
+            bool HandleDirectory()
             {
                 if (!IsDirectory)
                 {
-                    return;
+                    return false;
                 }
                 if (!ModInDirectory(file))
                 {
-                    return;
+                    return false;
                 }
                 if (ModsFolderNotSet())
                 {
-                    return;
+                    return false;
                 }
 
                 string modName;
                 string[] splitString = file.Split('\\');
                 modName = splitString[splitString.Length - 1];
                 Utils.DirectoryCopy(file, logic.BasePath[0] + "\\" + modName, true);
+                return true;
             }
 
             bool ModInDirectory(string _file)
@@ -209,7 +212,7 @@ namespace MW5_Mod_Manager
 
             bool ModsFolderNotSet()
             {
-                return !Utils.StringNullEmptyOrWhiteSpace(logic.BasePath[0]);
+                return Utils.StringNullEmptyOrWhiteSpace(logic.BasePath[0]);
             }
         }
 

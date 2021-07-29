@@ -349,3 +349,9 @@ bin/Release/app.publish/MW5 Mod Manager.exe
 bin/Release/MW5 Mod Manager.exe
 bin/Release/MW5 Mod Manager.pspdb
 bin/Release/MW5 Mod Manager.pssym
+bin/Release/MW5 Mod Manager.pssym
+bin/Release/MW5 Mod Manager.pspdb
+bin/Release/MW5 Mod Manager.exe
+*.pssym
+*.pspdb
+*.exe

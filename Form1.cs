@@ -781,7 +781,6 @@ namespace MW5_Mod_Manager
         private void steamToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ClearAll();
-            logic.WhipeInstallDirMemory();
             this.logic.Vendor = "STEAM";
             this.toolStripLabel1.Text = "Game Vendor : Steam";
             this.selectToolStripMenuItem.Enabled = true;
@@ -795,13 +794,13 @@ namespace MW5_Mod_Manager
             this.textBox3.Text = logic.BasePath[1];
             this.textBox3.Visible = true;
             this.textBox1.Size = new Size(250, 20);
+            logic.SaveProgramData();
         }
 
         //Tool strip for selecting gog as a vendor
         private void gogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ClearAll();
-            logic.WhipeInstallDirMemory();
             this.logic.Vendor = "GOG";
             this.toolStripLabel1.Text = "Game Vendor : GOG";
             this.selectToolStripMenuItem.Enabled = true;
@@ -816,13 +815,13 @@ namespace MW5_Mod_Manager
 
             this.textBox3.Visible = false;
             this.textBox1.Size = new Size(506, 20);
+            logic.SaveProgramData();
         }
 
         //Tool strip for selecting windows store as a vendor
         private void windowsStoreToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ClearAll();
-            logic.WhipeInstallDirMemory();
             this.logic.Vendor = "WINDOWS";
             this.toolStripLabel1.Text = "Game Vendor : Windows Store";
             this.selectToolStripMenuItem.Enabled = false;
@@ -846,7 +845,6 @@ namespace MW5_Mod_Manager
             this.textBox1.Size = new Size(506, 20);
             logic.SaveProgramData();
             RefreshAll();
-
         }
 
         private static string GetBasePathFromAppDataRoaming(string AppDataRoaming)
@@ -868,7 +866,6 @@ namespace MW5_Mod_Manager
         private void epicStoreToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ClearAll();
-            logic.WhipeInstallDirMemory();
             this.logic.Vendor = "EPIC";
             this.toolStripLabel1.Text = "Game Vendor : Epic Store";
             this.selectToolStripMenuItem.Enabled = true;
@@ -883,6 +880,8 @@ namespace MW5_Mod_Manager
 
             this.textBox3.Visible = false;
             this.textBox1.Size = new Size(506, 20);
+
+            logic.SaveProgramData();
         }
         #endregion
 

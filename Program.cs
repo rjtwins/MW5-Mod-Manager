@@ -256,23 +256,6 @@ namespace MW5_Mod_Manager
             Directory.Delete(directory, true);
         }
 
-        public void WhipeInstallDirMemory()
-        {
-            try
-            {
-                this.ProgramData = new ProgramData();
-                string systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                string complete = Path.Combine(systemPath, @"MW5LoadOrderManager");
-                System.IO.File.WriteAllText(complete + @"\ProgramData.json", "");
-            }
-            catch (Exception Ex)
-            {
-                //Console.WriteLine(Ex.Message);
-                //Console.WriteLine(Ex.StackTrace);
-                return;
-            }
-        }
-
         //parse all directories in the basepath mods folder or steam workshop mods folder.
         private void ParseDirectories()
         {
@@ -373,15 +356,15 @@ namespace MW5_Mod_Manager
             SaveModListJson();
         }
 
+        //TODO Fix
         public void ClearAll()
         {
             this.ModDetails = new Dictionary<string, ModObject>();
             this.ModList = new Dictionary<string, bool>();
-            this.ProgramData = new ProgramData();
             this.DirectoryToPathDict = new Dictionary<string, string>();
             this.OverrridingData = new Dictionary<string, OverridingData>();
             this.MissingModsDependenciesDict = new Dictionary<string, List<string>>();
-            this.BasePath = new string[2];
+            this.BasePath = new string[2] { "", "" };
         }
 
         //Check if the mod dir is already present in data loaded from modlist.json, if not add it.

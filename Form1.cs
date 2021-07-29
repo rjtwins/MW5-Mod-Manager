@@ -20,7 +20,6 @@ namespace MW5_Mod_Manager
         public MainLogic logic = new MainLogic();
         //public TCPFileShare fileShare;
         bool filtered = false;
-        //We can just use a list here since they guarantee order.
         private List<ModItem> ListViewData = new List<ModItem>();
         private List<ListViewItem> markedForRemoval;
         public Form4 WaitForm;
